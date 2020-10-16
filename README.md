@@ -1,8 +1,8 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/akashic-games/akashic-engine-standlone-release-aciton/main/img/akashic.png"/>
+<img src="https://raw.githubusercontent.com/akashic-games/akashic-engine-standalone-release-aciton/main/img/akashic.png"/>
 </p>
 
-# akashic-engine-standlone-release-aciton
+# akashic-engine-standalone-release-aciton
 
 Akashic Engine を単体 HTML ファイルで実行するためのスクリプト生成モジュールです。
 
@@ -154,7 +154,7 @@ var finalize = AE.initialize({
 
 ## ビルド方法
 
-akashic-engine-standlone-release-aciton は TypeScript で書かれたモジュールです。ビルドには Node.js が必要です。
+akashic-engine-standalone-release-aciton は TypeScript で書かれています。ビルドには Node.js が必要です。
 リポジトリ直下で次を実行してください。
 
 ```

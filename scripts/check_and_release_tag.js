@@ -6,7 +6,7 @@ const pkg = require("../package.json");
 const aksVer = semver.clean(pkg.devDependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
 
 const owner = "akashic-games";
-const repo = "akashic-engine-standlone-release-aciton";
+const repo = "akashic-engine-standalone-release-aciton";
 const tag = `akashic-engine@${aksVer}`;
 
 (async () => {

@@ -1,5 +1,5 @@
 {
-  "name": "@akashic/akashic-engine-standalone-release-aciton",
+  "name": "@akashic/akashic-engine-standalone-release-action",
   "private": true,
   "version": "1.0.0",
   "description": "A repository to release standalone Akashic Engine script",
@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akashic-games/akashic-engine-standalone-release-aciton.git"
+    "url": "git+https://github.com/akashic-games/akashic-engine-standalone-release-action.git"
   },
   "eslintIgnore": [
     "**/*.js"

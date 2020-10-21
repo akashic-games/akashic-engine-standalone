@@ -100,6 +100,7 @@ export function initialize(param: InitializeParameter): () => void {
 
 	// ポイントイベントの処理
 	const pointEvents: g.PlatformPointEvent[] = [];
+	const element = param.canvas;
 
 	const handleMouseDownEvent = (event: MouseEvent): void => {
 		pointEvents.push({
@@ -107,6 +108,30 @@ export function initialize(param: InitializeParameter): () => void {
 			identifier: 0,
 			offset: { x: event.offsetX, y: event.offsetY }
 		});
+		window.addEventListener("mousemove", handleMouseMoveEvent, { passive: false });
+		window.addEventListener("mouseup", handleMouseUpEvent, { passive: false });
+	};
+
+	const handleMouseMoveEvent = (event: MouseEvent): void => {
+		const rect = element.getBoundingClientRect();
+		pointEvents.push({
+			type: g.PlatformPointType.Move,
+			identifier: 0,
+			offset: { x: event.clientX - rect.left, y: event.clientY - rect.top }
+		});
+		event.stopPropagation();
+		event.returnValue = false;
+	};
+
+	const handleMouseUpEvent = (event: MouseEvent): void => {
+		const rect = element.getBoundingClientRect();
+		pointEvents.push({
+			type: g.PlatformPointType.Up,
+			identifier: 0,
+			offset: { x: event.clientX - rect.left, y: event.clientY - rect.top }
+		});
+		window.removeEventListener("mousemove", handleMouseMoveEvent);
+		window.removeEventListener("mouseup", handleMouseUpEvent);
 	};
 
 	const handleTouchStartEvent = (event: TouchEvent): void => {
@@ -121,19 +146,14 @@ export function initialize(param: InitializeParameter): () => void {
 				offset: { x, y }
 			});
 		}
-	};
-
-	const handleMouseMoveEvent = (event: MouseEvent): void => {
-		pointEvents.push({
-			type: g.PlatformPointType.Move,
-			identifier: 0,
-			offset: { x: event.offsetX, y: event.offsetY }
-		});
+		window.addEventListener("touchmove", handleTouchMoveEvent, { passive: false });
+		window.addEventListener("touchend", handleTouchEndEvent, { passive: false });
+		event.preventDefault();
 	};
 
 	const handleTouchMoveEvent = (event: TouchEvent): void => {
 		const touches = event.changedTouches;
-		for (let i = 0; i < event.touches.length; i++) {
+		for (let i = 0; i < touches.length; i++) {
 			const x = touches[i].pageX;
 			const y = touches[i].pageY;
 			const identifier = touches[i].identifier;
@@ -143,19 +163,12 @@ export function initialize(param: InitializeParameter): () => void {
 				offset: { x, y }
 			});
 		}
-	};
-
-	const handleMouseUpEvent = (event: MouseEvent): void => {
-		pointEvents.push({
-			type: g.PlatformPointType.Up,
-			identifier: 0,
-			offset: { x: event.offsetX, y: event.offsetY }
-		});
+		if (event.cancelable) event.preventDefault();
 	};
 
 	const handleTouchEndEvent = (event: TouchEvent): void => {
 		const touches = event.changedTouches;
-		for (let i = 0; i < event.touches.length; i++) {
+		for (let i = 0; i < touches.length; i++) {
 			const x = touches[i].pageX;
 			const y = touches[i].pageY;
 			const identifier = touches[i].identifier;
@@ -165,27 +178,21 @@ export function initialize(param: InitializeParameter): () => void {
 				offset: { x, y }
 			});
 		}
+		window.removeEventListener("touchmove", handleTouchMoveEvent);
+		window.removeEventListener("touchend", handleTouchEndEvent);
 	};
 
-	const handlePointEvent = (element: HTMLElement): void => {
-		element.addEventListener("mousedown", handleMouseDownEvent);
-		element.addEventListener("touchstart", handleTouchStartEvent);
-		element.addEventListener("mousemove", handleMouseMoveEvent);
-		element.addEventListener("touchmove", handleTouchMoveEvent);
-		element.addEventListener("mouseup", handleMouseUpEvent);
-		element.addEventListener("touchend", handleTouchEndEvent);
+	const handlePointEvent = (): void => {
+		element.addEventListener("mousedown", handleMouseDownEvent, { passive: false });
+		element.addEventListener("touchstart", handleTouchStartEvent, { passive: false });
 	};
 
-	const unhandlePointEvent = (element: HTMLElement): void => {
+	const unhandlePointEvent = (): void => {
 		element.removeEventListener("mousedown", handleMouseDownEvent);
 		element.removeEventListener("touchstart", handleTouchStartEvent);
-		element.removeEventListener("mousemove", handleMouseMoveEvent);
-		element.removeEventListener("touchmove", handleTouchMoveEvent);
-		element.removeEventListener("mouseup", handleMouseUpEvent);
-		element.removeEventListener("touchend", handleTouchEndEvent);
 	};
 
-	handlePointEvent(param.canvas);
+	handlePointEvent();
 
 	// ゲームループ
 	let before = Date.now();
@@ -219,9 +226,9 @@ export function initialize(param: InitializeParameter): () => void {
 	return () => {
 		if (requestAnimationFrameId !== null) {
 			window.cancelAnimationFrame(requestAnimationFrameId);
+			requestAnimationFrameId = null;
 		}
-		requestAnimationFrameId = null;
-		unhandlePointEvent(param.canvas);
+		unhandlePointEvent();
 		primarySurface.renderer().clear();
 	};
 }

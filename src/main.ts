@@ -203,6 +203,10 @@ export function initialize(param: InitializeParameter): () => void {
 			return;
 		}
 		const now = Date.now();
+		if (before + frame * 2 < now) {
+			// NOTE: 別タブなどで長時間 (実フレームの2倍) tick() が呼ばれなかった場合は直前まで進める
+			before = now - frame - 1;
+		}
 		if (before + frame < now) {
 			if (pointEvents.length) {
 				const events: Event[] = [];

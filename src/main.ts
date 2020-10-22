@@ -102,11 +102,22 @@ export function initialize(param: InitializeParameter): () => void {
 	const pointEvents: g.PlatformPointEvent[] = [];
 	const element = param.canvas;
 
+	const getScaleX = (): number => {
+		return element.getBoundingClientRect().width / element.clientWidth;
+	};
+	const getScaleY = (): number => {
+		return element.getBoundingClientRect().height / element.clientHeight;
+	};
+
 	const handleMouseDownEvent = (event: MouseEvent): void => {
+		const rect = element.getBoundingClientRect();
 		pointEvents.push({
 			type: g.PlatformPointType.Down,
 			identifier: 0,
-			offset: { x: event.offsetX, y: event.offsetY }
+			offset: {
+				x: (event.clientX - rect.left) / getScaleX(),
+				y: (event.clientY - rect.top) / getScaleY()
+			}
 		});
 		window.addEventListener("mousemove", handleMouseMoveEvent, { passive: false });
 		window.addEventListener("mouseup", handleMouseUpEvent, { passive: false });
@@ -117,7 +128,10 @@ export function initialize(param: InitializeParameter): () => void {
 		pointEvents.push({
 			type: g.PlatformPointType.Move,
 			identifier: 0,
-			offset: { x: event.clientX - rect.left, y: event.clientY - rect.top }
+			offset: {
+				x: (event.clientX - rect.left) / getScaleX(),
+				y: (event.clientY - rect.top) / getScaleY()
+			}
 		});
 		event.stopPropagation();
 		event.returnValue = false;
@@ -128,7 +142,10 @@ export function initialize(param: InitializeParameter): () => void {
 		pointEvents.push({
 			type: g.PlatformPointType.Up,
 			identifier: 0,
-			offset: { x: event.clientX - rect.left, y: event.clientY - rect.top }
+			offset: {
+				x: (event.clientX - rect.left) / getScaleX(),
+				y: (event.clientY - rect.top) / getScaleY()
+			}
 		});
 		window.removeEventListener("mousemove", handleMouseMoveEvent);
 		window.removeEventListener("mouseup", handleMouseUpEvent);
@@ -136,9 +153,10 @@ export function initialize(param: InitializeParameter): () => void {
 
 	const handleTouchStartEvent = (event: TouchEvent): void => {
 		const touches = event.changedTouches;
+		const rect = element.getBoundingClientRect();
 		for (let i = 0; i < touches.length; i++) {
-			const x = touches[i].pageX;
-			const y = touches[i].pageY;
+			const x = (touches[i].clientX - rect.left) / getScaleX();
+			const y = (touches[i].clientY - rect.top) / getScaleY();
 			const identifier = touches[i].identifier;
 			pointEvents.push({
 				type: g.PlatformPointType.Down,
@@ -153,9 +171,10 @@ export function initialize(param: InitializeParameter): () => void {
 
 	const handleTouchMoveEvent = (event: TouchEvent): void => {
 		const touches = event.changedTouches;
+		const rect = element.getBoundingClientRect();
 		for (let i = 0; i < touches.length; i++) {
-			const x = touches[i].pageX;
-			const y = touches[i].pageY;
+			const x = (touches[i].clientX - rect.left) / getScaleX();
+			const y = (touches[i].clientY - rect.top) / getScaleY();
 			const identifier = touches[i].identifier;
 			pointEvents.push({
 				type: g.PlatformPointType.Move,
@@ -168,9 +187,10 @@ export function initialize(param: InitializeParameter): () => void {
 
 	const handleTouchEndEvent = (event: TouchEvent): void => {
 		const touches = event.changedTouches;
+		const rect = element.getBoundingClientRect();
 		for (let i = 0; i < touches.length; i++) {
-			const x = touches[i].pageX;
-			const y = touches[i].pageY;
+			const x = (touches[i].clientX - rect.left) / getScaleX();
+			const y = (touches[i].clientY - rect.top) / getScaleY();
 			const identifier = touches[i].identifier;
 			pointEvents.push({
 				type: g.PlatformPointType.Up,

@@ -19,7 +19,7 @@ jobs:
       - name: Build project
         run: npm run build
       - name: Bundle project
-        run: zip -r --junk-paths bundle.zip dist/
+        run: zip -r bundle.zip dist/
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

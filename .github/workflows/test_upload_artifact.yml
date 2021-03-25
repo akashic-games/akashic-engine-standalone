@@ -1,0 +1,51 @@
+on:
+  repository_dispatch:
+    types: ["upload_artifact"]
+
+name: Release and Upload Asset
+
+jobs:
+  upload:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Update internal modules
+        run: |
+          npm ci
+          npm install @akashic/akashic-engine@latest
+          npm install @akashic-extension/akashic-box2d@latest
+          npm install @akashic-extension/akashic-label@latest
+          npm install @akashic-extension/akashic-timeline@latest
+          npm run build
+      - name: Bump package version
+        run: npm version patch --no-git-tag-version
+      - name: Get version of package.json
+        id: version
+        run: |
+          VERSION=`cat package.json | jq '.devDependencies["@akashic/akashic-engine"]'`
+          echo "::set-output name=VERSION::$VERSION"
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: output_${{ steps.version.outputs.VERSION }}.zip
+          path: ./dist
+      - name: Create commits
+        run: |
+          git add -A
+          git commit -m "Update to ${{ steps.version.outputs.VERSION }}"
+      - name: Get workflow url
+        id: workflow
+        run: echo "::set-output name=WORKFLOW_URL::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: test pull request
+          branch: upload_artifact_file/${{steps.version.outputs.VERSION}}
+          body: |
+            Workflow URL:
+            - ${{ steps.workflow.outputs.WORKFLOW_URL }}
+          delete-branch: true

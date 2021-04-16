@@ -1,0 +1,26 @@
+name: Hook Main and Tag
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  cache-version: v1
+
+jobs:
+  upload:
+    name: Upload Distribution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name:  install modules
+        run: |
+          npm ci
+          npm run build
+      - name:  set new tag
+        run: |
+          npm run deploy

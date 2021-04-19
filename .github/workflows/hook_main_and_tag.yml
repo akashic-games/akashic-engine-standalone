@@ -19,8 +19,7 @@ jobs:
           fetch-depth: 0
       - name:  install modules
         run: |
-          npm ci
-          npm run build
-      - name:  set new tag
+          npm ci --ignore-scripts
+      - name:  push tag and deploy
         run: |
           npm run deploy

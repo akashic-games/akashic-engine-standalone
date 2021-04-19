@@ -3,7 +3,7 @@ on:
     tags:
       - "akashic-engine@*"
 
-name: Release and Upload Assets
+name: Update internal modules
 
 jobs:
   build:

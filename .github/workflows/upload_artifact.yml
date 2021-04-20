@@ -1,4 +1,4 @@
-name: Upload Distribution
+name: Update internal modules
 
 on:
   schedule:
@@ -28,12 +28,6 @@ jobs:
             ${{ env.cache-version }}-${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ env.cache-version }}-${{ runner.os }}-build-
             ${{ env.cache-version }}-${{ runner.os }}-
-
-      - name: Get current version of akashic-engine
-        id: curent_version
-        run: |
-          VERSION=`cat package.json | jq -r '.devDependencies["@akashic/akashic-engine"]'`
-          echo "::set-output name=CURRENT_VERSION::$VERSION"
       - name: Update internal modules
         run: |
           npm ci --ignore-scripts
@@ -50,7 +44,7 @@ jobs:
       - name:  Check version
         id: check_version
         run: |
-          CREATED_BRANCH=`git branch -a | grep upload_artifact_file/${{ steps.version.outputs.LATEST_VERSION }}` || echo "Already PR created"
+          CREATED_BRANCH=`git branch -a | grep update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}` || echo "Already PR created"
           echo "::set-output name=ALREADY_PR::$CREATED_BRANCH"
           exit 0
       - name: Archive artifact
@@ -71,7 +65,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           title: update to akashic-engine@${{ steps.version.outputs.LATEST_VERSION }}
-          branch: upload_artifact_file/${{ steps.version.outputs.LATEST_VERSION }}
+          branch: update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}
           body: |
             ## このPullRequestが解決する内容
             akashic-engine を ${{ steps.version.outputs.LATEST_VERSION }} に更新します。

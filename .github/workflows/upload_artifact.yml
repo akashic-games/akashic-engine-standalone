@@ -41,12 +41,6 @@ jobs:
         run: |
           LATEST_VERSION=`cat package.json | jq -r '.devDependencies["@akashic/akashic-engine"]'`
           echo "::set-output name=LATEST_VERSION::$LATEST_VERSION"
-      - name:  Check version
-        id: check_version
-        run: |
-          CREATED_BRANCH=`git branch -a | grep update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}` || echo "Already PR created"
-          echo "::set-output name=ALREADY_PR::$CREATED_BRANCH"
-          exit 0
       - name: Archive artifact
         uses: actions/upload-artifact@v2
         with:

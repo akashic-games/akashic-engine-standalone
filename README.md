@@ -184,10 +184,10 @@ npm run deploy
 ## リリースフロー
 
 - akashic-engine が更新され、新しいバージョンが publish される
-- `Update internal modules` が1日1回呼び出され、 akashic-engine のバージョンを確認する
+- `Update internal modules` workflow が1日1回呼び出され、 akashic-engine のバージョンを確認する
   - 更新があれば、これを取り込んだ PR を作成する
-- PR が main ブランチにマージされると、`Hook Main and Tag` actions が新しいタグを最新コミットに付ける
-- 新しいタグが付くと、 `Release and Upload Assets` actions がリリースを作成する
+- PR が main ブランチにマージされると、`Push Release Tag` workflow が新しいタグを最新コミットに付ける
+- 新しいタグが付くと、 `Release and Upload Assets` workflow がリリースを作成する
 
 ## ライセンス
 本リポジトリは MIT License の元で公開されています。

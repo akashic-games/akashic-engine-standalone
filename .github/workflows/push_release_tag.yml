@@ -1,4 +1,4 @@
-name: Hook Main and Tag
+name: Push release tag
 
 on:
   push:
@@ -9,8 +9,7 @@ env:
   cache-version: v1
 
 jobs:
-  upload:
-    name: Upload Distribution
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,10 +27,7 @@ jobs:
             ${{ env.cache-version }}-${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ env.cache-version }}-${{ runner.os }}-build-
             ${{ env.cache-version }}-${{ runner.os }}-
-
-      - name:  install modules
-        run: |
-          npm ci --ignore-scripts
       - name:  push tag and deploy
         run: |
+          npm ci --ignore-scripts
           npm run deploy

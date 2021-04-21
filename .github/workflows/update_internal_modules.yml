@@ -10,7 +10,6 @@ env:
 
 jobs:
   upload:
-    name: Upload Distribution
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -40,22 +40,26 @@ jobs:
         run: |
           LATEST_VERSION=`cat package.json | jq -r '.devDependencies["@akashic/akashic-engine"]'`
           echo "::set-output name=LATEST_VERSION::$LATEST_VERSION"
+      - name: Get workflow url
+        id: workflow
+        run: echo "::set-output name=WORKFLOW_URL::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       - name: Archive artifact
         uses: actions/upload-artifact@v2
         with:
           name: output_${{ steps.version.outputs.LATEST_VERSION }}
           path: ./dist
+      - Get Diff
+      - uses: technote-space/get-diff-action@v4
       - name: Create commits
+        if: env.GIT_DIFF
         run: |
           git config user.name '${{ github.actor }}'
           git config user.email '${{ github.actor }}@users.noreply.github.com'
           git add -A
           git commit -m "Update to ${{ steps.version.outputs.LATEST_VERSION }}"
-      - name: Get workflow url
-        id: workflow
-        run: echo "::set-output name=WORKFLOW_URL::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
+        if: env.GIT_DIFF
         with:
           title: update to akashic-engine@${{ steps.version.outputs.LATEST_VERSION }}
           branch: update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}

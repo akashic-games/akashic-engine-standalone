@@ -27,7 +27,7 @@ jobs:
             ${{ env.cache-version }}-${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ env.cache-version }}-${{ runner.os }}-build-
             ${{ env.cache-version }}-${{ runner.os }}-
-      - name:  push tag and deploy
+      - name: Push tag and deploy
         run: |
           npm ci --ignore-scripts
           npm run deploy

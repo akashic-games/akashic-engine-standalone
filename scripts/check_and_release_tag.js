@@ -3,7 +3,7 @@ const { execSync } = require("child_process");
 const { Octokit } = require("@octokit/rest");
 const octokit = new Octokit();
 const pkg = require("../package.json");
-const aksVer = semver.clean(pkg.devDependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
+const aksVer = semverClean(pkg.devDependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
 
 const owner = "akashic-games";
 const repo = "akashic-engine-standalone-release-action";
@@ -35,3 +35,8 @@ const tag = `akashic-engine@${aksVer}`;
 		process.exit(1);
 	}
 })();
+
+function semverClean(version) {
+	if (Number.isInteger(version[0])) return version;
+	return version.slice(1); // drop ~ or ^, save -beta.XX
+}

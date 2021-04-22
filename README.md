@@ -164,6 +164,12 @@ npm run build
 
 ビルドすると `./dist` ディレクトリに`akashic-engine-standalone-x.y.z.js` と `akashic-engine-standalone-x.y.z.min.js` が生成されます。
 
+## テスト方法
+
+```
+npm test
+```
+
 ## リリース
 
 以下のコマンドを実行します。
@@ -172,11 +178,16 @@ npm run build
 npm run deploy
 ```
 
-## テスト方法
+リリースは GitHub Actions で自動的に実行されます。
+通常のリリースの場合、`npm run deploy` を手動で実行する必要はありません。
 
-```
-npm test
-```
+## リリースフロー
+
+- akashic-engine が更新され、新しいバージョンが publish される
+- `Update internal modules` workflow が1日1回呼び出され、 akashic-engine のバージョンを確認する
+  - 更新があれば、これを取り込んだ PR を作成する
+- PR が main ブランチにマージされると、`Push Release Tag` workflow が新しいタグを最新コミットに付ける
+- 新しいタグが付くと、 `Release and Upload Assets` workflow がリリースを作成する
 
 ## ライセンス
 本リポジトリは MIT License の元で公開されています。

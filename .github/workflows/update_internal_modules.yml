@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -49,7 +47,7 @@ jobs:
           name: output_${{ steps.version.outputs.LATEST_VERSION }}
           path: ./dist
       - name: Get diff
-      - uses: technote-space/get-diff-action@v4
+        uses: technote-space/get-diff-action@v4
       - name: Create commits
         if: env.GIT_DIFF
         run: |

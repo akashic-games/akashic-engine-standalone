@@ -6,7 +6,7 @@
   "main": "lib/main.js",
   "scripts": {
     "prepare": "npm run build",
-    "pre-commit": "npm run build && npm t",
+    "pre-commit": "npm t",
     "build": "rimraf \"./dist/**/{akashic-*,index*}.{js,html}\" && npm run format && run-s build:*",
     "build:dev": "webpack --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",
@@ -49,7 +49,6 @@
       "@akashic/remark-preset-lint"
     ]
   },
-  "dependencies": {},
   "devDependencies": {
     "@akashic-extension/akashic-box2d": "3.0.0-beta.0",
     "@akashic-extension/akashic-label": "3.0.0-beta.1",

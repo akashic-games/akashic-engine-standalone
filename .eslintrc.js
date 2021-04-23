@@ -1,5 +1,8 @@
 module.exports = {
-	"extends": "@akashic/eslint-config",
+	"extends": [
+		"@akashic/eslint-config",
+		"prettier"
+	],
 	"parserOptions": {
 		"project": "tsconfig.json",
 		"sourceType": "module"

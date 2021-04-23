@@ -46,10 +46,12 @@ jobs:
         with:
           name: output_${{ steps.version.outputs.LATEST_VERSION }}
           path: ./dist
-      - name: Get diff
-        uses: technote-space/get-diff-action@v4
+      - name: Get diff files
+        id: diff
+        run: |
+          echo "::set-output name=count::$(git diff --name-only | wc -l)"
       - name: Create commits
-        if: env.GIT_DIFF
+        if: 0 < steps.diff.outputs.count
         run: |
           git config user.name '${{ github.actor }}'
           git config user.email '${{ github.actor }}@users.noreply.github.com'
@@ -57,7 +59,7 @@ jobs:
           git commit -m "Update to ${{ steps.version.outputs.LATEST_VERSION }}"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
-        if: env.GIT_DIFF
+        if: 0 < steps.diff.outputs.count
         with:
           title: update to akashic-engine@${{ steps.version.outputs.LATEST_VERSION }}
           branch: update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}

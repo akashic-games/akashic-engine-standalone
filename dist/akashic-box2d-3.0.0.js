@@ -1,20 +1,7 @@
-require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"@akashic-extension/akashic-box2d":[function(require,module,exports){
-"use strict";
-// tslint:disable-next-line:no-reference
-///<reference path="../typings/box2dweb.d.ts"/>
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var Box2DWeb = require("box2dweb");
-exports.Box2DWeb = Box2DWeb;
-__export(require("./Box2D"));
-__export(require("./ContactManager"));
-__export(require("./parateters"));
-
-},{"./Box2D":1,"./ContactManager":2,"./parateters":3,"box2dweb":4}],1:[function(require,module,exports){
+require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Box2D = void 0;
 var box2dweb = require("box2dweb");
 /**
  * AkashicのエンティティをBox2DWebのb2Worldに追加し、演算結果をエンティティに反映するクラス。
@@ -305,6 +292,7 @@ exports.Box2D = Box2D;
 },{"box2dweb":4}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContactManager = void 0;
 var box2dweb = require("box2dweb");
 /**
  * 衝突判定を管理するクラス。
@@ -478,6 +466,7 @@ exports.ContactManager = ContactManager;
 },{"box2dweb":4}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BodyType = void 0;
 var box2dweb = require("box2dweb");
 /**
  * ボディタイプの定義。
@@ -11355,4 +11344,26 @@ var i;
 for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
 module.exports = Box2D
-},{}]},{},["@akashic-extension/akashic-box2d"]);
+},{}],"@akashic-extension/akashic-box2d":[function(require,module,exports){
+"use strict";
+// tslint:disable-next-line:no-reference
+///<reference path="../typings/box2dweb.d.ts"/>
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Box2DWeb = void 0;
+var Box2DWeb = require("box2dweb");
+exports.Box2DWeb = Box2DWeb;
+__exportStar(require("./Box2D"), exports);
+__exportStar(require("./ContactManager"), exports);
+__exportStar(require("./parateters"), exports);
+
+},{"./Box2D":1,"./ContactManager":2,"./parateters":3,"box2dweb":4}]},{},["@akashic-extension/akashic-box2d"]);

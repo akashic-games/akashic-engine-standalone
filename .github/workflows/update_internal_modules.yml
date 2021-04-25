@@ -53,8 +53,8 @@ jobs:
       - name: Create commits
         if: 0 < steps.diff.outputs.count
         run: |
-          git config user.name '${{ github.actor }}'
-          git config user.email '${{ github.actor }}@users.noreply.github.com'
+          git config user.name 'github-actions'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit -m "Update to ${{ steps.version.outputs.LATEST_VERSION }}"
       - name: Create Pull Request

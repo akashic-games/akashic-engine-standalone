@@ -2,8 +2,8 @@ name: Update internal modules
 
 on:
   schedule:
-    # everyday 00:00
-    - cron: '0 0 * * *'
+    # everyday 00:00 (UTC+9)
+    - cron: "0 15 * * *"
 
 env:
   cache-version: v1

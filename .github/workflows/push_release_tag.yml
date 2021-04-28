@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_PAT }}
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -30,6 +32,6 @@ jobs:
       - name: Push tag and deploy
         run: |
           npm ci --ignore-scripts
-          git config user.name '${{ github.actor }}'
-          git config user.email '${{ github.actor }}@users.noreply.github.com'
+          git config user.name 'github-actions'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           npm run deploy

@@ -170,24 +170,20 @@ npm run build
 npm test
 ```
 
-## リリース
+## 内部モジュールの自動更新
 
-以下のコマンドを実行します。
+`.github/workflows/update_internal_modules.yml` で定義されたスケジュールに応じて akashic-engine の更新を監視します。
+akashic-engine の更新が確認された場合、そのバージョンに追従する PullRequest が自動で作成されます。
 
-```sh
-npm run deploy
-```
+上記の PullRequest が main ブランチにマージされると `.github/workflows/push_release_tag.yml` によりリリースタグが GitHub 上に発行されます。
+リリースタグの発行後、`.github/workflows/release_and_upload_assets.yml` により成果物を含めたリリースノートが自動的に作成されます。
 
-リリースは GitHub Actions で自動的に実行されます。
-通常のリリースの場合、`npm run deploy` を手動で実行する必要はありません。
+なお、このワークフローを実行するには以下の secrets をリポジトリに登録する必要があります。
+([参考](https://docs.github.com/ja/actions/reference/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token))
 
-## リリースフロー
-
-* akashic-engine が更新され、新しいバージョンが publish される
-* `Update internal modules` workflow が1日1回呼び出され、 akashic-engine のバージョンを確認する
-  * 更新があれば、これを取り込んだ PR を作成する
-* PR が main ブランチにマージされると、`Push Release Tag` workflow が新しいタグを最新コミットに付ける
-* 新しいタグが付くと、 `Release and Upload Assets` workflow がリリースを作成する
+| secrets 変数名 | 内容                        |
+| ------------- | -------------------------- |
+| `GH_PAT`      | GitHub の個人アクセストークン  |
 
 ## ライセンス
 本リポジトリは MIT License の元で公開されています。

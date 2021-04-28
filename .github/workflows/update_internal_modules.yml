@@ -51,7 +51,7 @@ jobs:
         run: |
           echo "::set-output name=count::$(git diff --name-only | wc -l)"
       - name: Create commits
-        if: 0 < steps.diff.outputs.count
+        if: 2 <= steps.diff.outputs.count # package.json, package-lock.json
         run: |
           git config user.name 'github-actions'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -59,7 +59,7 @@ jobs:
           git commit -m "Update to ${{ steps.version.outputs.LATEST_VERSION }}"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
-        if: 0 < steps.diff.outputs.count
+        if: 2 <= steps.diff.outputs.count # package.json, package-lock.json
         with:
           title: update to akashic-engine@${{ steps.version.outputs.LATEST_VERSION }}
           branch: update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}

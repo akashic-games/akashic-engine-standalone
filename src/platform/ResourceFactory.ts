@@ -3,6 +3,7 @@ import urlJoin from "url-join";
 import { AssetLoaderFunctions } from "./AssetLoaderFunctions";
 import { ImageAsset } from "./assets/ImageAsset";
 import { ScriptAsset } from "./assets/ScriptAsset";
+import { VectorImageAsset } from "./assets/SVGImageAsset";
 import { TextAsset } from "./assets/TextAsset";
 import { VideoAsset } from "./assets/VideoAsset";
 import { AudioFactory } from "./audios/AudioFactory";
@@ -49,6 +50,10 @@ export class ResourceFactory implements g.ResourceFactory {
 
 	createImageAsset(id: string, path: string, width: number, height: number): g.ImageAsset {
 		return new ImageAsset(id, urlJoin(this.assetBaseDir, path), width, height);
+	}
+
+	createVectorImageAsset(id: string, path: string, width: number, height: number, hint?: g.VectorImageAssetHint): g.VectorImageAsset {
+		return new VectorImageAsset(id, urlJoin(this.assetBaseDir, path), width, height, hint);
 	}
 
 	createVideoAsset(

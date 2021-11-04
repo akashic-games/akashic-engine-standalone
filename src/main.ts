@@ -86,6 +86,9 @@ export function initialize(param: InitializeParameter): () => void {
 			height: param.configuration.height ?? param.canvas.height
 		},
 		resourceFactory,
+		operationPluginViewInfo: {
+			view: param.canvas
+		},
 		mainFunc: param.mainFunc
 	});
 

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "A repository to release standalone Akashic Engine script",
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "prepare": "npm run build",
     "pre-commit": "npm t",
@@ -16,9 +16,9 @@
     "deploy:dist": "node scripts/check_and_release_tag.js",
     "format": "run-s format:*",
     "format:prettier": "prettier --write \"src/**/*.ts\"",
-    "format:eslint": "eslint -c .eslintrc.js src/**/*.ts --fix",
+    "format:eslint": "eslint src/**/*.ts --fix",
     "test": "run-s test:*",
-    "test:eslint": "eslint -c .eslintrc.js src/**/*.ts",
+    "test:eslint": "eslint src/**/*.ts",
     "test:remark": "remark ./*.md --frail --no-stdout --quiet"
   },
   "author": "DWANGO Co., Ltd.",
@@ -26,6 +26,16 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/akashic-games/akashic-engine-standalone-release-action.git"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@akashic/eslint-config",
+      "prettier"
+    ],
+    "parserOptions": {
+      "project": "tsconfig.json",
+      "sourceType": "module"
+    }
   },
   "eslintIgnore": [
     "**/*.js"
@@ -54,30 +64,30 @@
     "@akashic-extension/akashic-label": "3.0.1",
     "@akashic-extension/akashic-timeline": "3.0.0",
     "@akashic/akashic-engine": "3.2.2",
-    "@akashic/eslint-config": "^0.1.1",
+    "@akashic/eslint-config": "^1.0.0",
     "@akashic/pdi-browser": "2.2.0",
     "@akashic/pdi-common-impl": "0.2.0",
     "@akashic/remark-preset-lint": "^0.1.1",
-    "@octokit/rest": "^18.0.4",
-    "@types/url-join": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "browserify": "^16.5.2",
-    "ejs": "^3.1.5",
-    "eslint": "^7.8.1",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.22.0",
-    "fs-extra": "^9.0.1",
-    "husky": "^4.2.5",
+    "@octokit/rest": "^18.12.0",
+    "@types/url-join": "^4.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "browserify": "^17.0.0",
+    "ejs": "^3.1.6",
+    "eslint": "^8.4.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3",
+    "fs-extra": "^10.0.0",
+    "husky": "^7.0.4",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.1.1",
-    "remark-cli": "^8.0.1",
+    "prettier": "^2.5.1",
+    "remark-cli": "^10.0.1",
     "rimraf": "^3.0.2",
     "semver": "^7.3.5",
-    "ts-loader": "^8.0.3",
-    "typescript": "^4.0.2",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.2",
     "url-join": "^4.0.1",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-merge": "^5.1.2"
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-merge": "^5.8.0"
   }
 }

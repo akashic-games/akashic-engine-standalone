@@ -3,7 +3,7 @@ const semver = require("semver");
 const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 const pkg = require("./package.json");
-const aksVer = semver.clean(pkg.devDependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
+const aksVer = semver.clean(pkg.dependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
 
 module.exports = {
   entry: {

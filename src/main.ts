@@ -1,5 +1,6 @@
 import * as g from "@akashic/akashic-engine";
-import { Event } from "@akashic/playlog";
+import type * as runtime_g from "@akashic/akashic-engine/index.runtime";
+import type { Event } from "@akashic/playlog";
 import { GameHandlerSet } from "./GameHandlerSet";
 import { AssetLoaderFunctions } from "./platform/AssetLoaderFunctions";
 import { ResourceFactory } from "./platform/ResourceFactory";
@@ -41,14 +42,14 @@ export interface InitializeParameter {
 	/**
 	 * エントリポイントとして実行する関数。
 	 */
-	mainFunc?: (akashicEngine: typeof g, args: g.GameMainParameterObject) => void;
+	mainFunc?: (akashicEngine: typeof runtime_g, args: g.GameMainParameterObject) => void;
 }
 
 let requestAnimationFrameId: number | null = null;
 
 declare global {
 	interface Window {
-		g: typeof g;
+		g: any;
 	}
 }
 

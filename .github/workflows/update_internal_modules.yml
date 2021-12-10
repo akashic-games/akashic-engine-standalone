@@ -36,7 +36,7 @@ jobs:
       - name: Get version of package.json
         id: version
         run: |
-          LATEST_VERSION=`cat package.json | jq -r '.devDependencies["@akashic/akashic-engine"]'`
+          LATEST_VERSION=`cat package.json | jq -r '.dependencies["@akashic/akashic-engine"]'`
           echo "::set-output name=LATEST_VERSION::$LATEST_VERSION"
       - name: Get workflow url
         id: workflow

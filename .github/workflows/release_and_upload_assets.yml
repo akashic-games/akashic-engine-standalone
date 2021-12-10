@@ -19,6 +19,8 @@ jobs:
           cache: npm
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Install project
         run: npm ci
       - name: Build project

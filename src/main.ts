@@ -49,11 +49,11 @@ let requestAnimationFrameId: number | null = null;
 
 declare global {
 	interface Window {
-		g: any;
+		g: typeof g;
 	}
 }
 
-window.g = g; // 他のモジュールが g を参照するケースを考慮して require() 時点で g を参照できるようにする
+window.g = g as typeof runtime_g; // 他のモジュールが g を参照するケースを考慮して require() 時点で g を参照できるようにする
 
 /**
  * akashic-engine を初期化してゲームを実行する。

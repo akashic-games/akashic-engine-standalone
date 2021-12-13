@@ -7,15 +7,14 @@ import { ResourceFactory } from "./platform/ResourceFactory";
 
 /**
  * ゲームの設定を表すインタフェース。
- * g.GameConfiguration から width と height を省略可能にしている。
  */
 export interface GameConfiguration {
 	width?: number;
 	height?: number;
 	fps?: number;
-	main: string;
+	main?: string;
 	audio?: g.AudioSystemConfigurationMap;
-	assets: g.AssetConfigurationMap;
+	assets?: g.AssetConfigurationMap;
 	operationPlugins?: g.OperationPluginInfo[];
 	globalScripts?: string[];
 	moduleMainScripts?: g.ModuleMainScriptsMap;
@@ -67,6 +66,10 @@ export function initialize(param: InitializeParameter): () => void {
 		assetBaseDir: param.assetBaseDir
 	});
 
+	if (param.configuration == null) {
+		param.configuration = {};
+	}
+
 	if (param.configuration.assets == null) {
 		param.configuration.assets = {};
 	}
@@ -83,6 +86,8 @@ export function initialize(param: InitializeParameter): () => void {
 		handlerSet: new GameHandlerSet({ isSnapshotSaver: true }),
 		configuration: {
 			...param.configuration,
+			assets: param.configuration.assets,
+			main: param.configuration.main ?? "",
 			width: param.configuration.width ?? param.canvas.width,
 			height: param.configuration.height ?? param.canvas.height
 		},
@@ -137,8 +142,6 @@ export function initialize(param: InitializeParameter): () => void {
 				y: (event.clientY - rect.top) / getScaleY()
 			}
 		});
-		event.stopPropagation();
-		event.returnValue = false;
 	};
 
 	const handleMouseUpEvent = (event: MouseEvent): void => {
@@ -170,7 +173,7 @@ export function initialize(param: InitializeParameter): () => void {
 		}
 		window.addEventListener("touchmove", handleTouchMoveEvent, { passive: false });
 		window.addEventListener("touchend", handleTouchEndEvent, { passive: false });
-		event.preventDefault();
+		if (event.cancelable) event.preventDefault();
 	};
 
 	const handleTouchMoveEvent = (event: TouchEvent): void => {
@@ -204,6 +207,7 @@ export function initialize(param: InitializeParameter): () => void {
 		}
 		window.removeEventListener("touchmove", handleTouchMoveEvent);
 		window.removeEventListener("touchend", handleTouchEndEvent);
+		if (event.cancelable) event.preventDefault();
 	};
 
 	const handlePointEvent = (): void => {

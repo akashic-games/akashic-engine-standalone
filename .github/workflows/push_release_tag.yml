@@ -14,15 +14,15 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_PAT }}
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_PAT }}
       - name: Push tag and deploy
         run: |
           npm ci --ignore-scripts

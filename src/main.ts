@@ -1,20 +1,20 @@
 import * as g from "@akashic/akashic-engine";
-import { Event } from "@akashic/playlog";
+import type * as runtime_g from "@akashic/akashic-engine/index.runtime";
+import type { Event } from "@akashic/playlog";
 import { GameHandlerSet } from "./GameHandlerSet";
 import { AssetLoaderFunctions } from "./platform/AssetLoaderFunctions";
 import { ResourceFactory } from "./platform/ResourceFactory";
 
 /**
  * ゲームの設定を表すインタフェース。
- * g.GameConfiguration から width と height を省略可能にしている。
  */
 export interface GameConfiguration {
 	width?: number;
 	height?: number;
 	fps?: number;
-	main: string;
+	main?: string;
 	audio?: g.AudioSystemConfigurationMap;
-	assets: g.AssetConfigurationMap;
+	assets?: g.AssetConfigurationMap;
 	operationPlugins?: g.OperationPluginInfo[];
 	globalScripts?: string[];
 	moduleMainScripts?: g.ModuleMainScriptsMap;
@@ -41,7 +41,7 @@ export interface InitializeParameter {
 	/**
 	 * エントリポイントとして実行する関数。
 	 */
-	mainFunc?: (akashicEngine: typeof g, args: g.GameMainParameterObject) => void;
+	mainFunc?: (akashicEngine: typeof runtime_g, args: g.GameMainParameterObject) => void;
 }
 
 let requestAnimationFrameId: number | null = null;
@@ -52,7 +52,7 @@ declare global {
 	}
 }
 
-window.g = g; // 他のモジュールが g を参照するケースを考慮して require() 時点で g を参照できるようにする
+window.g = g as typeof runtime_g; // 他のモジュールが g を参照するケースを考慮して require() 時点で g を参照できるようにする
 
 /**
  * akashic-engine を初期化してゲームを実行する。
@@ -65,6 +65,10 @@ export function initialize(param: InitializeParameter): () => void {
 		assetLoaderFuncs: param.assetLoaderFuncs,
 		assetBaseDir: param.assetBaseDir
 	});
+
+	if (param.configuration == null) {
+		param.configuration = {};
+	}
 
 	if (param.configuration.assets == null) {
 		param.configuration.assets = {};
@@ -82,6 +86,8 @@ export function initialize(param: InitializeParameter): () => void {
 		handlerSet: new GameHandlerSet({ isSnapshotSaver: true }),
 		configuration: {
 			...param.configuration,
+			assets: param.configuration.assets,
+			main: param.configuration.main ?? "",
 			width: param.configuration.width ?? param.canvas.width,
 			height: param.configuration.height ?? param.canvas.height
 		},
@@ -136,8 +142,6 @@ export function initialize(param: InitializeParameter): () => void {
 				y: (event.clientY - rect.top) / getScaleY()
 			}
 		});
-		event.stopPropagation();
-		event.returnValue = false;
 	};
 
 	const handleMouseUpEvent = (event: MouseEvent): void => {
@@ -169,7 +173,7 @@ export function initialize(param: InitializeParameter): () => void {
 		}
 		window.addEventListener("touchmove", handleTouchMoveEvent, { passive: false });
 		window.addEventListener("touchend", handleTouchEndEvent, { passive: false });
-		event.preventDefault();
+		if (event.cancelable) event.preventDefault();
 	};
 
 	const handleTouchMoveEvent = (event: TouchEvent): void => {
@@ -203,6 +207,7 @@ export function initialize(param: InitializeParameter): () => void {
 		}
 		window.removeEventListener("touchmove", handleTouchMoveEvent);
 		window.removeEventListener("touchend", handleTouchEndEvent);
+		if (event.cancelable) event.preventDefault();
 	};
 
 	const handlePointEvent = (): void => {

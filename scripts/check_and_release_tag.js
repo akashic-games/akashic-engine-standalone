@@ -3,10 +3,10 @@ const { execSync } = require("child_process");
 const { Octokit } = require("@octokit/rest");
 const octokit = new Octokit();
 const pkg = require("../package.json");
-const aksVer = semver.clean(pkg.devDependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
+const aksVer = semver.clean(pkg.dependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
 
 const owner = "akashic-games";
-const repo = "akashic-engine-standalone-release-action";
+const repo = "akashic-engine-standalone";
 const tag = `akashic-engine@${aksVer}`;
 
 (async () => {

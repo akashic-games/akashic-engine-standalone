@@ -1,6 +1,6 @@
 const semver = require("semver");
 const pkg = require("../package.json");
-const aksVer = semver.clean(pkg.devDependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
+const aksVer = semver.clean(pkg.dependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
 const extLabelVer = semver.clean(pkg.devDependencies["@akashic-extension/akashic-label"]);
 
 module.exports = {

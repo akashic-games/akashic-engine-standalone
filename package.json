@@ -27,6 +27,10 @@
     "type": "git",
     "url": "git+https://github.com/akashic-games/akashic-engine-standalone.git"
   },
+  "publishConfig": {
+    "@akashic:registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "files": [
     "CHANGELOG.md",
     "lib",

@@ -1,5 +1,7 @@
 require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ActionType = void 0;
 var ActionType;
 (function (ActionType) {
     ActionType[ActionType["Wait"] = 0] = "Wait";
@@ -9,11 +11,12 @@ var ActionType;
     ActionType[ActionType["TweenByMult"] = 4] = "TweenByMult";
     ActionType[ActionType["Cue"] = 5] = "Cue";
     ActionType[ActionType["Every"] = 6] = "Every";
-})(ActionType || (ActionType = {}));
-module.exports = ActionType;
+})(ActionType = exports.ActionType || (exports.ActionType = {}));
 
 },{}],2:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Easing = void 0;
 /**
  * Easing関数群。
  * 参考: http://gizma.com/easing/
@@ -286,12 +289,57 @@ var Easing;
         return c / 2 * (Math.sqrt(1 - t * t) + 1) + b;
     }
     Easing.easeInOutCirc = easeInOutCirc;
-})(Easing || (Easing = {}));
-module.exports = Easing;
+    /**
+     * 入力値を easeInOutBack した結果の現在位置を返す。
+     * @param t 経過時間
+     * @param b 開始位置
+     * @param c 終了位置
+     * @param d 所要時間
+     */
+    function easeInOutBack(t, b, c, d) {
+        var x = t / d;
+        var c1 = 1.70158;
+        var c2 = c1 * 1.525;
+        var v = x < 0.5
+            ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+            : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+        return b + c * v;
+    }
+    Easing.easeInOutBack = easeInOutBack;
+    /**
+     * 入力値を easeOutBounce した結果の現在位置を返す。
+     * @param t 経過時間
+     * @param b 開始位置
+     * @param c 終了位置
+     * @param d 所要時間
+     */
+    function easeOutBounce(t, b, c, d) {
+        var x = t / d;
+        var n1 = 7.5625;
+        var d1 = 2.75;
+        var v;
+        if (x < 1 / d1) {
+            v = n1 * x * x;
+        }
+        else if (x < 2 / d1) {
+            v = n1 * (x -= 1.5 / d1) * x + 0.75;
+        }
+        else if (x < 2.5 / d1) {
+            v = n1 * (x -= 2.25 / d1) * x + 0.9375;
+        }
+        else {
+            v = n1 * (x -= 2.625 / d1) * x + 0.984375;
+        }
+        return b + c * v;
+    }
+    Easing.easeOutBounce = easeOutBounce;
+})(Easing = exports.Easing || (exports.Easing = {}));
 
 },{}],3:[function(require,module,exports){
 "use strict";
-var Tween = require("./Tween");
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Timeline = void 0;
+var Tween_1 = require("./Tween");
 /**
  * タイムライン機能を提供するクラス。
  */
@@ -313,7 +361,7 @@ var Timeline = /** @class */ (function () {
      * @param option Tweenの生成オプション。省略された場合、 {modified: target.modified, destroyed: target.destroyed} が与えられた時と同様の処理を行う。
      */
     Timeline.prototype.create = function (target, option) {
-        var t = new Tween(target, option);
+        var t = new Tween_1.Tween(target, option);
         this._tweens.push(t);
         return t;
     };
@@ -396,12 +444,14 @@ var Timeline = /** @class */ (function () {
     };
     return Timeline;
 }());
-module.exports = Timeline;
+exports.Timeline = Timeline;
 
 },{"./Tween":4}],4:[function(require,module,exports){
 "use strict";
-var Easing = require("./Easing");
-var ActionType = require("./ActionType");
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tween = void 0;
+var ActionType_1 = require("./ActionType");
+var Easing_1 = require("./Easing");
 /**
  * オブジェクトの状態を変化させるアクションを定義するクラス。
  * 本クラスのインスタンス生成には`Timeline#create()`を利用する。
@@ -443,12 +493,12 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.to = function (props, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         var action = {
             input: props,
             duration: duration,
             easing: easing,
-            type: ActionType.TweenTo,
+            type: ActionType_1.ActionType.TweenTo,
             initialized: false
         };
         this._push(action);
@@ -463,9 +513,9 @@ var Tween = /** @class */ (function () {
      * @param multiply `true`を指定すると`props`の値をアクション開始時の値に掛け合わせた値が終了値となる（指定しない場合は`false`）
      */
     Tween.prototype.by = function (props, duration, easing, multiply) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         if (multiply === void 0) { multiply = false; }
-        var type = multiply ? ActionType.TweenByMult : ActionType.TweenBy;
+        var type = multiply ? ActionType_1.ActionType.TweenByMult : ActionType_1.ActionType.TweenBy;
         var action = {
             input: props,
             duration: duration,
@@ -491,7 +541,7 @@ var Tween = /** @class */ (function () {
     Tween.prototype.wait = function (duration) {
         var action = {
             duration: duration,
-            type: ActionType.Wait,
+            type: ActionType_1.ActionType.Wait,
             initialized: false
         };
         this._push(action);
@@ -504,7 +554,7 @@ var Tween = /** @class */ (function () {
     Tween.prototype.call = function (func) {
         var action = {
             func: func,
-            type: ActionType.Call,
+            type: ActionType_1.ActionType.Call,
             duration: 0,
             initialized: false
         };
@@ -535,7 +585,7 @@ var Tween = /** @class */ (function () {
             q.push({ time: Number(keys[i]), func: funcs[keys[i]] });
         }
         var action = {
-            type: ActionType.Cue,
+            type: ActionType_1.ActionType.Cue,
             duration: Number(keys[keys.length - 1]),
             cue: q,
             initialized: false
@@ -550,10 +600,10 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.every = function (func, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         var action = {
             func: func,
-            type: ActionType.Every,
+            type: ActionType_1.ActionType.Every,
             easing: easing,
             duration: duration,
             initialized: false
@@ -567,7 +617,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.fadeIn = function (duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ opacity: 1 }, duration, easing);
     };
     /**
@@ -576,7 +626,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.fadeOut = function (duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ opacity: 0 }, duration, easing);
     };
     /**
@@ -587,7 +637,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.moveTo = function (x, y, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ x: x, y: y }, duration, easing);
     };
     /**
@@ -598,7 +648,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.moveBy = function (x, y, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.by({ x: x, y: y }, duration, easing);
     };
     /**
@@ -608,7 +658,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.moveX = function (x, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ x: x }, duration, easing);
     };
     /**
@@ -618,7 +668,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.moveY = function (y, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ y: y }, duration, easing);
     };
     /**
@@ -628,7 +678,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.rotateTo = function (angle, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ angle: angle }, duration, easing);
     };
     /**
@@ -638,7 +688,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.rotateBy = function (angle, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.by({ angle: angle }, duration, easing);
     };
     /**
@@ -649,7 +699,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.scaleTo = function (scaleX, scaleY, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.to({ scaleX: scaleX, scaleY: scaleY }, duration, easing);
     };
     /**
@@ -660,7 +710,7 @@ var Tween = /** @class */ (function () {
      * @param easing Easing関数（指定しない場合は`Easing.linear`）
      */
     Tween.prototype.scaleBy = function (scaleX, scaleY, duration, easing) {
-        if (easing === void 0) { easing = Easing.linear; }
+        if (easing === void 0) { easing = Easing_1.Easing.linear; }
         return this.by({ scaleX: scaleX, scaleY: scaleY }, duration, easing, true);
     };
     /**
@@ -679,15 +729,15 @@ var Tween = /** @class */ (function () {
                     var key = keys[k];
                     this._target[key] = action.goal[key];
                 }
-                if (action.type === ActionType.Call && typeof action.func === "function") {
+                if (action.type === ActionType_1.ActionType.Call && typeof action.func === "function") {
                     action.func.call(this._target);
                 }
-                else if (action.type === ActionType.Cue && action.cue) {
+                else if (action.type === ActionType_1.ActionType.Cue && action.cue) {
                     for (var k = 0; k < action.cue.length; ++k) {
                         action.cue[k].func.call(this._target);
                     }
                 }
-                else if (action.type === ActionType.Every && typeof action.func === "function") {
+                else if (action.type === ActionType_1.ActionType.Every && typeof action.func === "function") {
                     action.func.call(this._target, action.duration, 1);
                 }
             }
@@ -767,19 +817,19 @@ var Tween = /** @class */ (function () {
             }
             action.elapsed += delta;
             switch (action.type) {
-                case ActionType.Call:
+                case ActionType_1.ActionType.Call:
                     action.func.call(this._target);
                     break;
-                case ActionType.Every:
+                case ActionType_1.ActionType.Every:
                     var progress = action.easing(action.elapsed, 0, 1, action.duration);
                     if (progress > 1) {
                         progress = 1;
                     }
                     action.func.call(this._target, action.elapsed, progress);
                     break;
-                case ActionType.TweenTo:
-                case ActionType.TweenBy:
-                case ActionType.TweenByMult:
+                case ActionType_1.ActionType.TweenTo:
+                case ActionType_1.ActionType.TweenBy:
+                case ActionType_1.ActionType.TweenByMult:
                     var keys = Object.keys(action.goal);
                     for (var j = 0; j < keys.length; ++j) {
                         var key = keys[j];
@@ -796,7 +846,7 @@ var Tween = /** @class */ (function () {
                         }
                     }
                     break;
-                case ActionType.Cue:
+                case ActionType_1.ActionType.Cue:
                     var cueAction = action.cue[action.cueIndex];
                     if (cueAction !== undefined && action.elapsed >= cueAction.time) {
                         cueAction.func.call(this._target);
@@ -892,9 +942,9 @@ var Tween = /** @class */ (function () {
         action.cueIndex = 0;
         action.finished = false;
         action.initialized = true;
-        if (action.type !== ActionType.TweenTo
-            && action.type !== ActionType.TweenBy
-            && action.type !== ActionType.TweenByMult) {
+        if (action.type !== ActionType_1.ActionType.TweenTo
+            && action.type !== ActionType_1.ActionType.TweenBy
+            && action.type !== ActionType_1.ActionType.TweenByMult) {
             return;
         }
         var keys = Object.keys(action.input);
@@ -902,13 +952,13 @@ var Tween = /** @class */ (function () {
             var key = keys[i];
             if (this._target[key] !== undefined) {
                 action.start[key] = this._target[key];
-                if (action.type === ActionType.TweenTo) {
+                if (action.type === ActionType_1.ActionType.TweenTo) {
                     action.goal[key] = action.input[key];
                 }
-                else if (action.type === ActionType.TweenBy) {
+                else if (action.type === ActionType_1.ActionType.TweenBy) {
                     action.goal[key] = action.start[key] + action.input[key];
                 }
-                else if (action.type === ActionType.TweenByMult) {
+                else if (action.type === ActionType_1.ActionType.TweenByMult) {
                     action.goal[key] = action.start[key] * action.input[key];
                 }
             }
@@ -916,13 +966,16 @@ var Tween = /** @class */ (function () {
     };
     return Tween;
 }());
-module.exports = Tween;
+exports.Tween = Tween;
 
 },{"./ActionType":1,"./Easing":2}],"@akashic-extension/akashic-timeline":[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Timeline = require("./Timeline");
-exports.Tween = require("./Tween");
-exports.Easing = require("./Easing");
+var Timeline_1 = require("./Timeline");
+Object.defineProperty(exports, "Timeline", { enumerable: true, get: function () { return Timeline_1.Timeline; } });
+var Tween_1 = require("./Tween");
+Object.defineProperty(exports, "Tween", { enumerable: true, get: function () { return Tween_1.Tween; } });
+var Easing_1 = require("./Easing");
+Object.defineProperty(exports, "Easing", { enumerable: true, get: function () { return Easing_1.Easing; } });
 
 },{"./Easing":2,"./Timeline":3,"./Tween":4}]},{},["@akashic-extension/akashic-timeline"]);

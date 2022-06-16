@@ -32,6 +32,9 @@ jobs:
         run: |
           LATEST_VERSION=`cat package.json | jq -r '.dependencies["@akashic/akashic-engine"]'`
           echo "::set-output name=LATEST_VERSION::$LATEST_VERSION"
+      - name: Bump version of package.json
+        run: |
+          npm version ${{ steps.version.outputs.LATEST_VERSION }}
       - name: Get workflow url
         id: workflow
         run: echo "::set-output name=WORKFLOW_URL::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

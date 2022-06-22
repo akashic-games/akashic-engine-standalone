@@ -34,6 +34,8 @@ jobs:
           echo "::set-output name=LATEST_VERSION::$LATEST_VERSION"
       - name: Bump version of package.json
         run: |
+          git config user.name 'github-actions'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           npm version ${{ steps.version.outputs.LATEST_VERSION }}
       - name: Get workflow url
         id: workflow

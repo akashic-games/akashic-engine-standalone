@@ -351,9 +351,10 @@ var Timeline = /** @class */ (function () {
     function Timeline(scene) {
         this._scene = scene;
         this._tweens = [];
+        this._tweensCreateQue = [];
         this._fps = this._scene.game.fps;
         this.paused = false;
-        scene.update.add(this._handler, this);
+        scene.onUpdate.add(this._handler, this);
     }
     /**
      * Timelineに紐付いたTweenを生成する。
@@ -362,7 +363,7 @@ var Timeline = /** @class */ (function () {
      */
     Timeline.prototype.create = function (target, option) {
         var t = new Tween_1.Tween(target, option);
-        this._tweens.push(t);
+        this._tweensCreateQue.push(t);
         return t;
     };
     /**
@@ -371,10 +372,11 @@ var Timeline = /** @class */ (function () {
      */
     Timeline.prototype.remove = function (tween) {
         var index = this._tweens.indexOf(tween);
-        if (index < 0) {
+        var queIndex = this._tweensCreateQue.indexOf(tween);
+        if (index < 0 && queIndex < 0) {
             return;
         }
-        this._tweens.splice(index, 1);
+        tween.cancel(false);
     };
     /**
      * Timelineに紐付いた全Tweenのアクションを完了させる。詳細は `Tween#complete()`の説明を参照。
@@ -386,7 +388,12 @@ var Timeline = /** @class */ (function () {
                 tween.complete();
             }
         }
-        this.clear();
+        for (var i = 0; i < this._tweensCreateQue.length; ++i) {
+            var tween = this._tweensCreateQue[i];
+            if (!tween.isFinished()) {
+                tween.complete();
+            }
+        }
     };
     /**
      * Timelineに紐付いた全Tweenのアクションを取り消す。詳細は `Tween#cancel()`の説明を参照。
@@ -394,31 +401,32 @@ var Timeline = /** @class */ (function () {
      */
     Timeline.prototype.cancelAll = function (revert) {
         if (revert === void 0) { revert = false; }
-        if (!revert) {
-            this.clear();
-            return;
-        }
         for (var i = 0; i < this._tweens.length; ++i) {
             var tween = this._tweens[i];
             if (!tween.isFinished()) {
-                tween.cancel(true);
+                tween.cancel(revert);
             }
         }
-        this.clear();
+        for (var i = 0; i < this._tweensCreateQue.length; ++i) {
+            var tween = this._tweensCreateQue[i];
+            if (!tween.isFinished()) {
+                tween.cancel(revert);
+            }
+        }
     };
     /**
      * Timelineに紐付いた全Tweenの紐付けを解除する。
      */
     Timeline.prototype.clear = function () {
-        this._tweens.length = 0;
+        this.cancelAll(false);
     };
     /**
      * このTimelineを破棄する。
      */
     Timeline.prototype.destroy = function () {
-        this._tweens.length = 0;
+        this.clear();
         if (!this._scene.destroyed()) {
-            this._scene.update.remove(this._handler, this);
+            this._scene.onUpdate.remove(this._handler, this);
         }
         this._scene = undefined;
     };
@@ -429,13 +437,15 @@ var Timeline = /** @class */ (function () {
         return this._scene === undefined;
     };
     Timeline.prototype._handler = function () {
-        if (this._tweens.length === 0 || this.paused) {
+        if (this.paused || this._tweens.length + this._tweensCreateQue.length === 0) {
             return;
         }
+        this._tweens = this._tweens.concat(this._tweensCreateQue);
+        this._tweensCreateQue = [];
         var tmp = [];
         for (var i = 0; i < this._tweens.length; ++i) {
             var tween = this._tweens[i];
-            if (!tween.isFinished()) {
+            if (!tween.shouldRemove()) {
                 tween._fire(1000 / this._fps);
                 tmp.push(tween);
             }
@@ -466,6 +476,7 @@ var Tween = /** @class */ (function () {
         this._target = target;
         this._stepIndex = 0;
         this._loop = !!option && !!option.loop;
+        this._stale = false;
         this._modifiedHandler = undefined;
         if (option && option.modified) {
             this._modifiedHandler = option.modified;
@@ -771,6 +782,7 @@ var Tween = /** @class */ (function () {
         this._lastStep = undefined;
         this._pararel = false;
         this.paused = false;
+        this._stale = true;
         if (this._modifiedHandler) {
             this._modifiedHandler.call(this._target);
         }
@@ -788,6 +800,13 @@ var Tween = /** @class */ (function () {
             ret = this._stepIndex !== 0 && this._stepIndex >= this._steps.length && !this._loop;
         }
         return ret;
+    };
+    /**
+     * アニメーションが削除可能かどうかを返す。
+     * 通常、ゲーム開発者がこのメソッドを呼び出す必要はない。
+     */
+    Tween.prototype.shouldRemove = function () {
+        return this._stale || this.isFinished();
     };
     /**
      * アニメーションを実行する。
@@ -971,6 +990,7 @@ exports.Tween = Tween;
 },{"./ActionType":1,"./Easing":2}],"@akashic-extension/akashic-timeline":[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Easing = exports.Tween = exports.Timeline = void 0;
 var Timeline_1 = require("./Timeline");
 Object.defineProperty(exports, "Timeline", { enumerable: true, get: function () { return Timeline_1.Timeline; } });
 var Tween_1 = require("./Tween");

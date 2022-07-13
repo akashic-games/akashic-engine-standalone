@@ -62,7 +62,7 @@ var Box2D = /** @class */ (function () {
         b2Body.SetPositionAndAngle(this.vec2(entity.x, entity.y), this.radian(entity.angle));
         b2Body.SetUserData(bodyDef.userData != null ? bodyDef.userData : entity.id);
         var body = {
-            id: "" + this._createBodyCount++,
+            id: "".concat(this._createBodyCount++),
             entity: entity,
             b2Body: b2Body
         };
@@ -317,8 +317,8 @@ var ContactManager = /** @class */ (function () {
             if (bodyB == null) {
                 return;
             }
-            var id1 = bodyA.id + "-" + bodyB.id;
-            var id2 = bodyB.id + "-" + bodyA.id;
+            var id1 = "".concat(bodyA.id, "-").concat(bodyB.id);
+            var id2 = "".concat(bodyB.id, "-").concat(bodyA.id);
             var trigger1 = _this._beginContactTriggerMap[id1];
             var trigger2 = _this._beginContactTriggerMap[id2];
             if (trigger1 && !trigger1.destroyed()) {
@@ -337,8 +337,8 @@ var ContactManager = /** @class */ (function () {
             if (bodyB == null) {
                 return;
             }
-            var id1 = bodyA.id + "-" + bodyB.id;
-            var id2 = bodyB.id + "-" + bodyA.id;
+            var id1 = "".concat(bodyA.id, "-").concat(bodyB.id);
+            var id2 = "".concat(bodyB.id, "-").concat(bodyA.id);
             var trigger1 = _this._endContactTriggerMap[id1];
             var trigger2 = _this._endContactTriggerMap[id2];
             if (trigger1 && !trigger1.destroyed()) {
@@ -377,7 +377,7 @@ var ContactManager = /** @class */ (function () {
      * @param bodyB 対象のボディ
      */
     ContactManager.prototype.createBeginContactTrigger = function (bodyA, bodyB) {
-        var id = bodyA.id + "-" + bodyB.id;
+        var id = "".concat(bodyA.id, "-").concat(bodyB.id);
         var trigger = this._beginContactTriggerMap[id];
         if (trigger) {
             return trigger;
@@ -395,8 +395,8 @@ var ContactManager = /** @class */ (function () {
     ContactManager.prototype.removeBeginContactTrigger = function (bodyA, bodyB) {
         var idA = bodyA.id;
         var idB = bodyB.id;
-        var id1 = idA + "-" + idB;
-        var id2 = idB + "-" + idA;
+        var id1 = "".concat(idA, "-").concat(idB);
+        var id2 = "".concat(idB, "-").concat(idA);
         if (this._beginContactTriggerMap[id1]) {
             var trigger = this._beginContactTriggerMap[id1];
             if (!trigger.destroyed()) {
@@ -421,7 +421,7 @@ var ContactManager = /** @class */ (function () {
      * @param bodyB 対象のボディ
      */
     ContactManager.prototype.createEndContactTrigger = function (bodyA, bodyB) {
-        var id = bodyA.id + "-" + bodyB.id;
+        var id = "".concat(bodyA.id, "-").concat(bodyB.id);
         var trigger = this._endContactTriggerMap[id];
         if (trigger) {
             return trigger;
@@ -439,8 +439,8 @@ var ContactManager = /** @class */ (function () {
     ContactManager.prototype.removeEndContactTrigger = function (bodyA, bodyB) {
         var idA = bodyA.id;
         var idB = bodyB.id;
-        var id1 = idA + "-" + idB;
-        var id2 = idB + "-" + idA;
+        var id1 = "".concat(idA, "-").concat(idB);
+        var id2 = "".concat(idB, "-").concat(idA);
         if (this._endContactTriggerMap[id1]) {
             var trigger = this._endContactTriggerMap[id1];
             if (!trigger.destroyed()) {
@@ -11347,7 +11347,7 @@ module.exports = Box2D
 },{}],"@akashic-extension/akashic-box2d":[function(require,module,exports){
 "use strict";
 // tslint:disable-next-line:no-reference
-///<reference path="../typings/box2dweb.d.ts"/>
+/// <reference path="../typings/box2dweb.d.ts"/>
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -11364,6 +11364,6 @@ var Box2DWeb = require("box2dweb");
 exports.Box2DWeb = Box2DWeb;
 __exportStar(require("./Box2D"), exports);
 __exportStar(require("./ContactManager"), exports);
-__exportStar(require("./parateters"), exports);
+__exportStar(require("./parameters"), exports);
 
-},{"./Box2D":1,"./ContactManager":2,"./parateters":3,"box2dweb":4}]},{},["@akashic-extension/akashic-box2d"]);
+},{"./Box2D":1,"./ContactManager":2,"./parameters":3,"box2dweb":4}]},{},["@akashic-extension/akashic-box2d"]);

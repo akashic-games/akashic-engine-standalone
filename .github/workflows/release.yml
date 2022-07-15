@@ -26,7 +26,8 @@ jobs:
           npm run build
           npm test
       - name: Publish
-        run: |
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        uses: akashic-games/action-release@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          npm_token: ${{ secrets.NPM_TOKEN }}
+          suppress_release_creation: true

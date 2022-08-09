@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "github>akashic-games/renovate-config",
+    "github>akashic-games/renovate-config:groupPatchMinor"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^@akashic"],
+      "enabled": false
+    }
+  ]
+}

@@ -35,7 +35,7 @@ jobs:
         id: workflow
         run: echo "::set-output name=WORKFLOW_URL::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       - name: Archive artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: output_${{ steps.version.outputs.LATEST_VERSION }}
           path: ./dist

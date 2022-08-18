@@ -1,4 +1,4 @@
-/*! v3.4.4 */
+/*! v3.5.0 */
 /*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
  * This devtool is neither made for production nor for readable output files.
@@ -32,6 +32,17 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 
 /***/ }),
 
+/***/ "./node_modules/@akashic/akashic-engine/lib/AssetGenerationConfiguration.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/lib/AssetGenerationConfiguration.js ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/AssetGenerationConfiguration.js?");
+
+/***/ }),
+
 /***/ "./node_modules/@akashic/akashic-engine/lib/AssetHolder.js":
 /*!*****************************************************************!*\
   !*** ./node_modules/@akashic/akashic-engine/lib/AssetHolder.js ***!
@@ -61,7 +72,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.AssetManager = void 0;\nvar EmptyVectorImageAsset_1 = __webpack_require__(/*! ./auxiliary/EmptyVectorImageAsset */ \"./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyVectorImageAsset.js\");\nvar PartialImageAsset_1 = __webpack_require__(/*! ./auxiliary/PartialImageAsset */ \"./node_modules/@akashic/akashic-engine/lib/auxiliary/PartialImageAsset.js\");\nvar ExceptionFactory_1 = __webpack_require__(/*! ./ExceptionFactory */ \"./node_modules/@akashic/akashic-engine/lib/ExceptionFactory.js\");\nvar VideoSystem_1 = __webpack_require__(/*! ./VideoSystem */ \"./node_modules/@akashic/akashic-engine/lib/VideoSystem.js\");\n/**\n * @ignore\n */\nvar AssetLoadingInfo = /** @class */ (function () {\n    function AssetLoadingInfo(asset, handler) {\n        this.asset = asset;\n        this.handlers = [handler];\n        this.errorCount = 0;\n        this.loading = false;\n    }\n    return AssetLoadingInfo;\n}());\nfunction normalizeAudioSystemConfMap(confMap) {\n    if (confMap === void 0) { confMap = {}; }\n    var systemDefaults = {\n        music: {\n            loop: true,\n            hint: { streaming: true }\n        },\n        sound: {\n            loop: false,\n            hint: { streaming: false }\n        }\n    };\n    for (var key in systemDefaults) {\n        if (!(key in confMap)) {\n            confMap[key] = systemDefaults[key];\n        }\n    }\n    return confMap;\n}\nfunction normalizeCommonArea(area) {\n    return Array.isArray(area) ? { x: area[0], y: area[1], width: area[2], height: area[3] } : area;\n}\n/**\n * パスパターンを関数に変換する。\n *\n * パスパターンは、パス文字列、または0個以上の `**`, `*`, `?` を含むパス文字列である。\n * (実装の単純化のため、いわゆる glob のうちよく使われそうなものだけをサポートしている。)\n * 詳細は `AssetAccessor#getAllImages()` の仕様を参照のこと。\n *\n * 戻り値は、文字列一つを受け取り、パターンにマッチするか否かを返す関数。\n *\n * @param pattern パターン文字列\n */\nfunction patternToFilter(pattern) {\n    var parserRe = /([^\\*\\\\\\?]*)(\\\\\\*|\\\\\\?|\\?|\\*(?!\\*)|\\*\\*\\/|$)/g;\n    //                [----A-----][--------------B---------------]\n    // A: パターンの特殊文字でない文字の塊。そのままマッチさせる(ためにエスケープして正規表現にする)\n    // B: パターンの特殊文字一つ(*, ** など)かそのエスケープ。patternSpecialsTable で対応する正規表現に変換\n    var patternSpecialsTable = {\n        \"\": \"\",\n        \"\\\\*\": \"\\\\*\",\n        \"\\\\?\": \"\\\\?\",\n        \"*\": \"[^/]*\",\n        \"?\": \"[^/]\",\n        \"**/\": \"(?:^/)?(?:[^/]+/)*\"\n        //      [--C--][----D----]\n        // C: 行頭の `/` (行頭でなければないので ? つき)\n        // D: ディレクトリ一つ分(e.g. \"foo/\")が0回以上\n    };\n    var regExpSpecialsRe = /[\\\\^$.*+?()[\\]{}|]/g;\n    function escapeRegExp(s) {\n        return s.replace(regExpSpecialsRe, \"\\\\$&\");\n    }\n    var code = \"\";\n    for (var match = parserRe.exec(pattern); match && match[0] !== \"\"; match = parserRe.exec(pattern)) {\n        code += escapeRegExp(match[1]) + patternSpecialsTable[match[2]];\n    }\n    var re = new RegExp(\"^\" + code + \"$\");\n    return function (path) { return re.test(path); };\n}\n/**\n * `Asset` を管理するクラス。\n *\n * このクラスのインスタンスは `Game` に一つデフォルトで存在する(デフォルトアセットマネージャ)。\n * デフォルトアセットマネージャは、game.json に記述された通常のアセットを読み込むために利用される。\n *\n * ゲーム開発者は、game.json に記述のないリソースを取得するために、このクラスのインスタンスを独自に生成してよい。\n */\nvar AssetManager = /** @class */ (function () {\n    /**\n     * `AssetManager` のインスタンスを生成する。\n     *\n     * @param gameParams このインスタンスが属するゲーム。\n     * @param conf このアセットマネージャに与えるアセット定義。game.json の `\"assets\"` に相当。\n     * @param audioSystemConfMap このアセットマネージャに与えるオーディオシステムの宣言。\n     * @param moduleMainScripts このアセットマネージャに与える require() 解決用のエントリポイント。\n     */\n    function AssetManager(gameParams, conf, audioSystemConfMap, moduleMainScripts) {\n        this._resourceFactory = gameParams.resourceFactory;\n        this._audioSystemManager = gameParams.audio;\n        this._defaultAudioSystemId = gameParams.defaultAudioSystemId;\n        this._audioSystemConfMap = normalizeAudioSystemConfMap(audioSystemConfMap);\n        this.configuration = this._normalize(conf || {});\n        this._assets = {};\n        this._virtualPathToIdTable = {};\n        this._liveAssetVirtualPathTable = {};\n        this._liveAssetPathTable = {};\n        this._moduleMainScripts = moduleMainScripts ? moduleMainScripts : {};\n        this._refCounts = {};\n        this._loadings = {};\n        var assetIds = Object.keys(this.configuration);\n        for (var i = 0; i < assetIds.length; ++i) {\n            var assetId = assetIds[i];\n            var conf_1 = this.configuration[assetId];\n            this._virtualPathToIdTable[conf_1.virtualPath] = assetId; // virtualPath の存在は _normalize() で確認済みのため 非 null アサーションとする\n        }\n    }\n    /**\n     * このインスタンスを破棄する。\n     */\n    AssetManager.prototype.destroy = function () {\n        var assetIds = Object.keys(this._refCounts);\n        for (var i = 0; i < assetIds.length; ++i) {\n            this._releaseAsset(assetIds[i]);\n        }\n        this.configuration = undefined;\n        this._assets = undefined;\n        this._liveAssetVirtualPathTable = undefined;\n        this._liveAssetPathTable = undefined;\n        this._refCounts = undefined;\n        this._loadings = undefined;\n    };\n    /**\n     * このインスタンスが破棄済みであるかどうかを返す。\n     */\n    AssetManager.prototype.destroyed = function () {\n        return this._assets === undefined;\n    };\n    /**\n     * `Asset` の読み込みを再試行する。\n     *\n     * 引数 `asset` は読み込みの失敗が (`Scene#assetLoadFail` で) 通知されたアセットでなければならない。\n     * @param asset 読み込みを再試行するアセット\n     */\n    AssetManager.prototype.retryLoad = function (asset) {\n        if (!this._loadings.hasOwnProperty(asset.id))\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#retryLoad: invalid argument.\");\n        var loadingInfo = this._loadings[asset.id];\n        if (loadingInfo.errorCount > AssetManager.MAX_ERROR_COUNT) {\n            // DynamicAsset はエラーが規定回数超えた場合は例外にせず諦める。\n            if (!this.configuration[asset.id])\n                return;\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#retryLoad: too many retrying.\");\n        }\n        if (!loadingInfo.loading) {\n            loadingInfo.loading = true;\n            asset._load(this);\n        }\n    };\n    /**\n     * グローバルアセットのIDを全て返す。\n     */\n    AssetManager.prototype.globalAssetIds = function () {\n        var ret = [];\n        var conf = this.configuration;\n        for (var p in conf) {\n            if (!conf.hasOwnProperty(p))\n                continue;\n            if (conf[p].global)\n                ret.push(p);\n        }\n        return ret;\n    };\n    /**\n     * パターンまたはフィルタに合致するパスを持つアセットIDを全て返す。\n     *\n     * 戻り値は読み込み済みでないアセットのIDを含むことに注意。\n     * 読み込み済みのアセットにアクセスする場合は、 `peekAllLiveAssetsByPattern()` を利用すること。\n     *\n     * @param patternOrFilters パターンまたはフィルタ。仕様は `AssetAccessor#getAllImages()` を参照\n     */\n    AssetManager.prototype.resolvePatternsToAssetIds = function (patternOrFilters) {\n        if (patternOrFilters.length === 0)\n            return [];\n        var vpaths = Object.keys(this._virtualPathToIdTable);\n        var ret = [];\n        for (var i = 0; i < patternOrFilters.length; ++i) {\n            var patternOrFilter = patternOrFilters[i];\n            var filter = typeof patternOrFilter === \"string\" ? patternToFilter(this._replaceModulePathToAbsolute(patternOrFilter)) : patternOrFilter;\n            for (var j = 0; j < vpaths.length; ++j) {\n                var vpath = vpaths[j];\n                var accessorPath = \"/\" + vpath; // virtualPath に \"/\" を足すと accessorPath という仕様\n                if (filter(accessorPath))\n                    ret.push(this._virtualPathToIdTable[vpath]);\n            }\n        }\n        return ret;\n    };\n    /**\n     * アセットの取得を要求する。\n     *\n     * 要求したアセットが読み込み済みでない場合、読み込みが行われる。\n     * 取得した結果は `handler` を通して通知される。\n     * ゲーム開発者はこのメソッドを呼び出してアセットを取得した場合、\n     * 同じアセットID(または取得したアセット)で `unrefAsset()` を呼び出さなければならない。\n     *\n     * @param assetIdOrConf 要求するアセットのIDまたは設定\n     * @param handler 要求結果を受け取るハンドラ\n     */\n    AssetManager.prototype.requestAsset = function (assetIdOrConf, handler) {\n        var assetId;\n        if (typeof assetIdOrConf === \"string\") {\n            assetId = assetIdOrConf;\n        }\n        else {\n            assetId = assetIdOrConf.id;\n            assetIdOrConf = this._normalizeAssetBaseDeclaration(assetId, Object.create(assetIdOrConf));\n        }\n        var waiting = false;\n        var loadingInfo;\n        if (this._assets.hasOwnProperty(assetId)) {\n            ++this._refCounts[assetId];\n            handler._onAssetLoad(this._assets[assetId]);\n        }\n        else if (this._loadings.hasOwnProperty(assetId)) {\n            loadingInfo = this._loadings[assetId];\n            loadingInfo.handlers.push(handler);\n            ++this._refCounts[assetId];\n            waiting = true;\n        }\n        else {\n            var system = this._getAudioSystem(assetIdOrConf);\n            var audioAsset = system === null || system === void 0 ? void 0 : system.getDestroyRequestedAsset(assetId);\n            if (system && audioAsset) {\n                system.cancelRequestDestroy(audioAsset);\n                this._addAssetToTables(audioAsset);\n                this._refCounts[assetId] = 1;\n                handler._onAssetLoad(audioAsset);\n            }\n            else {\n                var a = this._createAssetFor(assetIdOrConf);\n                loadingInfo = new AssetLoadingInfo(a, handler);\n                this._loadings[assetId] = loadingInfo;\n                this._refCounts[assetId] = 1;\n                waiting = true;\n                loadingInfo.loading = true;\n                a._load(this);\n            }\n        }\n        return waiting;\n    };\n    /**\n     * アセットの参照カウントを減らす。\n     * 引数の各要素で `unrefAsset()` を呼び出す。\n     *\n     * @param assetOrId 参照カウントを減らすアセットまたはアセットID\n     */\n    AssetManager.prototype.unrefAsset = function (assetOrId) {\n        var assetId = typeof assetOrId === \"string\" ? assetOrId : assetOrId.id;\n        if (--this._refCounts[assetId] > 0)\n            return;\n        this._releaseAsset(assetId);\n    };\n    /**\n     * 複数のアセットの取得を要求する。\n     * 引数の各要素で `requestAsset()` を呼び出す。\n     *\n     * @param assetIdOrConfs 取得するアセットのIDまたはアセット定義\n     * @param handler 取得の結果を受け取るハンドラ\n     */\n    AssetManager.prototype.requestAssets = function (assetIdOrConfs, handler) {\n        var waitingCount = 0;\n        for (var i = 0, len = assetIdOrConfs.length; i < len; ++i) {\n            if (this.requestAsset(assetIdOrConfs[i], handler)) {\n                ++waitingCount;\n            }\n        }\n        return waitingCount;\n    };\n    /**\n     * 複数のアセットを解放する。\n     * 引数の各要素で `unrefAsset()` を呼び出す。\n     *\n     * @param assetOrIds 参照カウントを減らすアセットまたはアセットID\n     * @private\n     */\n    AssetManager.prototype.unrefAssets = function (assetOrIds) {\n        for (var i = 0, len = assetOrIds.length; i < len; ++i) {\n            this.unrefAsset(assetOrIds[i]);\n        }\n    };\n    /**\n     * アクセッサパスで指定された読み込み済みのアセットを返す。\n     *\n     * ここでアクセッサパスとは、 `AssetAccessor` が使うパス\n     * (game.jsonのディレクトリをルート (`/`) とする、 `/` 区切りの絶対パス形式の仮想パス)である。\n     * これは `/` を除けばアセットの仮想パス (virtualPath) と同一である。\n     *\n     * @param accessorPath 取得するアセットのアクセッサパス\n     * @param type 取得するアセットのタイプ。対象のアセットと合致しない場合、エラー\n     */\n    AssetManager.prototype.peekLiveAssetByAccessorPath = function (accessorPath, type) {\n        accessorPath = this._replaceModulePathToAbsolute(accessorPath);\n        if (accessorPath[0] !== \"/\")\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#peekLiveAssetByAccessorPath(): accessorPath must start with '/'\");\n        var vpath = accessorPath.slice(1); // accessorPath から \"/\" を削ると virtualPath という仕様\n        var asset = this._liveAssetVirtualPathTable[vpath];\n        if (!asset || type !== asset.type)\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#peekLiveAssetByAccessorPath(): No \".concat(type, \" asset for \").concat(accessorPath));\n        return asset;\n    };\n    /**\n     * アセットIDで指定された読み込み済みのアセットを返す。\n     *\n     * @param assetId 取得するアセットのID\n     * @param type 取得するアセットのタイプ。対象のアセットと合致しない場合、エラー\n     */\n    AssetManager.prototype.peekLiveAssetById = function (assetId, type) {\n        var asset = this._assets[assetId];\n        if (!asset || type !== asset.type)\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"SceneAssetManager#_getById(): No \".concat(type, \" asset for id \").concat(assetId));\n        return asset;\n    };\n    /**\n     * パターンまたはフィルタにマッチするパスを持つ、指定されたタイプの全読み込み済みアセットを返す。\n     *\n     * 戻り値の要素の順序は保証されない。\n     * パターンとフィルタについては `AssetAccessor#getAllImages()` の仕様を参照のこと。\n     *\n     * @param patternOrFilter 取得するアセットのパスパターンまたはフィルタ\n     * @param type 取得するアセットのタイプ。 null の場合、全てのタイプとして扱われる。\n     */\n    AssetManager.prototype.peekAllLiveAssetsByPattern = function (patternOrFilter, type) {\n        var vpaths = Object.keys(this._liveAssetVirtualPathTable);\n        var filter = typeof patternOrFilter === \"string\" ? patternToFilter(this._replaceModulePathToAbsolute(patternOrFilter)) : patternOrFilter;\n        var ret = [];\n        for (var i = 0; i < vpaths.length; ++i) {\n            var vpath = vpaths[i];\n            var asset = this._liveAssetVirtualPathTable[vpath];\n            if (type && asset.type !== type)\n                continue;\n            var accessorPath = \"/\" + vpath; // virtualPath に \"/\" を足すと accessorPath という仕様\n            if (filter(accessorPath))\n                ret.push(asset);\n        }\n        return ret;\n    };\n    /**\n     * @ignore\n     */\n    AssetManager.prototype._normalize = function (configuration) {\n        var ret = {};\n        if (!(configuration instanceof Object))\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: invalid arguments.\");\n        for (var p in configuration) {\n            if (!configuration.hasOwnProperty(p))\n                continue;\n            var conf = this._normalizeAssetBaseDeclaration(p, Object.create(configuration[p]));\n            if (!conf.path) {\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: No path given for: \" + p);\n            }\n            if (!conf.virtualPath) {\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: No virtualPath given for: \" + p);\n            }\n            if (!conf.global)\n                conf.global = false;\n            ret[p] = conf;\n        }\n        return ret;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._normalizeAssetBaseDeclaration = function (assetId, conf) {\n        if (!conf.type) {\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: No type given for: \" + assetId);\n        }\n        if (conf.type === \"image\") {\n            if (typeof conf.width !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong width given for the image asset: \" + assetId);\n            if (typeof conf.height !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong height given for the image asset: \" + assetId);\n            conf.slice = conf.slice ? normalizeCommonArea(conf.slice) : undefined;\n        }\n        if (conf.type === \"audio\") {\n            // durationというメンバは後から追加したため、古いgame.jsonではundefinedになる場合がある\n            if (conf.duration === undefined)\n                conf.duration = 0;\n            var audioSystemConf = this._audioSystemConfMap[conf.systemId];\n            if (conf.loop === undefined) {\n                conf.loop = !!audioSystemConf && !!audioSystemConf.loop;\n            }\n            if (conf.hint === undefined) {\n                conf.hint = audioSystemConf ? audioSystemConf.hint : {};\n            }\n            if (conf.systemId !== \"music\" && conf.systemId !== \"sound\") {\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong systemId given for the audio asset: \" + assetId);\n            }\n        }\n        if (conf.type === \"video\") {\n            if (!conf.useRealSize) {\n                if (typeof conf.width !== \"number\")\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong width given for the video asset: \" + assetId);\n                if (typeof conf.height !== \"number\")\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong height given for the video asset: \" + assetId);\n                conf.useRealSize = false;\n            }\n        }\n        if (conf.type === \"vector-image\") {\n            if (typeof conf.width !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong width given for the vector-image asset: \" + assetId);\n            if (typeof conf.height !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong height given for the vector-image asset: \" + assetId);\n        }\n        return conf;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._createAssetFor = function (idOrConf) {\n        var id;\n        var uri;\n        var conf;\n        if (typeof idOrConf === \"string\") {\n            id = idOrConf;\n            conf = this.configuration[id];\n            uri = this.configuration[id].path;\n        }\n        else {\n            var dynConf = idOrConf;\n            id = dynConf.id;\n            conf = dynConf;\n            uri = dynConf.uri;\n        }\n        var resourceFactory = this._resourceFactory;\n        if (!conf)\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_createAssetFor: unknown asset ID: \" + id);\n        switch (conf.type) {\n            case \"image\":\n                var asset = conf.slice\n                    ? new PartialImageAsset_1.PartialImageAsset(resourceFactory, id, uri, conf.width, conf.height, conf.slice) // _normalize() で CommonArea になっている\n                    : resourceFactory.createImageAsset(id, uri, conf.width, conf.height);\n                asset.initialize(conf.hint);\n                return asset;\n            case \"audio\":\n                var system = conf.systemId\n                    ? this._audioSystemManager[conf.systemId]\n                    : this._audioSystemManager[this._defaultAudioSystemId];\n                return resourceFactory.createAudioAsset(id, uri, conf.duration, system, !!conf.loop, conf.hint);\n            case \"text\":\n                return resourceFactory.createTextAsset(id, uri);\n            case \"script\":\n                return resourceFactory.createScriptAsset(id, uri);\n            case \"video\":\n                // VideoSystemはまだ中身が定義されていなが、将来のためにVideoAssetにVideoSystemを渡すという体裁だけが整えられている。\n                // 以上を踏まえ、ここでは簡単のために都度新たなVideoSystemインスタンスを生成している。\n                var videoSystem = new VideoSystem_1.VideoSystem();\n                return resourceFactory.createVideoAsset(id, uri, conf.width, conf.height, videoSystem, !!conf.loop, !!conf.useRealSize);\n            case \"vector-image\":\n                if (!resourceFactory.createVectorImageAsset) {\n                    return new EmptyVectorImageAsset_1.EmptyVectorImageAsset(id, uri, conf.width, conf.height, conf.hint);\n                }\n                return resourceFactory.createVectorImageAsset(id, uri, conf.width, conf.height, conf.hint);\n            default:\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssertionError#_createAssetFor: unknown asset type \" + conf.type + \" for asset ID: \" + id);\n        }\n    };\n    /**\n     * @ignore\n     */\n    AssetManager.prototype._releaseAsset = function (assetId) {\n        var asset = this._assets[assetId] || (this._loadings[assetId] && this._loadings[assetId].asset);\n        var path = null;\n        if (asset) {\n            path = asset.path;\n            if (asset.inUse()) {\n                if (asset.type === \"audio\") {\n                    asset._system.requestDestroy(asset);\n                }\n                else if (asset.type === \"video\") {\n                    // NOTE: 一旦再生完了を待たずに破棄することにする\n                    // TODO: 再生中の動画を破棄するタイミングをどのように扱うか検討し実装\n                    asset.destroy();\n                }\n                else {\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#unrefAssets: Unsupported in-use \" + asset.id);\n                }\n            }\n            else {\n                asset.destroy();\n            }\n        }\n        delete this._refCounts[assetId];\n        delete this._loadings[assetId];\n        delete this._assets[assetId];\n        if (this.configuration[assetId]) {\n            var virtualPath = this.configuration[assetId].virtualPath;\n            if (virtualPath && this._liveAssetVirtualPathTable.hasOwnProperty(virtualPath))\n                delete this._liveAssetVirtualPathTable[virtualPath];\n            if (path && this._liveAssetPathTable.hasOwnProperty(path))\n                delete this._liveAssetPathTable[path];\n        }\n    };\n    /**\n     * 現在ロード中のアセットの数。(デバッグ用; 直接の用途はない)\n     * @private\n     */\n    AssetManager.prototype._countLoadingAsset = function () {\n        return Object.keys(this._loadings).length;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._onAssetError = function (asset, error) {\n        // ロード中に Scene が破棄されていた場合などで、asset が破棄済みになることがある\n        if (this.destroyed() || asset.destroyed())\n            return;\n        var loadingInfo = this._loadings[asset.id];\n        var hs = loadingInfo.handlers;\n        loadingInfo.loading = false;\n        ++loadingInfo.errorCount;\n        if (loadingInfo.errorCount > AssetManager.MAX_ERROR_COUNT && error.retriable) {\n            error = ExceptionFactory_1.ExceptionFactory.createAssetLoadError(\"Retry limit exceeded\", false, null, error);\n        }\n        if (!error.retriable)\n            delete this._loadings[asset.id];\n        for (var i = 0; i < hs.length; ++i)\n            hs[i]._onAssetError(asset, error, this.retryLoad.bind(this));\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._onAssetLoad = function (asset) {\n        // ロード中に Scene が破棄されていた場合などで、asset が破棄済みになることがある\n        if (this.destroyed() || asset.destroyed())\n            return;\n        var loadingInfo = this._loadings[asset.id];\n        loadingInfo.loading = false;\n        delete this._loadings[asset.id];\n        this._addAssetToTables(asset);\n        var hs = loadingInfo.handlers;\n        for (var i = 0; i < hs.length; ++i)\n            hs[i]._onAssetLoad(asset);\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._replaceModulePathToAbsolute = function (accessorPath) {\n        if (accessorPath[0] === \"/\" ||\n            accessorPath[0] === \"*\" // パスに `**/*` が指定された場合\n        ) {\n            return accessorPath;\n        }\n        for (var moduleName in this._moduleMainScripts) {\n            if (!this._moduleMainScripts.hasOwnProperty(moduleName))\n                continue;\n            if (accessorPath.lastIndexOf(moduleName, 0) === 0) {\n                return \"/node_modules/\" + accessorPath;\n            }\n        }\n        return accessorPath;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._getAudioSystem = function (assetIdOrConf) {\n        var conf;\n        if (typeof assetIdOrConf === \"string\") {\n            conf = this.configuration[assetIdOrConf];\n        }\n        else {\n            var dynConf = assetIdOrConf;\n            conf = dynConf;\n        }\n        if (!conf) {\n            return null;\n        }\n        if (conf.type !== \"audio\") {\n            return null;\n        }\n        return conf.systemId ? this._audioSystemManager[conf.systemId] : this._audioSystemManager[this._defaultAudioSystemId];\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._addAssetToTables = function (asset) {\n        this._assets[asset.id] = asset;\n        // DynamicAsset の場合は configuration に書かれていないので以下の判定が偽になる\n        if (this.configuration[asset.id]) {\n            var virtualPath = this.configuration[asset.id].virtualPath; // virtualPath の存在は _normalize() で確認済みのため 非 null アサーションとする\n            if (!this._liveAssetVirtualPathTable.hasOwnProperty(virtualPath)) {\n                this._liveAssetVirtualPathTable[virtualPath] = asset;\n            }\n            else {\n                if (this._liveAssetVirtualPathTable[virtualPath].path !== asset.path)\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_onAssetLoad(): duplicated asset path\");\n            }\n            if (!this._liveAssetPathTable.hasOwnProperty(asset.path))\n                this._liveAssetPathTable[asset.path] = virtualPath;\n        }\n    };\n    AssetManager.MAX_ERROR_COUNT = 3;\n    return AssetManager;\n}());\nexports.AssetManager = AssetManager;\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/AssetManager.js?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.AssetManager = void 0;\nvar EmptyGeneratedVectorImageAsset_1 = __webpack_require__(/*! ./auxiliary/EmptyGeneratedVectorImageAsset */ \"./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyGeneratedVectorImageAsset.js\");\nvar EmptyVectorImageAsset_1 = __webpack_require__(/*! ./auxiliary/EmptyVectorImageAsset */ \"./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyVectorImageAsset.js\");\nvar PartialImageAsset_1 = __webpack_require__(/*! ./auxiliary/PartialImageAsset */ \"./node_modules/@akashic/akashic-engine/lib/auxiliary/PartialImageAsset.js\");\nvar ExceptionFactory_1 = __webpack_require__(/*! ./ExceptionFactory */ \"./node_modules/@akashic/akashic-engine/lib/ExceptionFactory.js\");\nvar VideoSystem_1 = __webpack_require__(/*! ./VideoSystem */ \"./node_modules/@akashic/akashic-engine/lib/VideoSystem.js\");\n/**\n * @ignore\n */\nvar AssetLoadingInfo = /** @class */ (function () {\n    function AssetLoadingInfo(asset, handler) {\n        this.asset = asset;\n        this.handlers = [handler];\n        this.errorCount = 0;\n        this.loading = false;\n    }\n    return AssetLoadingInfo;\n}());\nfunction normalizeAudioSystemConfMap(confMap) {\n    if (confMap === void 0) { confMap = {}; }\n    var systemDefaults = {\n        music: {\n            loop: true,\n            hint: { streaming: true }\n        },\n        sound: {\n            loop: false,\n            hint: { streaming: false }\n        }\n    };\n    for (var key in systemDefaults) {\n        if (!(key in confMap)) {\n            confMap[key] = systemDefaults[key];\n        }\n    }\n    return confMap;\n}\nfunction normalizeCommonArea(area) {\n    return Array.isArray(area) ? { x: area[0], y: area[1], width: area[2], height: area[3] } : area;\n}\n/**\n * パスパターンを関数に変換する。\n *\n * パスパターンは、パス文字列、または0個以上の `**`, `*`, `?` を含むパス文字列である。\n * (実装の単純化のため、いわゆる glob のうちよく使われそうなものだけをサポートしている。)\n * 詳細は `AssetAccessor#getAllImages()` の仕様を参照のこと。\n *\n * 戻り値は、文字列一つを受け取り、パターンにマッチするか否かを返す関数。\n *\n * @param pattern パターン文字列\n */\nfunction patternToFilter(pattern) {\n    var parserRe = /([^\\*\\\\\\?]*)(\\\\\\*|\\\\\\?|\\?|\\*(?!\\*)|\\*\\*\\/|$)/g;\n    //                [----A-----][--------------B---------------]\n    // A: パターンの特殊文字でない文字の塊。そのままマッチさせる(ためにエスケープして正規表現にする)\n    // B: パターンの特殊文字一つ(*, ** など)かそのエスケープ。patternSpecialsTable で対応する正規表現に変換\n    var patternSpecialsTable = {\n        \"\": \"\",\n        \"\\\\*\": \"\\\\*\",\n        \"\\\\?\": \"\\\\?\",\n        \"*\": \"[^/]*\",\n        \"?\": \"[^/]\",\n        \"**/\": \"(?:^/)?(?:[^/]+/)*\"\n        //      [--C--][----D----]\n        // C: 行頭の `/` (行頭でなければないので ? つき)\n        // D: ディレクトリ一つ分(e.g. \"foo/\")が0回以上\n    };\n    var regExpSpecialsRe = /[\\\\^$.*+?()[\\]{}|]/g;\n    function escapeRegExp(s) {\n        return s.replace(regExpSpecialsRe, \"\\\\$&\");\n    }\n    var code = \"\";\n    for (var match = parserRe.exec(pattern); match && match[0] !== \"\"; match = parserRe.exec(pattern)) {\n        code += escapeRegExp(match[1]) + patternSpecialsTable[match[2]];\n    }\n    var re = new RegExp(\"^\" + code + \"$\");\n    return function (path) { return re.test(path); };\n}\n/**\n * `Asset` を管理するクラス。\n *\n * このクラスのインスタンスは `Game` に一つデフォルトで存在する(デフォルトアセットマネージャ)。\n * デフォルトアセットマネージャは、game.json に記述された通常のアセットを読み込むために利用される。\n *\n * ゲーム開発者は、game.json に記述のないリソースを取得するために、このクラスのインスタンスを独自に生成してよい。\n */\nvar AssetManager = /** @class */ (function () {\n    /**\n     * `AssetManager` のインスタンスを生成する。\n     *\n     * @param gameParams このインスタンスが属するゲーム。\n     * @param conf このアセットマネージャに与えるアセット定義。game.json の `\"assets\"` に相当。\n     * @param audioSystemConfMap このアセットマネージャに与えるオーディオシステムの宣言。\n     * @param moduleMainScripts このアセットマネージャに与える require() 解決用のエントリポイント。\n     */\n    function AssetManager(gameParams, conf, audioSystemConfMap, moduleMainScripts) {\n        this._resourceFactory = gameParams.resourceFactory;\n        this._audioSystemManager = gameParams.audio;\n        this._defaultAudioSystemId = gameParams.defaultAudioSystemId;\n        this._audioSystemConfMap = normalizeAudioSystemConfMap(audioSystemConfMap);\n        this.configuration = this._normalize(conf || {});\n        this._assets = {};\n        this._virtualPathToIdTable = {};\n        this._liveAssetVirtualPathTable = {};\n        this._liveAssetPathTable = {};\n        this._moduleMainScripts = moduleMainScripts ? moduleMainScripts : {};\n        this._refCounts = {};\n        this._loadings = {};\n        this._generatedAssetCount = 0;\n        var assetIds = Object.keys(this.configuration);\n        for (var i = 0; i < assetIds.length; ++i) {\n            var assetId = assetIds[i];\n            var conf_1 = this.configuration[assetId];\n            this._virtualPathToIdTable[conf_1.virtualPath] = assetId; // virtualPath の存在は _normalize() で確認済みのため 非 null アサーションとする\n        }\n    }\n    /**\n     * このインスタンスを破棄する。\n     */\n    AssetManager.prototype.destroy = function () {\n        var assetIds = Object.keys(this._refCounts);\n        for (var i = 0; i < assetIds.length; ++i) {\n            this._releaseAsset(assetIds[i]);\n        }\n        this.configuration = undefined;\n        this._assets = undefined;\n        this._liveAssetVirtualPathTable = undefined;\n        this._liveAssetPathTable = undefined;\n        this._refCounts = undefined;\n        this._loadings = undefined;\n    };\n    /**\n     * このインスタンスが破棄済みであるかどうかを返す。\n     */\n    AssetManager.prototype.destroyed = function () {\n        return this._assets === undefined;\n    };\n    /**\n     * `Asset` の読み込みを再試行する。\n     *\n     * 引数 `asset` は読み込みの失敗が (`Scene#assetLoadFail` で) 通知されたアセットでなければならない。\n     * @param asset 読み込みを再試行するアセット\n     */\n    AssetManager.prototype.retryLoad = function (asset) {\n        if (!this._loadings.hasOwnProperty(asset.id))\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#retryLoad: invalid argument.\");\n        var loadingInfo = this._loadings[asset.id];\n        if (loadingInfo.errorCount > AssetManager.MAX_ERROR_COUNT) {\n            // DynamicAsset はエラーが規定回数超えた場合は例外にせず諦める。\n            if (!this.configuration[asset.id])\n                return;\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#retryLoad: too many retrying.\");\n        }\n        if (!loadingInfo.loading) {\n            loadingInfo.loading = true;\n            asset._load(this);\n        }\n    };\n    /**\n     * グローバルアセットのIDを全て返す。\n     */\n    AssetManager.prototype.globalAssetIds = function () {\n        var ret = [];\n        var conf = this.configuration;\n        for (var p in conf) {\n            if (!conf.hasOwnProperty(p))\n                continue;\n            if (conf[p].global)\n                ret.push(p);\n        }\n        return ret;\n    };\n    /**\n     * パターンまたはフィルタに合致するパスを持つアセットIDを全て返す。\n     *\n     * 戻り値は読み込み済みでないアセットのIDを含むことに注意。\n     * 読み込み済みのアセットにアクセスする場合は、 `peekAllLiveAssetsByPattern()` を利用すること。\n     *\n     * @param patternOrFilters パターンまたはフィルタ。仕様は `AssetAccessor#getAllImages()` を参照\n     */\n    AssetManager.prototype.resolvePatternsToAssetIds = function (patternOrFilters) {\n        if (patternOrFilters.length === 0)\n            return [];\n        var vpaths = Object.keys(this._virtualPathToIdTable);\n        var ret = [];\n        for (var i = 0; i < patternOrFilters.length; ++i) {\n            var patternOrFilter = patternOrFilters[i];\n            var filter = typeof patternOrFilter === \"string\" ? patternToFilter(this._replaceModulePathToAbsolute(patternOrFilter)) : patternOrFilter;\n            for (var j = 0; j < vpaths.length; ++j) {\n                var vpath = vpaths[j];\n                var accessorPath = \"/\" + vpath; // virtualPath に \"/\" を足すと accessorPath という仕様\n                if (filter(accessorPath))\n                    ret.push(this._virtualPathToIdTable[vpath]);\n            }\n        }\n        return ret;\n    };\n    /**\n     * アセットの取得を要求する。\n     *\n     * 要求したアセットが読み込み済みでない場合、読み込みが行われる。\n     * 取得した結果は `handler` を通して通知される。\n     * ゲーム開発者はこのメソッドを呼び出してアセットを取得した場合、\n     * 同じアセットID(または取得したアセット)で `unrefAsset()` を呼び出さなければならない。\n     *\n     * @param assetIdOrConf 要求するアセットのIDまたは設定\n     * @param handler 要求結果を受け取るハンドラ\n     */\n    AssetManager.prototype.requestAsset = function (assetIdOrConf, handler) {\n        var assetId;\n        if (typeof assetIdOrConf === \"string\") {\n            assetId = assetIdOrConf;\n        }\n        else if (\"uri\" in assetIdOrConf) {\n            assetId = assetIdOrConf.id;\n            assetIdOrConf = this._normalizeAssetBaseDeclaration(assetId, Object.create(assetIdOrConf));\n        }\n        else {\n            // TODO: ノーマライズ処理を _normalizeAssetBaseDeclaration() に統合すべき\n            assetId = assetIdOrConf.id;\n        }\n        var waiting = false;\n        var loadingInfo;\n        if (this._assets.hasOwnProperty(assetId)) {\n            ++this._refCounts[assetId];\n            handler._onAssetLoad(this._assets[assetId]);\n        }\n        else if (this._loadings.hasOwnProperty(assetId)) {\n            loadingInfo = this._loadings[assetId];\n            loadingInfo.handlers.push(handler);\n            ++this._refCounts[assetId];\n            waiting = true;\n        }\n        else {\n            var system = this._getAudioSystem(assetIdOrConf);\n            var audioAsset = system === null || system === void 0 ? void 0 : system.getDestroyRequestedAsset(assetId);\n            if (system && audioAsset) {\n                system.cancelRequestDestroy(audioAsset);\n                this._addAssetToTables(audioAsset);\n                this._refCounts[assetId] = 1;\n                handler._onAssetLoad(audioAsset);\n            }\n            else {\n                var a = this._createAssetFor(assetIdOrConf);\n                loadingInfo = new AssetLoadingInfo(a, handler);\n                this._loadings[assetId] = loadingInfo;\n                this._refCounts[assetId] = 1;\n                waiting = true;\n                loadingInfo.loading = true;\n                a._load(this);\n            }\n        }\n        return waiting;\n    };\n    /**\n     * アセットの参照カウントを減らす。\n     * 引数の各要素で `unrefAsset()` を呼び出す。\n     *\n     * @param assetOrId 参照カウントを減らすアセットまたはアセットID\n     */\n    AssetManager.prototype.unrefAsset = function (assetOrId) {\n        var assetId = typeof assetOrId === \"string\" ? assetOrId : assetOrId.id;\n        if (--this._refCounts[assetId] > 0)\n            return;\n        this._releaseAsset(assetId);\n    };\n    /**\n     * 複数のアセットの取得を要求する。\n     * 引数の各要素で `requestAsset()` を呼び出す。\n     *\n     * @param assetIdOrConfs 取得するアセットのIDまたはアセット定義\n     * @param handler 取得の結果を受け取るハンドラ\n     */\n    AssetManager.prototype.requestAssets = function (assetIdOrConfs, handler) {\n        var waitingCount = 0;\n        for (var i = 0, len = assetIdOrConfs.length; i < len; ++i) {\n            if (this.requestAsset(assetIdOrConfs[i], handler)) {\n                ++waitingCount;\n            }\n        }\n        return waitingCount;\n    };\n    /**\n     * 複数のアセットを解放する。\n     * 引数の各要素で `unrefAsset()` を呼び出す。\n     *\n     * @param assetOrIds 参照カウントを減らすアセットまたはアセットID\n     * @private\n     */\n    AssetManager.prototype.unrefAssets = function (assetOrIds) {\n        for (var i = 0, len = assetOrIds.length; i < len; ++i) {\n            this.unrefAsset(assetOrIds[i]);\n        }\n    };\n    /**\n     * アクセッサパスで指定された読み込み済みのアセットを返す。\n     *\n     * ここでアクセッサパスとは、 `AssetAccessor` が使うパス\n     * (game.jsonのディレクトリをルート (`/`) とする、 `/` 区切りの絶対パス形式の仮想パス)である。\n     * これは `/` を除けばアセットの仮想パス (virtualPath) と同一である。\n     *\n     * @param accessorPath 取得するアセットのアクセッサパス\n     * @param type 取得するアセットのタイプ。対象のアセットと合致しない場合、エラー\n     */\n    AssetManager.prototype.peekLiveAssetByAccessorPath = function (accessorPath, type) {\n        accessorPath = this._replaceModulePathToAbsolute(accessorPath);\n        if (accessorPath[0] !== \"/\")\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#peekLiveAssetByAccessorPath(): accessorPath must start with '/'\");\n        var vpath = accessorPath.slice(1); // accessorPath から \"/\" を削ると virtualPath という仕様\n        var asset = this._liveAssetVirtualPathTable[vpath];\n        if (!asset || type !== asset.type)\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#peekLiveAssetByAccessorPath(): No \".concat(type, \" asset for \").concat(accessorPath));\n        return asset;\n    };\n    /**\n     * アセットIDで指定された読み込み済みのアセットを返す。\n     *\n     * @param assetId 取得するアセットのID\n     * @param type 取得するアセットのタイプ。対象のアセットと合致しない場合、エラー\n     */\n    AssetManager.prototype.peekLiveAssetById = function (assetId, type) {\n        var asset = this._assets[assetId];\n        if (!asset || type !== asset.type)\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"SceneAssetManager#_getById(): No \".concat(type, \" asset for id \").concat(assetId));\n        return asset;\n    };\n    /**\n     * パターンまたはフィルタにマッチするパスを持つ、指定されたタイプの全読み込み済みアセットを返す。\n     *\n     * 戻り値の要素の順序は保証されない。\n     * パターンとフィルタについては `AssetAccessor#getAllImages()` の仕様を参照のこと。\n     *\n     * @param patternOrFilter 取得するアセットのパスパターンまたはフィルタ\n     * @param type 取得するアセットのタイプ。 null の場合、全てのタイプとして扱われる。\n     */\n    AssetManager.prototype.peekAllLiveAssetsByPattern = function (patternOrFilter, type) {\n        var vpaths = Object.keys(this._liveAssetVirtualPathTable);\n        var filter = typeof patternOrFilter === \"string\" ? patternToFilter(this._replaceModulePathToAbsolute(patternOrFilter)) : patternOrFilter;\n        var ret = [];\n        for (var i = 0; i < vpaths.length; ++i) {\n            var vpath = vpaths[i];\n            var asset = this._liveAssetVirtualPathTable[vpath];\n            if (type && asset.type !== type)\n                continue;\n            var accessorPath = \"/\" + vpath; // virtualPath に \"/\" を足すと accessorPath という仕様\n            if (filter(accessorPath))\n                ret.push(asset);\n        }\n        return ret;\n    };\n    /**\n     * @ignore\n     */\n    AssetManager.prototype._normalize = function (configuration) {\n        var ret = {};\n        if (!(configuration instanceof Object))\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: invalid arguments.\");\n        for (var p in configuration) {\n            if (!configuration.hasOwnProperty(p))\n                continue;\n            var conf = this._normalizeAssetBaseDeclaration(p, Object.create(configuration[p]));\n            if (!conf.path) {\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: No path given for: \" + p);\n            }\n            if (!conf.virtualPath) {\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: No virtualPath given for: \" + p);\n            }\n            if (!conf.global)\n                conf.global = false;\n            ret[p] = conf;\n        }\n        return ret;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._normalizeAssetBaseDeclaration = function (assetId, conf) {\n        if (!conf.type) {\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: No type given for: \" + assetId);\n        }\n        if (conf.type === \"image\") {\n            if (typeof conf.width !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong width given for the image asset: \" + assetId);\n            if (typeof conf.height !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong height given for the image asset: \" + assetId);\n            conf.slice = conf.slice ? normalizeCommonArea(conf.slice) : undefined;\n        }\n        if (conf.type === \"audio\") {\n            // durationというメンバは後から追加したため、古いgame.jsonではundefinedになる場合がある\n            if (conf.duration === undefined)\n                conf.duration = 0;\n            var audioSystemConf = this._audioSystemConfMap[conf.systemId];\n            if (conf.loop === undefined) {\n                conf.loop = !!audioSystemConf && !!audioSystemConf.loop;\n            }\n            if (conf.hint === undefined) {\n                conf.hint = audioSystemConf ? audioSystemConf.hint : {};\n            }\n            if (conf.systemId !== \"music\" && conf.systemId !== \"sound\") {\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong systemId given for the audio asset: \" + assetId);\n            }\n        }\n        if (conf.type === \"video\") {\n            if (!conf.useRealSize) {\n                if (typeof conf.width !== \"number\")\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong width given for the video asset: \" + assetId);\n                if (typeof conf.height !== \"number\")\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong height given for the video asset: \" + assetId);\n                conf.useRealSize = false;\n            }\n        }\n        if (conf.type === \"vector-image\") {\n            if (typeof conf.width !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong width given for the vector-image asset: \" + assetId);\n            if (typeof conf.height !== \"number\")\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_normalize: wrong height given for the vector-image asset: \" + assetId);\n        }\n        return conf;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._createAssetFor = function (idOrConf) {\n        var id;\n        var uri;\n        var conf;\n        if (typeof idOrConf === \"string\") {\n            id = idOrConf;\n            conf = this.configuration[id];\n            uri = this.configuration[id].path;\n        }\n        else if (\"uri\" in idOrConf) {\n            id = idOrConf.id;\n            conf = idOrConf;\n            uri = idOrConf.uri;\n        }\n        else {\n            return this._createGeneratedAssetFor(idOrConf);\n        }\n        var resourceFactory = this._resourceFactory;\n        if (!conf)\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_createAssetFor: unknown asset ID: \" + id);\n        switch (conf.type) {\n            case \"image\":\n                var asset = conf.slice\n                    ? new PartialImageAsset_1.PartialImageAsset(resourceFactory, id, uri, conf.width, conf.height, conf.slice) // _normalize() で CommonArea になっている\n                    : resourceFactory.createImageAsset(id, uri, conf.width, conf.height);\n                asset.initialize(conf.hint);\n                return asset;\n            case \"audio\":\n                var system = conf.systemId\n                    ? this._audioSystemManager[conf.systemId]\n                    : this._audioSystemManager[this._defaultAudioSystemId];\n                return resourceFactory.createAudioAsset(id, uri, conf.duration, system, !!conf.loop, conf.hint);\n            case \"text\":\n                return resourceFactory.createTextAsset(id, uri);\n            case \"script\":\n                return resourceFactory.createScriptAsset(id, uri);\n            case \"video\":\n                // VideoSystemはまだ中身が定義されていなが、将来のためにVideoAssetにVideoSystemを渡すという体裁だけが整えられている。\n                // 以上を踏まえ、ここでは簡単のために都度新たなVideoSystemインスタンスを生成している。\n                var videoSystem = new VideoSystem_1.VideoSystem();\n                return resourceFactory.createVideoAsset(id, uri, conf.width, conf.height, videoSystem, !!conf.loop, !!conf.useRealSize);\n            case \"vector-image\":\n                if (!resourceFactory.createVectorImageAsset) {\n                    return new EmptyVectorImageAsset_1.EmptyVectorImageAsset(id, uri, conf.width, conf.height, conf.hint);\n                }\n                return resourceFactory.createVectorImageAsset(id, uri, conf.width, conf.height, conf.hint);\n            default:\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssertionError#_createAssetFor: unknown asset type \" + conf.type + \" for asset ID: \" + id);\n        }\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._createGeneratedAssetFor = function (conf) {\n        var resourceFactory = this._resourceFactory;\n        var path = \"%akashic%/generated-asset-\".concat(this._generatedAssetCount++);\n        switch (conf.type) {\n            case \"vector-image\":\n                if (!resourceFactory.createVectorImageAssetFromString) {\n                    return new EmptyGeneratedVectorImageAsset_1.EmptyGeneratedVectorImageAsset(conf.id, path, conf.data);\n                }\n                return resourceFactory.createVectorImageAssetFromString(conf.id, path, conf.data);\n            default:\n                throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssertionError#_createFromAssetGenerationFor: unsupported asset type \".concat(conf.type, \" for asset ID: \").concat(conf.id));\n        }\n    };\n    /**\n     * @ignore\n     */\n    AssetManager.prototype._releaseAsset = function (assetId) {\n        var asset = this._assets[assetId] || (this._loadings[assetId] && this._loadings[assetId].asset);\n        var path = null;\n        if (asset) {\n            path = asset.path;\n            if (asset.inUse()) {\n                if (asset.type === \"audio\") {\n                    asset._system.requestDestroy(asset);\n                }\n                else if (asset.type === \"video\") {\n                    // NOTE: 一旦再生完了を待たずに破棄することにする\n                    // TODO: 再生中の動画を破棄するタイミングをどのように扱うか検討し実装\n                    asset.destroy();\n                }\n                else {\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#unrefAssets: Unsupported in-use \" + asset.id);\n                }\n            }\n            else {\n                asset.destroy();\n            }\n        }\n        delete this._refCounts[assetId];\n        delete this._loadings[assetId];\n        delete this._assets[assetId];\n        if (this.configuration[assetId]) {\n            var virtualPath = this.configuration[assetId].virtualPath;\n            if (virtualPath && this._liveAssetVirtualPathTable.hasOwnProperty(virtualPath))\n                delete this._liveAssetVirtualPathTable[virtualPath];\n            if (path && this._liveAssetPathTable.hasOwnProperty(path))\n                delete this._liveAssetPathTable[path];\n        }\n    };\n    /**\n     * 現在ロード中のアセットの数。(デバッグ用; 直接の用途はない)\n     * @private\n     */\n    AssetManager.prototype._countLoadingAsset = function () {\n        return Object.keys(this._loadings).length;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._onAssetError = function (asset, error) {\n        // ロード中に Scene が破棄されていた場合などで、asset が破棄済みになることがある\n        if (this.destroyed() || asset.destroyed())\n            return;\n        var loadingInfo = this._loadings[asset.id];\n        var hs = loadingInfo.handlers;\n        loadingInfo.loading = false;\n        ++loadingInfo.errorCount;\n        if (loadingInfo.errorCount > AssetManager.MAX_ERROR_COUNT && error.retriable) {\n            error = ExceptionFactory_1.ExceptionFactory.createAssetLoadError(\"Retry limit exceeded\", false, null, error);\n        }\n        if (!error.retriable)\n            delete this._loadings[asset.id];\n        for (var i = 0; i < hs.length; ++i)\n            hs[i]._onAssetError(asset, error, this.retryLoad.bind(this));\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._onAssetLoad = function (asset) {\n        // ロード中に Scene が破棄されていた場合などで、asset が破棄済みになることがある\n        if (this.destroyed() || asset.destroyed())\n            return;\n        var loadingInfo = this._loadings[asset.id];\n        loadingInfo.loading = false;\n        delete this._loadings[asset.id];\n        this._addAssetToTables(asset);\n        var hs = loadingInfo.handlers;\n        for (var i = 0; i < hs.length; ++i)\n            hs[i]._onAssetLoad(asset);\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._replaceModulePathToAbsolute = function (accessorPath) {\n        if (accessorPath[0] === \"/\" ||\n            accessorPath[0] === \"*\" // パスに `**/*` が指定された場合\n        ) {\n            return accessorPath;\n        }\n        for (var moduleName in this._moduleMainScripts) {\n            if (!this._moduleMainScripts.hasOwnProperty(moduleName))\n                continue;\n            if (accessorPath.lastIndexOf(moduleName, 0) === 0) {\n                return \"/node_modules/\" + accessorPath;\n            }\n        }\n        return accessorPath;\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._getAudioSystem = function (assetIdOrConf) {\n        var conf = null;\n        if (typeof assetIdOrConf === \"string\") {\n            conf = this.configuration[assetIdOrConf];\n        }\n        else if (\"uri\" in assetIdOrConf) {\n            var dynConf = assetIdOrConf;\n            conf = dynConf;\n        }\n        else {\n            // NOTE: AssetGeneration では一旦非サポート。\n        }\n        if (!conf) {\n            return null;\n        }\n        if (conf.type !== \"audio\") {\n            return null;\n        }\n        return conf.systemId ? this._audioSystemManager[conf.systemId] : this._audioSystemManager[this._defaultAudioSystemId];\n    };\n    /**\n     * @private\n     */\n    AssetManager.prototype._addAssetToTables = function (asset) {\n        this._assets[asset.id] = asset;\n        // DynamicAsset の場合は configuration に書かれていないので以下の判定が偽になる\n        if (this.configuration[asset.id]) {\n            var virtualPath = this.configuration[asset.id].virtualPath; // virtualPath の存在は _normalize() で確認済みのため 非 null アサーションとする\n            if (!this._liveAssetVirtualPathTable.hasOwnProperty(virtualPath)) {\n                this._liveAssetVirtualPathTable[virtualPath] = asset;\n            }\n            else {\n                if (this._liveAssetVirtualPathTable[virtualPath].path !== asset.path)\n                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"AssetManager#_onAssetLoad(): duplicated asset path\");\n            }\n            if (!this._liveAssetPathTable.hasOwnProperty(asset.path))\n                this._liveAssetPathTable[asset.path] = virtualPath;\n        }\n    };\n    AssetManager.MAX_ERROR_COUNT = 3;\n    return AssetManager;\n}());\nexports.AssetManager = AssetManager;\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/AssetManager.js?");
 
 /***/ }),
 
@@ -182,7 +193,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __extends = (this && this.__extends) || (function () {\n    var extendStatics = function (d, b) {\n        extendStatics = Object.setPrototypeOf ||\n            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||\n            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };\n        return extendStatics(d, b);\n    };\n    return function (d, b) {\n        if (typeof b !== \"function\" && b !== null)\n            throw new TypeError(\"Class extends value \" + String(b) + \" is not a constructor or null\");\n        extendStatics(d, b);\n        function __() { this.constructor = d; }\n        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());\n    };\n})();\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.DynamicFont = void 0;\nvar pdi_types_1 = __webpack_require__(/*! @akashic/pdi-types */ \"./node_modules/@akashic/pdi-types/lib/index.js\");\nvar BitmapFont_1 = __webpack_require__(/*! ./BitmapFont */ \"./node_modules/@akashic/akashic-engine/lib/BitmapFont.js\");\nvar Font_1 = __webpack_require__(/*! ./Font */ \"./node_modules/@akashic/akashic-engine/lib/Font.js\");\nvar SurfaceAtlasSet_1 = __webpack_require__(/*! ./SurfaceAtlasSet */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlasSet.js\");\nvar Util_1 = __webpack_require__(/*! ./Util */ \"./node_modules/@akashic/akashic-engine/lib/Util.js\");\n/**\n * ビットマップフォントを逐次生成するフォント。\n */\nvar DynamicFont = /** @class */ (function (_super) {\n    __extends(DynamicFont, _super);\n    /**\n     * 各種パラメータを指定して `DynamicFont` のインスタンスを生成する。\n     * @param param `DynamicFont` に設定するパラメータ\n     */\n    function DynamicFont(param) {\n        var _this = _super.call(this) || this;\n        _this.fontFamily = param.fontFamily;\n        _this.size = param.size;\n        _this.hint = param.hint != null ? param.hint : {};\n        _this.fontColor = param.fontColor != null ? param.fontColor : \"black\";\n        _this.fontWeight = param.fontWeight != null ? param.fontWeight : pdi_types_1.FontWeight.Normal;\n        _this.strokeWidth = param.strokeWidth != null ? param.strokeWidth : 0;\n        _this.strokeColor = param.strokeColor != null ? param.strokeColor : \"black\";\n        _this.strokeOnly = param.strokeOnly != null ? param.strokeOnly : false;\n        var game = param.game;\n        _this._resourceFactory = game.resourceFactory;\n        var ff = _this.fontFamily;\n        var realFontFamily;\n        if (typeof ff === \"string\") {\n            realFontFamily = ff;\n        }\n        else if (Array.isArray(ff)) {\n            var arr = [];\n            for (var i = 0; i < ff.length; ++i) {\n                var ffi = ff[i];\n                arr.push(typeof ffi === \"string\" ? ffi : Util_1.Util.enumToSnakeCase(pdi_types_1.FontFamily, ffi));\n            }\n            realFontFamily = arr;\n        }\n        else {\n            var arr = [];\n            arr.push(typeof ff === \"string\" ? ff : Util_1.Util.enumToSnakeCase(pdi_types_1.FontFamily, ff));\n            realFontFamily = arr;\n        }\n        var weight = _this.fontWeight;\n        var realFontWeight = typeof weight === \"string\" ? weight : Util_1.Util.enumToSnakeCase(pdi_types_1.FontWeight, weight);\n        _this._glyphFactory = _this._resourceFactory.createGlyphFactory(realFontFamily, _this.size, _this.hint.baselineHeight, _this.fontColor, _this.strokeWidth, _this.strokeColor, _this.strokeOnly, realFontWeight);\n        _this._glyphs = {};\n        _this._destroyed = false;\n        _this._isSurfaceAtlasSetOwner = false;\n        // NOTE: hint の特定プロパティ(baselineHeight)を分岐の条件にした場合、後でプロパティを追加した時に\n        // ここで追従漏れの懸念があるため、引数の hint が省略されているかで分岐させている。\n        if (param.surfaceAtlasSet) {\n            _this._atlasSet = param.surfaceAtlasSet;\n        }\n        else if (!!param.hint) {\n            _this._isSurfaceAtlasSetOwner = true;\n            _this._atlasSet = new SurfaceAtlasSet_1.SurfaceAtlasSet({\n                resourceFactory: game.resourceFactory,\n                hint: _this.hint\n            });\n        }\n        else {\n            _this._atlasSet = game.surfaceAtlasSet;\n        }\n        if (_this.hint.presetChars) {\n            for (var i = 0, len = _this.hint.presetChars.length; i < len; i++) {\n                var code = Util_1.Util.charCodeAt(_this.hint.presetChars, i);\n                if (!code) {\n                    continue;\n                }\n                _this.glyphForCharacter(code);\n            }\n        }\n        return _this;\n    }\n    /**\n     * グリフの取得。\n     *\n     * 取得に失敗するとnullが返る。\n     *\n     * 取得に失敗した時、次のようにすることで成功するかもしれない。\n     * - DynamicFont生成時に指定する文字サイズを小さくする\n     * - アトラスの初期サイズ・最大サイズを大きくする\n     *\n     * @param code 文字コード\n     */\n    DynamicFont.prototype.glyphForCharacter = function (code) {\n        var glyph = this._glyphs[code];\n        if (!(glyph && glyph.isSurfaceValid)) {\n            glyph = this._glyphFactory.create(code);\n            if (glyph.surface) {\n                // 空白文字でなければアトラス化する\n                if (!this._atlasSet.addGlyph(glyph)) {\n                    return null;\n                }\n            }\n            this._glyphs[code] = glyph;\n        }\n        this._atlasSet.touchGlyph(glyph);\n        return glyph;\n    };\n    /**\n     * BtimapFontの生成。\n     *\n     * 実装上の制限から、このメソッドを呼び出す場合、maxAtlasNum が 1 または undefined/null(1として扱われる) である必要がある。\n     * そうでない場合、失敗する可能性がある。\n     *\n     * @param missingGlyph `BitmapFont#map` に存在しないコードポイントの代わりに表示するべき文字。最初の一文字が用いられる。\n     */\n    DynamicFont.prototype.asBitmapFont = function (missingGlyphChar) {\n        var _this = this;\n        if (this._atlasSet.getAtlasNum() !== 1) {\n            return null;\n        }\n        var missingGlyphCharCodePoint = null;\n        if (missingGlyphChar) {\n            missingGlyphCharCodePoint = Util_1.Util.charCodeAt(missingGlyphChar, 0);\n            this.glyphForCharacter(missingGlyphCharCodePoint);\n        }\n        var glyphAreaMap = {};\n        Object.keys(this._glyphs).forEach(function (_key) {\n            var key = Number(_key);\n            var glyph = _this._glyphs[key];\n            var glyphArea = {\n                x: glyph.x,\n                y: glyph.y,\n                width: glyph.width,\n                height: glyph.height,\n                offsetX: glyph.offsetX,\n                offsetY: glyph.offsetY,\n                advanceWidth: glyph.advanceWidth\n            };\n            glyphAreaMap[key] = glyphArea;\n        });\n        // NOTE: (defaultGlyphWidth, defaultGlyphHeight)= (0, this.size) とする\n        //\n        // それぞれの役割は第一に `GlyphArea#width`, `GlyphArea#height` が与えられないときの\n        // デフォルト値である。ここでは必ず与えているのでデフォルト値としては利用されない。\n        // しかし defaultGlyphHeight は BitmapFont#size にも用いられる。\n        // そのために this.size をコンストラクタの第４引数に与えることにする。\n        // @ts-ignore\n        var missingGlyph = glyphAreaMap[missingGlyphCharCodePoint];\n        var atlas = this._atlasSet.getAtlas(0);\n        var size = atlas.getAtlasUsedSize();\n        var surface = this._resourceFactory.createSurface(size.width, size.height);\n        var renderer = surface.renderer();\n        renderer.begin();\n        renderer.drawImage(atlas._surface, 0, 0, size.width, size.height, 0, 0);\n        renderer.end();\n        var bitmapFont = new BitmapFont_1.BitmapFont({\n            src: surface,\n            map: glyphAreaMap,\n            defaultGlyphWidth: 0,\n            defaultGlyphHeight: this.size,\n            missingGlyph: missingGlyph\n        });\n        return bitmapFont;\n    };\n    DynamicFont.prototype.destroy = function () {\n        if (this._isSurfaceAtlasSetOwner) {\n            this._atlasSet.destroy();\n        }\n        this._glyphs = undefined;\n        this._glyphFactory = undefined;\n        this._destroyed = true;\n    };\n    DynamicFont.prototype.destroyed = function () {\n        return this._destroyed;\n    };\n    return DynamicFont;\n}(Font_1.Font));\nexports.DynamicFont = DynamicFont;\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/DynamicFont.js?");
+eval("\nvar __extends = (this && this.__extends) || (function () {\n    var extendStatics = function (d, b) {\n        extendStatics = Object.setPrototypeOf ||\n            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||\n            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };\n        return extendStatics(d, b);\n    };\n    return function (d, b) {\n        if (typeof b !== \"function\" && b !== null)\n            throw new TypeError(\"Class extends value \" + String(b) + \" is not a constructor or null\");\n        extendStatics(d, b);\n        function __() { this.constructor = d; }\n        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());\n    };\n})();\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.DynamicFont = void 0;\nvar pdi_types_1 = __webpack_require__(/*! @akashic/pdi-types */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/index.js\");\nvar BitmapFont_1 = __webpack_require__(/*! ./BitmapFont */ \"./node_modules/@akashic/akashic-engine/lib/BitmapFont.js\");\nvar Font_1 = __webpack_require__(/*! ./Font */ \"./node_modules/@akashic/akashic-engine/lib/Font.js\");\nvar SurfaceAtlasSet_1 = __webpack_require__(/*! ./SurfaceAtlasSet */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlasSet.js\");\nvar Util_1 = __webpack_require__(/*! ./Util */ \"./node_modules/@akashic/akashic-engine/lib/Util.js\");\n/**\n * ビットマップフォントを逐次生成するフォント。\n */\nvar DynamicFont = /** @class */ (function (_super) {\n    __extends(DynamicFont, _super);\n    /**\n     * 各種パラメータを指定して `DynamicFont` のインスタンスを生成する。\n     * @param param `DynamicFont` に設定するパラメータ\n     */\n    function DynamicFont(param) {\n        var _this = _super.call(this) || this;\n        _this.fontFamily = param.fontFamily;\n        _this.size = param.size;\n        _this.hint = param.hint != null ? param.hint : {};\n        _this.fontColor = param.fontColor != null ? param.fontColor : \"black\";\n        _this.fontWeight = param.fontWeight != null ? param.fontWeight : pdi_types_1.FontWeight.Normal;\n        _this.strokeWidth = param.strokeWidth != null ? param.strokeWidth : 0;\n        _this.strokeColor = param.strokeColor != null ? param.strokeColor : \"black\";\n        _this.strokeOnly = param.strokeOnly != null ? param.strokeOnly : false;\n        var game = param.game;\n        _this._resourceFactory = game.resourceFactory;\n        var ff = _this.fontFamily;\n        var realFontFamily;\n        if (typeof ff === \"string\") {\n            realFontFamily = ff;\n        }\n        else if (Array.isArray(ff)) {\n            var arr = [];\n            for (var i = 0; i < ff.length; ++i) {\n                var ffi = ff[i];\n                arr.push(typeof ffi === \"string\" ? ffi : Util_1.Util.enumToSnakeCase(pdi_types_1.FontFamily, ffi));\n            }\n            realFontFamily = arr;\n        }\n        else {\n            var arr = [];\n            arr.push(typeof ff === \"string\" ? ff : Util_1.Util.enumToSnakeCase(pdi_types_1.FontFamily, ff));\n            realFontFamily = arr;\n        }\n        var weight = _this.fontWeight;\n        var realFontWeight = typeof weight === \"string\" ? weight : Util_1.Util.enumToSnakeCase(pdi_types_1.FontWeight, weight);\n        _this._glyphFactory = _this._resourceFactory.createGlyphFactory(realFontFamily, _this.size, _this.hint.baselineHeight, _this.fontColor, _this.strokeWidth, _this.strokeColor, _this.strokeOnly, realFontWeight);\n        _this._glyphs = {};\n        _this._destroyed = false;\n        _this._isSurfaceAtlasSetOwner = false;\n        // NOTE: hint の特定プロパティ(baselineHeight)を分岐の条件にした場合、後でプロパティを追加した時に\n        // ここで追従漏れの懸念があるため、引数の hint が省略されているかで分岐させている。\n        if (param.surfaceAtlasSet) {\n            _this._atlasSet = param.surfaceAtlasSet;\n        }\n        else if (!!param.hint) {\n            _this._isSurfaceAtlasSetOwner = true;\n            _this._atlasSet = new SurfaceAtlasSet_1.SurfaceAtlasSet({\n                resourceFactory: game.resourceFactory,\n                hint: _this.hint\n            });\n        }\n        else {\n            _this._atlasSet = game.surfaceAtlasSet;\n        }\n        if (_this.hint.presetChars) {\n            for (var i = 0, len = _this.hint.presetChars.length; i < len; i++) {\n                var code = Util_1.Util.charCodeAt(_this.hint.presetChars, i);\n                if (!code) {\n                    continue;\n                }\n                _this.glyphForCharacter(code);\n            }\n        }\n        return _this;\n    }\n    /**\n     * グリフの取得。\n     *\n     * 取得に失敗するとnullが返る。\n     *\n     * 取得に失敗した時、次のようにすることで成功するかもしれない。\n     * - DynamicFont生成時に指定する文字サイズを小さくする\n     * - アトラスの初期サイズ・最大サイズを大きくする\n     *\n     * @param code 文字コード\n     */\n    DynamicFont.prototype.glyphForCharacter = function (code) {\n        var glyph = this._glyphs[code];\n        if (!(glyph && glyph.isSurfaceValid)) {\n            glyph = this._glyphFactory.create(code);\n            if (glyph.surface) {\n                // 空白文字でなければアトラス化する\n                if (!this._atlasSet.addGlyph(glyph)) {\n                    return null;\n                }\n            }\n            this._glyphs[code] = glyph;\n        }\n        this._atlasSet.touchGlyph(glyph);\n        return glyph;\n    };\n    /**\n     * BtimapFontの生成。\n     *\n     * 実装上の制限から、このメソッドを呼び出す場合、maxAtlasNum が 1 または undefined/null(1として扱われる) である必要がある。\n     * そうでない場合、失敗する可能性がある。\n     *\n     * @param missingGlyph `BitmapFont#map` に存在しないコードポイントの代わりに表示するべき文字。最初の一文字が用いられる。\n     */\n    DynamicFont.prototype.asBitmapFont = function (missingGlyphChar) {\n        var _this = this;\n        if (this._atlasSet.getAtlasNum() !== 1) {\n            return null;\n        }\n        var missingGlyphCharCodePoint = null;\n        if (missingGlyphChar) {\n            missingGlyphCharCodePoint = Util_1.Util.charCodeAt(missingGlyphChar, 0);\n            this.glyphForCharacter(missingGlyphCharCodePoint);\n        }\n        var glyphAreaMap = {};\n        Object.keys(this._glyphs).forEach(function (_key) {\n            var key = Number(_key);\n            var glyph = _this._glyphs[key];\n            var glyphArea = {\n                x: glyph.x,\n                y: glyph.y,\n                width: glyph.width,\n                height: glyph.height,\n                offsetX: glyph.offsetX,\n                offsetY: glyph.offsetY,\n                advanceWidth: glyph.advanceWidth\n            };\n            glyphAreaMap[key] = glyphArea;\n        });\n        // NOTE: (defaultGlyphWidth, defaultGlyphHeight)= (0, this.size) とする\n        //\n        // それぞれの役割は第一に `GlyphArea#width`, `GlyphArea#height` が与えられないときの\n        // デフォルト値である。ここでは必ず与えているのでデフォルト値としては利用されない。\n        // しかし defaultGlyphHeight は BitmapFont#size にも用いられる。\n        // そのために this.size をコンストラクタの第４引数に与えることにする。\n        // @ts-ignore\n        var missingGlyph = glyphAreaMap[missingGlyphCharCodePoint];\n        var atlas = this._atlasSet.getAtlas(0);\n        var size = atlas.getAtlasUsedSize();\n        var surface = this._resourceFactory.createSurface(size.width, size.height);\n        var renderer = surface.renderer();\n        renderer.begin();\n        renderer.drawImage(atlas._surface, 0, 0, size.width, size.height, 0, 0);\n        renderer.end();\n        var bitmapFont = new BitmapFont_1.BitmapFont({\n            src: surface,\n            map: glyphAreaMap,\n            defaultGlyphWidth: 0,\n            defaultGlyphHeight: this.size,\n            missingGlyph: missingGlyph\n        });\n        return bitmapFont;\n    };\n    DynamicFont.prototype.destroy = function () {\n        if (this._isSurfaceAtlasSetOwner) {\n            this._atlasSet.destroy();\n        }\n        this._glyphs = undefined;\n        this._glyphFactory = undefined;\n        this._destroyed = true;\n    };\n    DynamicFont.prototype.destroyed = function () {\n        return this._destroyed;\n    };\n    return DynamicFont;\n}(Font_1.Font));\nexports.DynamicFont = DynamicFont;\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/DynamicFont.js?");
 
 /***/ }),
 
@@ -721,7 +732,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.Util = void 0;\nvar pdi_types_1 = __webpack_require__(/*! @akashic/pdi-types */ \"./node_modules/@akashic/pdi-types/lib/index.js\");\n/**\n * ユーティリティ。\n */\nvar Util;\n(function (Util) {\n    var _a;\n    /**\n     * 2点間(P1..P2)の距離(pixel)を返す。\n     * @param {number} p1x P1-X\n     * @param {number} p1y P1-Y\n     * @param {number} p2x P2-X\n     * @param {number} p2y P2-Y\n     */\n    function distance(p1x, p1y, p2x, p2y) {\n        return Math.sqrt(Math.pow(p1x - p2x, 2) + Math.pow(p1y - p2y, 2));\n    }\n    Util.distance = distance;\n    /**\n     * 2点間(P1..P2)の距離(pixel)を返す。\n     * @param {CommonOffset} p1 座標1\n     * @param {CommonOffset} p2 座標2\n     */\n    function distanceBetweenOffsets(p1, p2) {\n        return Util.distance(p1.x, p1.y, p2.x, p2.y);\n    }\n    Util.distanceBetweenOffsets = distanceBetweenOffsets;\n    /**\n     * 2つの矩形の中心座標(P1..P2)間の距離(pixel)を返す。\n     * @param {CommonArea} p1 矩形1\n     * @param {CommonArea} p2 矩形2\n     */\n    function distanceBetweenAreas(p1, p2) {\n        return Util.distance(p1.x + p1.width / 2, p1.y + p1.height / 2, p2.x + p2.width / 2, p2.y + p2.height / 2);\n    }\n    Util.distanceBetweenAreas = distanceBetweenAreas;\n    /**\n     * idx文字目の文字のchar codeを返す。\n     *\n     * これはString#charCodeAt()と次の点で異なる。\n     * - idx文字目が上位サロゲートの時これを16bit左シフトし、idx+1文字目の下位サロゲートと論理和をとった値を返す。\n     * - idx文字目が下位サロゲートの時nullを返す。\n     *\n     * @param str 文字を取り出される文字列\n     * @param idx 取り出される文字の位置\n     */\n    // highly based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt\n    function charCodeAt(str, idx) {\n        var code = str.charCodeAt(idx);\n        if (0xd800 <= code && code <= 0xdbff) {\n            var hi = code;\n            var low = str.charCodeAt(idx + 1);\n            return (hi << 16) | low;\n        }\n        if (0xdc00 <= code && code <= 0xdfff) {\n            // Low surrogate\n            return null;\n        }\n        return code;\n    }\n    Util.charCodeAt = charCodeAt;\n    /**\n     * enum の値の文字列を snake-case に変換した文字列を返す。\n     * @deprecated 非推奨である。非推奨の機能との互換性確保のために存在する。ゲーム開発者が使用すべきではない。\n     */\n    function enumToSnakeCase(enumDef, val) {\n        var s = enumDef[val];\n        return (s[0].toLowerCase() + s.slice(1).replace(/[A-Z]/g, function (c) { return \"-\" + c.toLowerCase(); }));\n    }\n    Util.enumToSnakeCase = enumToSnakeCase;\n    /**\n     * CompositeOperation を CompositeOperationString に読み替えるテーブル。\n     * @deprecated 非推奨である。非推奨の機能との互換性のために存在する。ゲーム開発者が使用すべきではない。\n     */\n    // enumToSnakeCase() で代用できるが、 CompositeOperation の変換は複数回実行されうるので専用のテーブルを作っている。\n    Util.compositeOperationStringTable = (_a = {},\n        _a[pdi_types_1.CompositeOperation.SourceOver] = \"source-over\",\n        _a[pdi_types_1.CompositeOperation.SourceAtop] = \"source-atop\",\n        _a[pdi_types_1.CompositeOperation.Lighter] = \"lighter\",\n        _a[pdi_types_1.CompositeOperation.Copy] = \"copy\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalSourceIn] = \"experimental-source-in\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalSourceOut] = \"experimental-source-out\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationAtop] = \"experimental-destination-atop\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationIn] = \"experimental-destination-in\",\n        _a[pdi_types_1.CompositeOperation.DestinationOut] = \"destination-out\",\n        _a[pdi_types_1.CompositeOperation.DestinationOver] = \"destination-over\",\n        _a[pdi_types_1.CompositeOperation.Xor] = \"xor\",\n        _a);\n})(Util = exports.Util || (exports.Util = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/Util.js?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.Util = void 0;\nvar pdi_types_1 = __webpack_require__(/*! @akashic/pdi-types */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/index.js\");\n/**\n * ユーティリティ。\n */\nvar Util;\n(function (Util) {\n    var _a;\n    /**\n     * 2点間(P1..P2)の距離(pixel)を返す。\n     * @param {number} p1x P1-X\n     * @param {number} p1y P1-Y\n     * @param {number} p2x P2-X\n     * @param {number} p2y P2-Y\n     */\n    function distance(p1x, p1y, p2x, p2y) {\n        return Math.sqrt(Math.pow(p1x - p2x, 2) + Math.pow(p1y - p2y, 2));\n    }\n    Util.distance = distance;\n    /**\n     * 2点間(P1..P2)の距離(pixel)を返す。\n     * @param {CommonOffset} p1 座標1\n     * @param {CommonOffset} p2 座標2\n     */\n    function distanceBetweenOffsets(p1, p2) {\n        return Util.distance(p1.x, p1.y, p2.x, p2.y);\n    }\n    Util.distanceBetweenOffsets = distanceBetweenOffsets;\n    /**\n     * 2つの矩形の中心座標(P1..P2)間の距離(pixel)を返す。\n     * @param {CommonArea} p1 矩形1\n     * @param {CommonArea} p2 矩形2\n     */\n    function distanceBetweenAreas(p1, p2) {\n        return Util.distance(p1.x + p1.width / 2, p1.y + p1.height / 2, p2.x + p2.width / 2, p2.y + p2.height / 2);\n    }\n    Util.distanceBetweenAreas = distanceBetweenAreas;\n    /**\n     * idx文字目の文字のchar codeを返す。\n     *\n     * これはString#charCodeAt()と次の点で異なる。\n     * - idx文字目が上位サロゲートの時これを16bit左シフトし、idx+1文字目の下位サロゲートと論理和をとった値を返す。\n     * - idx文字目が下位サロゲートの時nullを返す。\n     *\n     * @param str 文字を取り出される文字列\n     * @param idx 取り出される文字の位置\n     */\n    // highly based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt\n    function charCodeAt(str, idx) {\n        var code = str.charCodeAt(idx);\n        if (0xd800 <= code && code <= 0xdbff) {\n            var hi = code;\n            var low = str.charCodeAt(idx + 1);\n            return (hi << 16) | low;\n        }\n        if (0xdc00 <= code && code <= 0xdfff) {\n            // Low surrogate\n            return null;\n        }\n        return code;\n    }\n    Util.charCodeAt = charCodeAt;\n    /**\n     * enum の値の文字列を snake-case に変換した文字列を返す。\n     * @deprecated 非推奨である。非推奨の機能との互換性確保のために存在する。ゲーム開発者が使用すべきではない。\n     */\n    function enumToSnakeCase(enumDef, val) {\n        var s = enumDef[val];\n        return (s[0].toLowerCase() + s.slice(1).replace(/[A-Z]/g, function (c) { return \"-\" + c.toLowerCase(); }));\n    }\n    Util.enumToSnakeCase = enumToSnakeCase;\n    /**\n     * CompositeOperation を CompositeOperationString に読み替えるテーブル。\n     * @deprecated 非推奨である。非推奨の機能との互換性のために存在する。ゲーム開発者が使用すべきではない。\n     */\n    // enumToSnakeCase() で代用できるが、 CompositeOperation の変換は複数回実行されうるので専用のテーブルを作っている。\n    Util.compositeOperationStringTable = (_a = {},\n        _a[pdi_types_1.CompositeOperation.SourceOver] = \"source-over\",\n        _a[pdi_types_1.CompositeOperation.SourceAtop] = \"source-atop\",\n        _a[pdi_types_1.CompositeOperation.Lighter] = \"lighter\",\n        _a[pdi_types_1.CompositeOperation.Copy] = \"copy\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalSourceIn] = \"experimental-source-in\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalSourceOut] = \"experimental-source-out\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationAtop] = \"experimental-destination-atop\",\n        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationIn] = \"experimental-destination-in\",\n        _a[pdi_types_1.CompositeOperation.DestinationOut] = \"destination-out\",\n        _a[pdi_types_1.CompositeOperation.DestinationOver] = \"destination-over\",\n        _a[pdi_types_1.CompositeOperation.Xor] = \"xor\",\n        _a);\n})(Util = exports.Util || (exports.Util = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/Util.js?");
 
 /***/ }),
 
@@ -755,6 +766,17 @@ eval("\n// Copyright (c) 2014 Andreas Madsen & Emil Bay\n// From https://github.
 
 "use strict";
 eval("\nvar __extends = (this && this.__extends) || (function () {\n    var extendStatics = function (d, b) {\n        extendStatics = Object.setPrototypeOf ||\n            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||\n            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };\n        return extendStatics(d, b);\n    };\n    return function (d, b) {\n        if (typeof b !== \"function\" && b !== null)\n            throw new TypeError(\"Class extends value \" + String(b) + \" is not a constructor or null\");\n        extendStatics(d, b);\n        function __() { this.constructor = d; }\n        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());\n    };\n})();\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.XorshiftRandomGenerator = void 0;\nvar ExceptionFactory_1 = __webpack_require__(/*! ./ExceptionFactory */ \"./node_modules/@akashic/akashic-engine/lib/ExceptionFactory.js\");\nvar RandomGenerator_1 = __webpack_require__(/*! ./RandomGenerator */ \"./node_modules/@akashic/akashic-engine/lib/RandomGenerator.js\");\nvar Xorshift_1 = __webpack_require__(/*! ./Xorshift */ \"./node_modules/@akashic/akashic-engine/lib/Xorshift.js\");\n/**\n * Xorshiftを用いた乱数生成期。\n */\nvar XorshiftRandomGenerator = /** @class */ (function (_super) {\n    __extends(XorshiftRandomGenerator, _super);\n    function XorshiftRandomGenerator(seed, xorshift) {\n        var _this = this;\n        if (seed === undefined) {\n            throw ExceptionFactory_1.ExceptionFactory.createAssertionError(\"XorshiftRandomGenerator#constructor: seed is undefined\");\n        }\n        else {\n            _this = _super.call(this, seed) || this;\n            if (!!xorshift) {\n                _this._xorshift = Xorshift_1.Xorshift.deserialize(xorshift);\n            }\n            else {\n                _this._xorshift = new Xorshift_1.Xorshift(seed);\n            }\n        }\n        return _this;\n    }\n    XorshiftRandomGenerator.deserialize = function (ser) {\n        return new XorshiftRandomGenerator(ser._seed, ser._xorshift);\n    };\n    /**\n     * 乱数を生成する。\n     * `min` 以上 `max` 以下の数値を返す。\n     *\n     * @deprecated 非推奨である。将来的に削除される。代わりに `XorshiftRandomGenerator#generate()` を利用すること。\n     */\n    XorshiftRandomGenerator.prototype.get = function (min, max) {\n        return this._xorshift.nextInt(min, max + 1);\n    };\n    /**\n     * 乱数を生成する。\n     * 0 以上 1 未満の数値を返す。\n     *\n     * ローカルイベントの処理中を除き、原則 `Math.random()` ではなくこのメソッドを利用すること。\n     */\n    XorshiftRandomGenerator.prototype.generate = function () {\n        return this._xorshift.random();\n    };\n    XorshiftRandomGenerator.prototype.serialize = function () {\n        return {\n            _seed: this.seed,\n            _xorshift: this._xorshift.serialize()\n        };\n    };\n    return XorshiftRandomGenerator;\n}(RandomGenerator_1.RandomGenerator));\nexports.XorshiftRandomGenerator = XorshiftRandomGenerator;\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/XorshiftRandomGenerator.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyGeneratedVectorImageAsset.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyGeneratedVectorImageAsset.js ***!
+  \**********************************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __extends = (this && this.__extends) || (function () {\n    var extendStatics = function (d, b) {\n        extendStatics = Object.setPrototypeOf ||\n            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||\n            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };\n        return extendStatics(d, b);\n    };\n    return function (d, b) {\n        if (typeof b !== \"function\" && b !== null)\n            throw new TypeError(\"Class extends value \" + String(b) + \" is not a constructor or null\");\n        extendStatics(d, b);\n        function __() { this.constructor = d; }\n        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());\n    };\n})();\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.EmptyGeneratedVectorImageAsset = void 0;\nvar EmptyVectorImageAsset_1 = __webpack_require__(/*! ./EmptyVectorImageAsset */ \"./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyVectorImageAsset.js\");\nvar EmptyGeneratedVectorImageAsset = /** @class */ (function (_super) {\n    __extends(EmptyGeneratedVectorImageAsset, _super);\n    function EmptyGeneratedVectorImageAsset(id, path, data) {\n        var _this = _super.call(this, id, path, 0, 0) || this;\n        _this.data = data;\n        return _this;\n    }\n    return EmptyGeneratedVectorImageAsset;\n}(EmptyVectorImageAsset_1.EmptyVectorImageAsset));\nexports.EmptyGeneratedVectorImageAsset = EmptyGeneratedVectorImageAsset;\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/auxiliary/EmptyGeneratedVectorImageAsset.js?");
 
 /***/ }),
 
@@ -875,7 +897,7 @@ eval("\nvar __extends = (this && this.__extends) || (function () {\n    var exte
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    var desc = Object.getOwnPropertyDescriptor(m, k);\n    if (!desc || (\"get\" in desc ? !m.__esModule : desc.writable || desc.configurable)) {\n      desc = { enumerable: true, get: function() { return m[k]; } };\n    }\n    Object.defineProperty(o, k2, desc);\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;\n__exportStar(__webpack_require__(/*! @akashic/game-configuration */ \"./node_modules/@akashic/game-configuration/lib/index.js\"), exports);\n__exportStar(__webpack_require__(/*! @akashic/trigger */ \"./node_modules/@akashic/trigger/lib/index.js\"), exports);\n// pdi-types 由来の型を g 直下から reexport する。\n// ただし一部の型名は、akashic-engine で同名のクラス実装を与えているため、\n// そのままでは両方 export しようとして衝突する。\n// ここで明示的に片方を export して衝突を解決している。\n__exportStar(__webpack_require__(/*! @akashic/pdi-types */ \"./node_modules/@akashic/pdi-types/lib/index.js\"), exports);\nvar AudioSystem_1 = __webpack_require__(/*! ./AudioSystem */ \"./node_modules/@akashic/akashic-engine/lib/AudioSystem.js\");\nObject.defineProperty(exports, \"AudioSystem\", ({ enumerable: true, get: function () { return AudioSystem_1.AudioSystem; } }));\nvar Module_1 = __webpack_require__(/*! ./Module */ \"./node_modules/@akashic/akashic-engine/lib/Module.js\");\nObject.defineProperty(exports, \"Module\", ({ enumerable: true, get: function () { return Module_1.Module; } }));\nvar ShaderProgram_1 = __webpack_require__(/*! ./ShaderProgram */ \"./node_modules/@akashic/akashic-engine/lib/ShaderProgram.js\");\nObject.defineProperty(exports, \"ShaderProgram\", ({ enumerable: true, get: function () { return ShaderProgram_1.ShaderProgram; } }));\nvar VideoSystem_1 = __webpack_require__(/*! ./VideoSystem */ \"./node_modules/@akashic/akashic-engine/lib/VideoSystem.js\");\nObject.defineProperty(exports, \"VideoSystem\", ({ enumerable: true, get: function () { return VideoSystem_1.VideoSystem; } }));\n__exportStar(__webpack_require__(/*! ./AudioSystem */ \"./node_modules/@akashic/akashic-engine/lib/AudioSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/CacheableE */ \"./node_modules/@akashic/akashic-engine/lib/entities/CacheableE.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/E */ \"./node_modules/@akashic/akashic-engine/lib/entities/E.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/FilledRect */ \"./node_modules/@akashic/akashic-engine/lib/entities/FilledRect.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/FrameSprite */ \"./node_modules/@akashic/akashic-engine/lib/entities/FrameSprite.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/Label */ \"./node_modules/@akashic/akashic-engine/lib/entities/Label.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/Pane */ \"./node_modules/@akashic/akashic-engine/lib/entities/Pane.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/Sprite */ \"./node_modules/@akashic/akashic-engine/lib/entities/Sprite.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetAccessor */ \"./node_modules/@akashic/akashic-engine/lib/AssetAccessor.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetHolder */ \"./node_modules/@akashic/akashic-engine/lib/AssetHolder.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetLoadFailureInfo */ \"./node_modules/@akashic/akashic-engine/lib/AssetLoadFailureInfo.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetManager */ \"./node_modules/@akashic/akashic-engine/lib/AssetManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetManagerLoadHandler */ \"./node_modules/@akashic/akashic-engine/lib/AssetManagerLoadHandler.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AudioSystemManager */ \"./node_modules/@akashic/akashic-engine/lib/AudioSystemManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./BitmapFont */ \"./node_modules/@akashic/akashic-engine/lib/BitmapFont.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Camera */ \"./node_modules/@akashic/akashic-engine/lib/Camera.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Camera2D */ \"./node_modules/@akashic/akashic-engine/lib/Camera2D.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Collision */ \"./node_modules/@akashic/akashic-engine/lib/Collision.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DefaultLoadingScene */ \"./node_modules/@akashic/akashic-engine/lib/DefaultLoadingScene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DefaultSkippingScene */ \"./node_modules/@akashic/akashic-engine/lib/DefaultSkippingScene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DynamicAssetConfiguration */ \"./node_modules/@akashic/akashic-engine/lib/DynamicAssetConfiguration.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DynamicFont */ \"./node_modules/@akashic/akashic-engine/lib/DynamicFont.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EntityStateFlags */ \"./node_modules/@akashic/akashic-engine/lib/EntityStateFlags.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Event */ \"./node_modules/@akashic/akashic-engine/lib/Event.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventConverter */ \"./node_modules/@akashic/akashic-engine/lib/EventConverter.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventFilter */ \"./node_modules/@akashic/akashic-engine/lib/EventFilter.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventFilterController */ \"./node_modules/@akashic/akashic-engine/lib/EventFilterController.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventIndex */ \"./node_modules/@akashic/akashic-engine/lib/EventIndex.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventPriority */ \"./node_modules/@akashic/akashic-engine/lib/EventPriority.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ExceptionFactory */ \"./node_modules/@akashic/akashic-engine/lib/ExceptionFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Font */ \"./node_modules/@akashic/akashic-engine/lib/Font.js\"), exports);\n__exportStar(__webpack_require__(/*! ./GameMainParameterObject */ \"./node_modules/@akashic/akashic-engine/lib/GameMainParameterObject.js\"), exports);\n__exportStar(__webpack_require__(/*! ./InternalOperationPluginInfo */ \"./node_modules/@akashic/akashic-engine/lib/InternalOperationPluginInfo.js\"), exports);\n__exportStar(__webpack_require__(/*! ./LoadingScene */ \"./node_modules/@akashic/akashic-engine/lib/LoadingScene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./LocalTickModeString */ \"./node_modules/@akashic/akashic-engine/lib/LocalTickModeString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Matrix */ \"./node_modules/@akashic/akashic-engine/lib/Matrix.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Module */ \"./node_modules/@akashic/akashic-engine/lib/Module.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ModuleManager */ \"./node_modules/@akashic/akashic-engine/lib/ModuleManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./NinePatchSurfaceEffector */ \"./node_modules/@akashic/akashic-engine/lib/NinePatchSurfaceEffector.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Object2D */ \"./node_modules/@akashic/akashic-engine/lib/Object2D.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPlugin */ \"./node_modules/@akashic/akashic-engine/lib/OperationPlugin.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPluginManager */ \"./node_modules/@akashic/akashic-engine/lib/OperationPluginManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPluginOperation */ \"./node_modules/@akashic/akashic-engine/lib/OperationPluginOperation.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPluginStatic */ \"./node_modules/@akashic/akashic-engine/lib/OperationPluginStatic.js\"), exports);\n__exportStar(__webpack_require__(/*! ./PathUtil */ \"./node_modules/@akashic/akashic-engine/lib/PathUtil.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Player */ \"./node_modules/@akashic/akashic-engine/lib/Player.js\"), exports);\n__exportStar(__webpack_require__(/*! ./PointEventResolver */ \"./node_modules/@akashic/akashic-engine/lib/PointEventResolver.js\"), exports);\n__exportStar(__webpack_require__(/*! ./RandomGenerator */ \"./node_modules/@akashic/akashic-engine/lib/RandomGenerator.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Require */ \"./node_modules/@akashic/akashic-engine/lib/Require.js\"), exports);\n__exportStar(__webpack_require__(/*! ./RequireCacheable */ \"./node_modules/@akashic/akashic-engine/lib/RequireCacheable.js\"), exports);\n__exportStar(__webpack_require__(/*! ./RequireCachedValue */ \"./node_modules/@akashic/akashic-engine/lib/RequireCachedValue.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ScriptAssetContext */ \"./node_modules/@akashic/akashic-engine/lib/ScriptAssetContext.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ShaderProgram */ \"./node_modules/@akashic/akashic-engine/lib/ShaderProgram.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SnapshotSaveRequest */ \"./node_modules/@akashic/akashic-engine/lib/SnapshotSaveRequest.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SpriteFactory */ \"./node_modules/@akashic/akashic-engine/lib/SpriteFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Storage */ \"./node_modules/@akashic/akashic-engine/lib/Storage.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceAtlas */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlas.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceAtlasSet */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlasSet.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceAtlasSlot */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlasSlot.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceEffector */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceEffector.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceUtil */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceUtil.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextAlign */ \"./node_modules/@akashic/akashic-engine/lib/TextAlign.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextAlignString */ \"./node_modules/@akashic/akashic-engine/lib/TextAlignString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextMetrics */ \"./node_modules/@akashic/akashic-engine/lib/TextMetrics.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TickGenerationModeString */ \"./node_modules/@akashic/akashic-engine/lib/TickGenerationModeString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Timer */ \"./node_modules/@akashic/akashic-engine/lib/Timer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TimerManager */ \"./node_modules/@akashic/akashic-engine/lib/TimerManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Util */ \"./node_modules/@akashic/akashic-engine/lib/Util.js\"), exports);\n__exportStar(__webpack_require__(/*! ./VideoSystem */ \"./node_modules/@akashic/akashic-engine/lib/VideoSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Xorshift */ \"./node_modules/@akashic/akashic-engine/lib/Xorshift.js\"), exports);\n__exportStar(__webpack_require__(/*! ./XorshiftRandomGenerator */ \"./node_modules/@akashic/akashic-engine/lib/XorshiftRandomGenerator.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Scene */ \"./node_modules/@akashic/akashic-engine/lib/Scene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Game */ \"./node_modules/@akashic/akashic-engine/lib/Game.js\"), exports);\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/index.common.js?");
+eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    var desc = Object.getOwnPropertyDescriptor(m, k);\n    if (!desc || (\"get\" in desc ? !m.__esModule : desc.writable || desc.configurable)) {\n      desc = { enumerable: true, get: function() { return m[k]; } };\n    }\n    Object.defineProperty(o, k2, desc);\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;\n__exportStar(__webpack_require__(/*! @akashic/game-configuration */ \"./node_modules/@akashic/game-configuration/lib/index.js\"), exports);\n__exportStar(__webpack_require__(/*! @akashic/trigger */ \"./node_modules/@akashic/trigger/lib/index.js\"), exports);\n// pdi-types 由来の型を g 直下から reexport する。\n// ただし一部の型名は、akashic-engine で同名のクラス実装を与えているため、\n// そのままでは両方 export しようとして衝突する。\n// ここで明示的に片方を export して衝突を解決している。\n__exportStar(__webpack_require__(/*! @akashic/pdi-types */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/index.js\"), exports);\nvar AudioSystem_1 = __webpack_require__(/*! ./AudioSystem */ \"./node_modules/@akashic/akashic-engine/lib/AudioSystem.js\");\nObject.defineProperty(exports, \"AudioSystem\", ({ enumerable: true, get: function () { return AudioSystem_1.AudioSystem; } }));\nvar Module_1 = __webpack_require__(/*! ./Module */ \"./node_modules/@akashic/akashic-engine/lib/Module.js\");\nObject.defineProperty(exports, \"Module\", ({ enumerable: true, get: function () { return Module_1.Module; } }));\nvar ShaderProgram_1 = __webpack_require__(/*! ./ShaderProgram */ \"./node_modules/@akashic/akashic-engine/lib/ShaderProgram.js\");\nObject.defineProperty(exports, \"ShaderProgram\", ({ enumerable: true, get: function () { return ShaderProgram_1.ShaderProgram; } }));\nvar VideoSystem_1 = __webpack_require__(/*! ./VideoSystem */ \"./node_modules/@akashic/akashic-engine/lib/VideoSystem.js\");\nObject.defineProperty(exports, \"VideoSystem\", ({ enumerable: true, get: function () { return VideoSystem_1.VideoSystem; } }));\n__exportStar(__webpack_require__(/*! ./AudioSystem */ \"./node_modules/@akashic/akashic-engine/lib/AudioSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/CacheableE */ \"./node_modules/@akashic/akashic-engine/lib/entities/CacheableE.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/E */ \"./node_modules/@akashic/akashic-engine/lib/entities/E.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/FilledRect */ \"./node_modules/@akashic/akashic-engine/lib/entities/FilledRect.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/FrameSprite */ \"./node_modules/@akashic/akashic-engine/lib/entities/FrameSprite.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/Label */ \"./node_modules/@akashic/akashic-engine/lib/entities/Label.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/Pane */ \"./node_modules/@akashic/akashic-engine/lib/entities/Pane.js\"), exports);\n__exportStar(__webpack_require__(/*! ./entities/Sprite */ \"./node_modules/@akashic/akashic-engine/lib/entities/Sprite.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetAccessor */ \"./node_modules/@akashic/akashic-engine/lib/AssetAccessor.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetGenerationConfiguration */ \"./node_modules/@akashic/akashic-engine/lib/AssetGenerationConfiguration.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetHolder */ \"./node_modules/@akashic/akashic-engine/lib/AssetHolder.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetLoadFailureInfo */ \"./node_modules/@akashic/akashic-engine/lib/AssetLoadFailureInfo.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetManager */ \"./node_modules/@akashic/akashic-engine/lib/AssetManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AssetManagerLoadHandler */ \"./node_modules/@akashic/akashic-engine/lib/AssetManagerLoadHandler.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AudioSystemManager */ \"./node_modules/@akashic/akashic-engine/lib/AudioSystemManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./BitmapFont */ \"./node_modules/@akashic/akashic-engine/lib/BitmapFont.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Camera */ \"./node_modules/@akashic/akashic-engine/lib/Camera.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Camera2D */ \"./node_modules/@akashic/akashic-engine/lib/Camera2D.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Collision */ \"./node_modules/@akashic/akashic-engine/lib/Collision.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DefaultLoadingScene */ \"./node_modules/@akashic/akashic-engine/lib/DefaultLoadingScene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DefaultSkippingScene */ \"./node_modules/@akashic/akashic-engine/lib/DefaultSkippingScene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DynamicAssetConfiguration */ \"./node_modules/@akashic/akashic-engine/lib/DynamicAssetConfiguration.js\"), exports);\n__exportStar(__webpack_require__(/*! ./DynamicFont */ \"./node_modules/@akashic/akashic-engine/lib/DynamicFont.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EntityStateFlags */ \"./node_modules/@akashic/akashic-engine/lib/EntityStateFlags.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Event */ \"./node_modules/@akashic/akashic-engine/lib/Event.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventConverter */ \"./node_modules/@akashic/akashic-engine/lib/EventConverter.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventFilter */ \"./node_modules/@akashic/akashic-engine/lib/EventFilter.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventFilterController */ \"./node_modules/@akashic/akashic-engine/lib/EventFilterController.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventIndex */ \"./node_modules/@akashic/akashic-engine/lib/EventIndex.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EventPriority */ \"./node_modules/@akashic/akashic-engine/lib/EventPriority.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ExceptionFactory */ \"./node_modules/@akashic/akashic-engine/lib/ExceptionFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Font */ \"./node_modules/@akashic/akashic-engine/lib/Font.js\"), exports);\n__exportStar(__webpack_require__(/*! ./GameMainParameterObject */ \"./node_modules/@akashic/akashic-engine/lib/GameMainParameterObject.js\"), exports);\n__exportStar(__webpack_require__(/*! ./InternalOperationPluginInfo */ \"./node_modules/@akashic/akashic-engine/lib/InternalOperationPluginInfo.js\"), exports);\n__exportStar(__webpack_require__(/*! ./LoadingScene */ \"./node_modules/@akashic/akashic-engine/lib/LoadingScene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./LocalTickModeString */ \"./node_modules/@akashic/akashic-engine/lib/LocalTickModeString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Matrix */ \"./node_modules/@akashic/akashic-engine/lib/Matrix.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Module */ \"./node_modules/@akashic/akashic-engine/lib/Module.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ModuleManager */ \"./node_modules/@akashic/akashic-engine/lib/ModuleManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./NinePatchSurfaceEffector */ \"./node_modules/@akashic/akashic-engine/lib/NinePatchSurfaceEffector.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Object2D */ \"./node_modules/@akashic/akashic-engine/lib/Object2D.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPlugin */ \"./node_modules/@akashic/akashic-engine/lib/OperationPlugin.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPluginManager */ \"./node_modules/@akashic/akashic-engine/lib/OperationPluginManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPluginOperation */ \"./node_modules/@akashic/akashic-engine/lib/OperationPluginOperation.js\"), exports);\n__exportStar(__webpack_require__(/*! ./OperationPluginStatic */ \"./node_modules/@akashic/akashic-engine/lib/OperationPluginStatic.js\"), exports);\n__exportStar(__webpack_require__(/*! ./PathUtil */ \"./node_modules/@akashic/akashic-engine/lib/PathUtil.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Player */ \"./node_modules/@akashic/akashic-engine/lib/Player.js\"), exports);\n__exportStar(__webpack_require__(/*! ./PointEventResolver */ \"./node_modules/@akashic/akashic-engine/lib/PointEventResolver.js\"), exports);\n__exportStar(__webpack_require__(/*! ./RandomGenerator */ \"./node_modules/@akashic/akashic-engine/lib/RandomGenerator.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Require */ \"./node_modules/@akashic/akashic-engine/lib/Require.js\"), exports);\n__exportStar(__webpack_require__(/*! ./RequireCacheable */ \"./node_modules/@akashic/akashic-engine/lib/RequireCacheable.js\"), exports);\n__exportStar(__webpack_require__(/*! ./RequireCachedValue */ \"./node_modules/@akashic/akashic-engine/lib/RequireCachedValue.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ScriptAssetContext */ \"./node_modules/@akashic/akashic-engine/lib/ScriptAssetContext.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ShaderProgram */ \"./node_modules/@akashic/akashic-engine/lib/ShaderProgram.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SnapshotSaveRequest */ \"./node_modules/@akashic/akashic-engine/lib/SnapshotSaveRequest.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SpriteFactory */ \"./node_modules/@akashic/akashic-engine/lib/SpriteFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Storage */ \"./node_modules/@akashic/akashic-engine/lib/Storage.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceAtlas */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlas.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceAtlasSet */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlasSet.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceAtlasSlot */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceAtlasSlot.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceEffector */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceEffector.js\"), exports);\n__exportStar(__webpack_require__(/*! ./SurfaceUtil */ \"./node_modules/@akashic/akashic-engine/lib/SurfaceUtil.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextAlign */ \"./node_modules/@akashic/akashic-engine/lib/TextAlign.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextAlignString */ \"./node_modules/@akashic/akashic-engine/lib/TextAlignString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextMetrics */ \"./node_modules/@akashic/akashic-engine/lib/TextMetrics.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TickGenerationModeString */ \"./node_modules/@akashic/akashic-engine/lib/TickGenerationModeString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Timer */ \"./node_modules/@akashic/akashic-engine/lib/Timer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TimerManager */ \"./node_modules/@akashic/akashic-engine/lib/TimerManager.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Util */ \"./node_modules/@akashic/akashic-engine/lib/Util.js\"), exports);\n__exportStar(__webpack_require__(/*! ./VideoSystem */ \"./node_modules/@akashic/akashic-engine/lib/VideoSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Xorshift */ \"./node_modules/@akashic/akashic-engine/lib/Xorshift.js\"), exports);\n__exportStar(__webpack_require__(/*! ./XorshiftRandomGenerator */ \"./node_modules/@akashic/akashic-engine/lib/XorshiftRandomGenerator.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Scene */ \"./node_modules/@akashic/akashic-engine/lib/Scene.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Game */ \"./node_modules/@akashic/akashic-engine/lib/Game.js\"), exports);\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/index.common.js?");
 
 /***/ }),
 
@@ -887,6 +909,446 @@ eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ?
 
 "use strict";
 eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    var desc = Object.getOwnPropertyDescriptor(m, k);\n    if (!desc || (\"get\" in desc ? !m.__esModule : desc.writable || desc.configurable)) {\n      desc = { enumerable: true, get: function() { return m[k]; } };\n    }\n    Object.defineProperty(o, k2, desc);\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__exportStar(__webpack_require__(/*! ./index.common */ \"./node_modules/@akashic/akashic-engine/lib/index.common.js\"), exports);\n__exportStar(__webpack_require__(/*! ./GameHandlerSet */ \"./node_modules/@akashic/akashic-engine/lib/GameHandlerSet.js\"), exports); // NOTE: コンテンツから参照する必要はない\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/lib/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/Asset.js":
+/*!*************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/Asset.js ***!
+  \*************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/Asset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js":
+/*!**************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js ***!
+  \**************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.AssetLoadErrorType = void 0;\n/**\n * アセット読み込み失敗時のエラーの種別。\n *\n * この値はあくまでもエラーメッセージ出力のための補助情報であり、\n * 網羅性・厳密性を追求したものではないことに注意。\n *\n * @deprecated 非推奨である。将来的に削除される。現在この型が必要な処理は存在しない。\n */\nvar AssetLoadErrorType;\n(function (AssetLoadErrorType) {\n    /**\n     * 明示されていない(以下のいずれかかもしれないし、そうでないかもしれない)。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"Unspecified\"] = 0] = \"Unspecified\";\n    /**\n     * エンジンの再試行回数上限設定値を超えた。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"RetryLimitExceeded\"] = 1] = \"RetryLimitExceeded\";\n    /**\n     * ネットワークエラー。タイムアウトなど。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"NetworkError\"] = 2] = \"NetworkError\";\n    /**\n     * リクエストに問題があるエラー。HTTP 4XX など。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"ClientError\"] = 3] = \"ClientError\";\n    /**\n     * サーバ側のエラー。HTTP 5XX など。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"ServerError\"] = 4] = \"ServerError\";\n})(AssetLoadErrorType = exports.AssetLoadErrorType || (exports.AssetLoadErrorType = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js":
+/*!************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js":
+/*!****************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js":
+/*!*************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js ***!
+  \*************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js":
+/*!*************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js ***!
+  \*************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js":
+/*!************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js":
+/*!****************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/Module.js":
+/*!*********************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/Module.js ***!
+  \*********************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/Module.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js":
+/*!**************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js ***!
+  \**************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js":
+/*!**************************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js ***!
+  \**************************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js":
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js ***!
+  \**********************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js":
+/*!*************************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js ***!
+  \*************************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js":
+/*!*****************************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js ***!
+  \*****************************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js":
+/*!************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js":
+/*!*************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js ***!
+  \*************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js":
+/*!*************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js ***!
+  \*************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/commons.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/commons.js ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/commons.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/errors.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/errors.js ***!
+  \********************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/errors.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontFamily.js":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontFamily.js ***!
+  \*****************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.FontFamily = void 0;\n/**\n * 文字列描画のフォントファミリ。\n * @deprecated 非推奨である。将来的に削除される。代わりに文字列 `\"sans-serif\"`, `\"serif\"`, `\"monospace\"` を利用すること。\n */\nvar FontFamily;\n(function (FontFamily) {\n    /**\n     * サンセリフ体。ＭＳ Ｐゴシック等\n     */\n    FontFamily[FontFamily[\"SansSerif\"] = 0] = \"SansSerif\";\n    /**\n     * セリフ体。ＭＳ 明朝等\n     */\n    FontFamily[FontFamily[\"Serif\"] = 1] = \"Serif\";\n    /**\n     * 等幅。ＭＳ ゴシック等\n     */\n    FontFamily[FontFamily[\"Monospace\"] = 2] = \"Monospace\";\n})(FontFamily = exports.FontFamily || (exports.FontFamily = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontFamily.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeight.js":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeight.js ***!
+  \*****************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.FontWeight = void 0;\n/**\n * フォントのウェイト。\n * @deprecated 非推奨である。将来的に削除される。代わりに `FontWeightString` を利用すること。\n */\nvar FontWeight;\n(function (FontWeight) {\n    /**\n     * 通常のフォントウェイト。\n     */\n    FontWeight[FontWeight[\"Normal\"] = 0] = \"Normal\";\n    /**\n     * 太字のフォントウェイト。\n     */\n    FontWeight[FontWeight[\"Bold\"] = 1] = \"Bold\";\n})(FontWeight = exports.FontWeight || (exports.FontWeight = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeight.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeightString.js":
+/*!***********************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeightString.js ***!
+  \***********************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeightString.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/Glyph.js":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/Glyph.js ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/Glyph.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/index.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/index.js ***!
+  \*******************************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    var desc = Object.getOwnPropertyDescriptor(m, k);\n    if (!desc || (\"get\" in desc ? !m.__esModule : desc.writable || desc.configurable)) {\n      desc = { enumerable: true, get: function() { return m[k]; } };\n    }\n    Object.defineProperty(o, k2, desc);\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__exportStar(__webpack_require__(/*! ./commons */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/commons.js\"), exports);\n__exportStar(__webpack_require__(/*! ./errors */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/errors.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/CompositeOperation */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/CompositeOperationString */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/ImageData */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ImageData.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/Renderer */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Renderer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/ShaderProgram */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/ShaderUniform */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/Surface */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Surface.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioAsset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioPlayer */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioSystem */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioAssetHint */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/image/ImageAssetHint */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/image/ImageAsset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/script/ScriptAsset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/script/Module */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/Module.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/script/ScriptAssetRuntimeValue */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/text/TextAsset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/video/VideoPlayer */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/video/VideoSystem */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/video/VideoAsset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/vector-image/VectorImageAsset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/vector-image/VectorImageAssetHint */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/Asset */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/Asset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/AssetLoadErrorType */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/FontWeightString */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeightString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/FontWeight */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontWeight.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/FontFamily */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/FontFamily.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/Glyph */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/Glyph.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/GlyphFactory */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/Looper */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Looper.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/OperationPluginView */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/OperationPluginViewInfo */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/Platform */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Platform.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/PlatformEventHandler */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/PlatformPointEvent */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/RendererRequirement */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/ResourceFactory */ \"./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js\"), exports);\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Looper.js":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Looper.js ***!
+  \*****************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Looper.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js":
+/*!******************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js ***!
+  \******************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js":
+/*!**********************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js ***!
+  \**********************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Platform.js":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Platform.js ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/Platform.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js":
+/*!*******************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js ***!
+  \*******************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js":
+/*!*****************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js ***!
+  \*****************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js":
+/*!******************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js ***!
+  \******************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js":
+/*!**************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js ***!
+  \**************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js":
+/*!****************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.CompositeOperation = void 0;\n/**\n * 描画時の合成方法。\n * @deprecated 非推奨である。将来的に削除される。代わりに `CompositeOperationString` を利用すること。\n */\nvar CompositeOperation;\n(function (CompositeOperation) {\n    /**\n     * 先に描画された領域の上に描画する。\n     */\n    CompositeOperation[CompositeOperation[\"SourceOver\"] = 0] = \"SourceOver\";\n    /**\n     * 先に描画された領域と重なった部分のみを描画する。\n     */\n    CompositeOperation[CompositeOperation[\"SourceAtop\"] = 1] = \"SourceAtop\";\n    /**\n     * 先に描画された領域と重なった部分の色を加算して描画する。\n     */\n    CompositeOperation[CompositeOperation[\"Lighter\"] = 2] = \"Lighter\";\n    /**\n     * 先に描画された領域を全て無視して描画する。\n     */\n    CompositeOperation[CompositeOperation[\"Copy\"] = 3] = \"Copy\";\n    /**\n     * 先に描画された領域と重なった部分に描画を行い、それ以外の部分を透明にする。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalSourceIn\"] = 4] = \"ExperimentalSourceIn\";\n    /**\n     * 先に描画された領域と重なっていない部分に描画を行い、それ以外の部分を透明にする。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalSourceOut\"] = 5] = \"ExperimentalSourceOut\";\n    /**\n     * 描画する領域だけを表示し、先に描画された領域と重なった部分は描画先を表示する。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalDestinationAtop\"] = 6] = \"ExperimentalDestinationAtop\";\n    /**\n     * 先に描画された領域と重なっていない部分を透明にし、重なった部分は描画先を表示する。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalDestinationIn\"] = 7] = \"ExperimentalDestinationIn\";\n    /**\n     * 描画する領域を透明にする。\n     */\n    CompositeOperation[CompositeOperation[\"DestinationOut\"] = 8] = \"DestinationOut\";\n    /**\n     * 先に描画された領域の下に描画する。\n     */\n    CompositeOperation[CompositeOperation[\"DestinationOver\"] = 9] = \"DestinationOver\";\n    /**\n     * 先に描画された領域と重なった部分のみ透明にする。\n     */\n    CompositeOperation[CompositeOperation[\"Xor\"] = 10] = \"Xor\";\n})(CompositeOperation = exports.CompositeOperation || (exports.CompositeOperation = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js":
+/*!**********************************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js ***!
+  \**********************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ImageData.js":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ImageData.js ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ImageData.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Renderer.js":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Renderer.js ***!
+  \******************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Renderer.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js":
+/*!***********************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js ***!
+  \***********************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js":
+/*!***********************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js ***!
+  \***********************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Surface.js":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Surface.js ***!
+  \*****************************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/akashic-engine/node_modules/@akashic/pdi-types/lib/surface/Surface.js?");
 
 /***/ }),
 
@@ -1755,446 +2217,6 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 
 "use strict";
 eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__exportStar(__webpack_require__(/*! ./Asset */ \"./node_modules/@akashic/pdi-common-impl/lib/Asset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AudioAsset */ \"./node_modules/@akashic/pdi-common-impl/lib/AudioAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./AudioPlayer */ \"./node_modules/@akashic/pdi-common-impl/lib/AudioPlayer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ExceptionFactory */ \"./node_modules/@akashic/pdi-common-impl/lib/ExceptionFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Glyph */ \"./node_modules/@akashic/pdi-common-impl/lib/Glyph.js\"), exports);\n__exportStar(__webpack_require__(/*! ./GlyphFactory */ \"./node_modules/@akashic/pdi-common-impl/lib/GlyphFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ImageAsset */ \"./node_modules/@akashic/pdi-common-impl/lib/ImageAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./PdiCommonUtil */ \"./node_modules/@akashic/pdi-common-impl/lib/PdiCommonUtil.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Renderer */ \"./node_modules/@akashic/pdi-common-impl/lib/Renderer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ResourceFactory */ \"./node_modules/@akashic/pdi-common-impl/lib/ResourceFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./ScriptAsset */ \"./node_modules/@akashic/pdi-common-impl/lib/ScriptAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./Surface */ \"./node_modules/@akashic/pdi-common-impl/lib/Surface.js\"), exports);\n__exportStar(__webpack_require__(/*! ./TextAsset */ \"./node_modules/@akashic/pdi-common-impl/lib/TextAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./VectorImageAsset */ \"./node_modules/@akashic/pdi-common-impl/lib/VectorImageAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./VideoAsset */ \"./node_modules/@akashic/pdi-common-impl/lib/VideoAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./VideoPlayer */ \"./node_modules/@akashic/pdi-common-impl/lib/VideoPlayer.js\"), exports);\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-common-impl/lib/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/Asset.js":
-/*!************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/Asset.js ***!
-  \************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/Asset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.AssetLoadErrorType = void 0;\n/**\n * アセット読み込み失敗時のエラーの種別。\n *\n * この値はあくまでもエラーメッセージ出力のための補助情報であり、\n * 網羅性・厳密性を追求したものではないことに注意。\n *\n * @deprecated 非推奨である。将来的に削除される。現在この型が必要な処理は存在しない。\n */\nvar AssetLoadErrorType;\n(function (AssetLoadErrorType) {\n    /**\n     * 明示されていない(以下のいずれかかもしれないし、そうでないかもしれない)。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"Unspecified\"] = 0] = \"Unspecified\";\n    /**\n     * エンジンの再試行回数上限設定値を超えた。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"RetryLimitExceeded\"] = 1] = \"RetryLimitExceeded\";\n    /**\n     * ネットワークエラー。タイムアウトなど。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"NetworkError\"] = 2] = \"NetworkError\";\n    /**\n     * リクエストに問題があるエラー。HTTP 4XX など。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"ClientError\"] = 3] = \"ClientError\";\n    /**\n     * サーバ側のエラー。HTTP 5XX など。\n     */\n    AssetLoadErrorType[AssetLoadErrorType[\"ServerError\"] = 4] = \"ServerError\";\n})(AssetLoadErrorType = exports.AssetLoadErrorType || (exports.AssetLoadErrorType = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js":
-/*!***********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js":
-/*!***********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/script/Module.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/script/Module.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/script/Module.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js":
-/*!*************************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js ***!
-  \*************************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js ***!
-  \*********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js":
-/*!************************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js ***!
-  \************************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js":
-/*!****************************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js ***!
-  \****************************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js":
-/*!***********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js ***!
-  \***********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/commons.js":
-/*!********************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/commons.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/commons.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/errors.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/errors.js ***!
-  \*******************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/errors.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/font/FontFamily.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/font/FontFamily.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.FontFamily = void 0;\n/**\n * 文字列描画のフォントファミリ。\n * @deprecated 非推奨である。将来的に削除される。代わりに文字列 `\"sans-serif\"`, `\"serif\"`, `\"monospace\"` を利用すること。\n */\nvar FontFamily;\n(function (FontFamily) {\n    /**\n     * サンセリフ体。ＭＳ Ｐゴシック等\n     */\n    FontFamily[FontFamily[\"SansSerif\"] = 0] = \"SansSerif\";\n    /**\n     * セリフ体。ＭＳ 明朝等\n     */\n    FontFamily[FontFamily[\"Serif\"] = 1] = \"Serif\";\n    /**\n     * 等幅。ＭＳ ゴシック等\n     */\n    FontFamily[FontFamily[\"Monospace\"] = 2] = \"Monospace\";\n})(FontFamily = exports.FontFamily || (exports.FontFamily = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/font/FontFamily.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/font/FontWeight.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/font/FontWeight.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.FontWeight = void 0;\n/**\n * フォントのウェイト。\n * @deprecated 非推奨である。将来的に削除される。代わりに `FontWeightString` を利用すること。\n */\nvar FontWeight;\n(function (FontWeight) {\n    /**\n     * 通常のフォントウェイト。\n     */\n    FontWeight[FontWeight[\"Normal\"] = 0] = \"Normal\";\n    /**\n     * 太字のフォントウェイト。\n     */\n    FontWeight[FontWeight[\"Bold\"] = 1] = \"Bold\";\n})(FontWeight = exports.FontWeight || (exports.FontWeight = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/font/FontWeight.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/font/FontWeightString.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/font/FontWeightString.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/font/FontWeightString.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/font/Glyph.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/font/Glyph.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/font/Glyph.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js ***!
-  \******************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/index.js":
-/*!******************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/index.js ***!
-  \******************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__exportStar(__webpack_require__(/*! ./commons */ \"./node_modules/@akashic/pdi-types/lib/commons.js\"), exports);\n__exportStar(__webpack_require__(/*! ./errors */ \"./node_modules/@akashic/pdi-types/lib/errors.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/CompositeOperation */ \"./node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/CompositeOperationString */ \"./node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/ImageData */ \"./node_modules/@akashic/pdi-types/lib/surface/ImageData.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/Renderer */ \"./node_modules/@akashic/pdi-types/lib/surface/Renderer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/ShaderProgram */ \"./node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/ShaderUniform */ \"./node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js\"), exports);\n__exportStar(__webpack_require__(/*! ./surface/Surface */ \"./node_modules/@akashic/pdi-types/lib/surface/Surface.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioAsset */ \"./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioPlayer */ \"./node_modules/@akashic/pdi-types/lib/asset/audio/AudioPlayer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioSystem */ \"./node_modules/@akashic/pdi-types/lib/asset/audio/AudioSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/audio/AudioAssetHint */ \"./node_modules/@akashic/pdi-types/lib/asset/audio/AudioAssetHint.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/image/ImageAssetHint */ \"./node_modules/@akashic/pdi-types/lib/asset/image/ImageAssetHint.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/image/ImageAsset */ \"./node_modules/@akashic/pdi-types/lib/asset/image/ImageAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/script/ScriptAsset */ \"./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/script/Module */ \"./node_modules/@akashic/pdi-types/lib/asset/script/Module.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/script/ScriptAssetRuntimeValue */ \"./node_modules/@akashic/pdi-types/lib/asset/script/ScriptAssetRuntimeValue.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/text/TextAsset */ \"./node_modules/@akashic/pdi-types/lib/asset/text/TextAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/video/VideoPlayer */ \"./node_modules/@akashic/pdi-types/lib/asset/video/VideoPlayer.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/video/VideoSystem */ \"./node_modules/@akashic/pdi-types/lib/asset/video/VideoSystem.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/video/VideoAsset */ \"./node_modules/@akashic/pdi-types/lib/asset/video/VideoAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/vector-image/VectorImageAsset */ \"./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAsset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/vector-image/VectorImageAssetHint */ \"./node_modules/@akashic/pdi-types/lib/asset/vector-image/VectorImageAssetHint.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/Asset */ \"./node_modules/@akashic/pdi-types/lib/asset/Asset.js\"), exports);\n__exportStar(__webpack_require__(/*! ./asset/AssetLoadErrorType */ \"./node_modules/@akashic/pdi-types/lib/asset/AssetLoadErrorType.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/FontWeightString */ \"./node_modules/@akashic/pdi-types/lib/font/FontWeightString.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/FontWeight */ \"./node_modules/@akashic/pdi-types/lib/font/FontWeight.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/FontFamily */ \"./node_modules/@akashic/pdi-types/lib/font/FontFamily.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/Glyph */ \"./node_modules/@akashic/pdi-types/lib/font/Glyph.js\"), exports);\n__exportStar(__webpack_require__(/*! ./font/GlyphFactory */ \"./node_modules/@akashic/pdi-types/lib/font/GlyphFactory.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/Looper */ \"./node_modules/@akashic/pdi-types/lib/platform/Looper.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/OperationPluginView */ \"./node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/OperationPluginViewInfo */ \"./node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/Platform */ \"./node_modules/@akashic/pdi-types/lib/platform/Platform.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/PlatformEventHandler */ \"./node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/PlatformPointEvent */ \"./node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/RendererRequirement */ \"./node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js\"), exports);\n__exportStar(__webpack_require__(/*! ./platform/ResourceFactory */ \"./node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js\"), exports);\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/Looper.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/Looper.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/Looper.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js ***!
-  \*****************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/OperationPluginView.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js":
-/*!*********************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js ***!
-  \*********************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/OperationPluginViewInfo.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/Platform.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/Platform.js ***!
-  \******************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/Platform.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js":
-/*!******************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js ***!
-  \******************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/PlatformEventHandler.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js":
-/*!****************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js ***!
-  \****************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/PlatformPointEvent.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js ***!
-  \*****************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/RendererRequirement.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/platform/ResourceFactory.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.CompositeOperation = void 0;\n/**\n * 描画時の合成方法。\n * @deprecated 非推奨である。将来的に削除される。代わりに `CompositeOperationString` を利用すること。\n */\nvar CompositeOperation;\n(function (CompositeOperation) {\n    /**\n     * 先に描画された領域の上に描画する。\n     */\n    CompositeOperation[CompositeOperation[\"SourceOver\"] = 0] = \"SourceOver\";\n    /**\n     * 先に描画された領域と重なった部分のみを描画する。\n     */\n    CompositeOperation[CompositeOperation[\"SourceAtop\"] = 1] = \"SourceAtop\";\n    /**\n     * 先に描画された領域と重なった部分の色を加算して描画する。\n     */\n    CompositeOperation[CompositeOperation[\"Lighter\"] = 2] = \"Lighter\";\n    /**\n     * 先に描画された領域を全て無視して描画する。\n     */\n    CompositeOperation[CompositeOperation[\"Copy\"] = 3] = \"Copy\";\n    /**\n     * 先に描画された領域と重なった部分に描画を行い、それ以外の部分を透明にする。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalSourceIn\"] = 4] = \"ExperimentalSourceIn\";\n    /**\n     * 先に描画された領域と重なっていない部分に描画を行い、それ以外の部分を透明にする。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalSourceOut\"] = 5] = \"ExperimentalSourceOut\";\n    /**\n     * 描画する領域だけを表示し、先に描画された領域と重なった部分は描画先を表示する。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalDestinationAtop\"] = 6] = \"ExperimentalDestinationAtop\";\n    /**\n     * 先に描画された領域と重なっていない部分を透明にし、重なった部分は描画先を表示する。\n     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。\n     */\n    CompositeOperation[CompositeOperation[\"ExperimentalDestinationIn\"] = 7] = \"ExperimentalDestinationIn\";\n    /**\n     * 描画する領域を透明にする。\n     */\n    CompositeOperation[CompositeOperation[\"DestinationOut\"] = 8] = \"DestinationOut\";\n    /**\n     * 先に描画された領域の下に描画する。\n     */\n    CompositeOperation[CompositeOperation[\"DestinationOver\"] = 9] = \"DestinationOver\";\n    /**\n     * 先に描画された領域と重なった部分のみ透明にする。\n     */\n    CompositeOperation[CompositeOperation[\"Xor\"] = 10] = \"Xor\";\n})(CompositeOperation = exports.CompositeOperation || (exports.CompositeOperation = {}));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/CompositeOperation.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js":
-/*!*********************************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js ***!
-  \*********************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/CompositeOperationString.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/ImageData.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/ImageData.js ***!
-  \******************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/ImageData.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/Renderer.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/Renderer.js ***!
-  \*****************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/Renderer.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/ShaderProgram.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js ***!
-  \**********************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/ShaderUniform.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@akashic/pdi-types/lib/surface/Surface.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@akashic/pdi-types/lib/surface/Surface.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n\n\n//# sourceURL=webpack://AE/./node_modules/@akashic/pdi-types/lib/surface/Surface.js?");
 
 /***/ }),
 

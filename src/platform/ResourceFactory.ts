@@ -1,6 +1,7 @@
 import * as g from "@akashic/akashic-engine";
 import urlJoin from "url-join";
 import { AssetLoaderFunctions } from "./AssetLoaderFunctions";
+import { GeneratedVectorImageAsset } from "./assets/GeneratedVectorImageAsset";
 import { ImageAsset } from "./assets/ImageAsset";
 import { ScriptAsset } from "./assets/ScriptAsset";
 import { VectorImageAsset } from "./assets/SVGImageAsset";
@@ -103,5 +104,9 @@ export class ResourceFactory implements g.ResourceFactory {
 		fontWeight?: g.FontWeightString
 	): g.GlyphFactory {
 		return new GlyphFactory(fontFamily, fontSize, baseline, fontColor, strokeWidth, strokeColor, strokeOnly, fontWeight);
+	}
+
+	createVectorImageAssetFromString(id: string, path: string, data: string): VectorImageAsset {
+		return new GeneratedVectorImageAsset(id, path, data);
 	}
 }

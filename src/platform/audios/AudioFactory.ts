@@ -21,10 +21,11 @@ export class AudioFactory {
 		duration: number,
 		system: g.AudioSystem,
 		loop: boolean,
-		hint: g.AudioAssetHint
+		hint: g.AudioAssetHint,
+		offset?: number
 	): g.AudioAsset {
-		const activePlugin = this.audioPluginManager.getActivePlugin();
-		const audioAsset = activePlugin.createAsset(id, path, duration, system, loop, hint);
+		const activePlugin = this.audioPluginManager.getActivePlugin()!;
+		const audioAsset = activePlugin.createAsset(id, path, duration, system, loop, hint, offset ?? 0);
 		this.audioManager.registerAudioAsset(audioAsset);
 		// TODO: g.AudioAsset#onDestroyed の引数は本来 g.AudioAsset のはず
 		audioAsset.onDestroyed.addOnce(this.handleAudioAssetDestroyed as (asset: g.Asset) => void, this);
@@ -32,7 +33,7 @@ export class AudioFactory {
 	}
 
 	createAudioPlayer(system: g.AudioSystem): g.AudioPlayer {
-		const activePlugin = this.audioPluginManager.getActivePlugin();
+		const activePlugin = this.audioPluginManager.getActivePlugin()!;
 		return activePlugin.createPlayer(system, this.audioManager);
 	}
 

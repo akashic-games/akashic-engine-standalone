@@ -18,14 +18,11 @@ jobs:
           cache: npm
       - name: Update internal modules
         run: |
-          npm install @akashic/akashic-engine@latest --save-exact
-          npm install @akashic-extension/akashic-box2d@latest --save-exact
-          npm install @akashic-extension/akashic-label@latest --save-exact
-          npm install @akashic-extension/akashic-timeline@latest --save-exact
+          npx -y npm-check-updates -f "@akashic*" -t minor -u
       - name: Get version of @akashic/akashic-engine
         id: version
         run: |
-          echo "::set-output name=LATEST_VERSION::$(cat package.json | jq -r '.dependencies["@akashic/akashic-engine"]')"
+          echo "LATEST_VERSION=$(cat package.json | jq -r '.dependencies["@akashic/akashic-engine"]')" >> $GITHUB_OUTPUT
       - name: Install and Build
         run: |
           npm ci
@@ -33,7 +30,7 @@ jobs:
           npm run build
       - name: Get workflow url
         id: workflow
-        run: echo "::set-output name=WORKFLOW_URL::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        run: echo "WORKFLOW_URL=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> $GITHUB_OUTPUT
       - name: Archive artifact
         uses: actions/upload-artifact@v3
         with:
@@ -42,7 +39,7 @@ jobs:
       - name: Get diff files
         id: diff
         run: |
-          echo "::set-output name=count::$(git diff --name-only | wc -l)"
+          echo "count=$(git diff --name-only | wc -l)" >> $GITHUB_OUTPUT
       - name: Create commits
         if: 2 <= steps.diff.outputs.count # package.json, package-lock.json
         run: |

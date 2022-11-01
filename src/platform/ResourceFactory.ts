@@ -1,6 +1,6 @@
-import * as g from "@akashic/akashic-engine";
+import type * as g from "@akashic/akashic-engine";
 import urlJoin from "url-join";
-import { AssetLoaderFunctions } from "./AssetLoaderFunctions";
+import type { AssetLoaderFunctions } from "./AssetLoaderFunctions";
 import { GeneratedVectorImageAsset } from "./assets/GeneratedVectorImageAsset";
 import { ImageAsset } from "./assets/ImageAsset";
 import { ScriptAsset } from "./assets/ScriptAsset";

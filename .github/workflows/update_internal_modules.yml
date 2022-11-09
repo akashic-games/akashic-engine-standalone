@@ -25,7 +25,7 @@ jobs:
           echo "LATEST_VERSION=$(cat package.json | jq -r '.dependencies["@akashic/akashic-engine"]')" >> $GITHUB_OUTPUT
       - name: Install and Build
         run: |
-          npm ci
+          npm install
           npm version ${{ steps.version.outputs.LATEST_VERSION }} --allow-same-version --no-git-tag-version
           npm run build
       - name: Get workflow url

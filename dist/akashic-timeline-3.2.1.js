@@ -840,11 +840,12 @@ var Tween = /** @class */ (function () {
                     action.func.call(this._target);
                     break;
                 case ActionType_1.ActionType.Every:
-                    var progress = action.easing(action.elapsed, 0, 1, action.duration);
+                    var elapsed = Math.min(action.elapsed, action.duration);
+                    var progress = action.easing(elapsed, 0, 1, action.duration);
                     if (progress > 1) {
                         progress = 1;
                     }
-                    action.func.call(this._target, action.elapsed, progress);
+                    action.func.call(this._target, elapsed, progress);
                     break;
                 case ActionType_1.ActionType.TweenTo:
                 case ActionType_1.ActionType.TweenBy:

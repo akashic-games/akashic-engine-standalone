@@ -1,7 +1,7 @@
 import * as g from "@akashic/akashic-engine";
-import { XHRLoader } from "@akashic/pdi-browser/lib/full/utils/XHRLoader"; // TODO: 個別インポートを可能に?
+import { XHRLoader } from "@akashic/pdi-browser/lib/full/utils/XHRLoader";
 import { ExceptionFactory } from "@akashic/pdi-common-impl";
-import { TextDataLoaderFunction } from "../AssetLoaderFunctions";
+import type { TextDataLoaderFunction } from "../AssetLoaderFunctions";
 import { Asset } from "./Asset";
 
 /**

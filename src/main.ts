@@ -2,7 +2,7 @@ import * as g from "@akashic/akashic-engine";
 import type * as runtime_g from "@akashic/akashic-engine/index.runtime";
 import type { Event } from "@akashic/playlog";
 import { GameHandlerSet } from "./GameHandlerSet";
-import { AssetLoaderFunctions } from "./platform/AssetLoaderFunctions";
+import type { AssetLoaderFunctions } from "./platform/AssetLoaderFunctions";
 import { ResourceFactory } from "./platform/ResourceFactory";
 
 /**

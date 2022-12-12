@@ -1,5 +1,4 @@
-import * as g from "@akashic/akashic-engine";
-// TODO: 個別インポートを可能に?
+import type * as g from "@akashic/akashic-engine";
 import { CanvasSurfaceContext } from "@akashic/pdi-browser/lib/full/canvas/context2d/CanvasSurfaceContext";
 import { Context2DRenderer } from "@akashic/pdi-browser/lib/full/canvas/context2d/Context2DRenderer";
 import { Surface } from "@akashic/pdi-browser/lib/full/Surface";
@@ -45,7 +44,7 @@ export class PrimaryContext2DSurface extends Surface {
 		 - http://havelog.ayumusato.com/develop/performance/e554-paint_gpu_acceleration_problems.html
 		 - http://buccchi.jp/blog/2013/03/android_canvas_deathpoint/
 		 */
-		var canvasStyle = <any>this.canvas.style;
+		const canvasStyle = this.canvas.style as any;
 		if ("transform" in canvasStyle) {
 			canvasStyle.transformOrigin = "0 0";
 			canvasStyle.transform = "scale(" + xScale + "," + yScale + ")";

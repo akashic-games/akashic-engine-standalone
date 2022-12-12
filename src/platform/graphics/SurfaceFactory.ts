@@ -1,4 +1,4 @@
-import * as g from "@akashic/akashic-engine";
+import type * as g from "@akashic/akashic-engine";
 import { Context2DSurface } from "./context2d/Context2DSurface";
 import { PrimaryContext2DSurface } from "./context2d/PrimaryContext2DSurface";
 

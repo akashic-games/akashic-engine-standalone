@@ -1,7 +1,6 @@
-import * as g from "@akashic/akashic-engine";
+import type * as g from "@akashic/akashic-engine";
 import { AudioPluginManager, WebAudioPlugin, HTMLAudioPlugin } from "@akashic/pdi-browser";
-// TODO: 個別インポートを可能に?
-import { AudioAsset } from "@akashic/pdi-browser/lib/full/asset/AudioAsset";
+import type { AudioAsset } from "@akashic/pdi-browser/lib/full/asset/AudioAsset";
 import { AudioManager } from "@akashic/pdi-browser/lib/full/AudioManager";
 
 export class AudioFactory {

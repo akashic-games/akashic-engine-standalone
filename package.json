@@ -72,7 +72,7 @@
     "@akashic/akashic-engine": "3.10.0",
     "@akashic/pdi-browser": "2.4.1",
     "@akashic/pdi-common-impl": "1.2.0",
-    "@akashic/pdi-types": "1.6.0",
+    "@akashic/pdi-types": "1.7.0",
     "url-join": "^5.0.0"
   },
   "devDependencies": {

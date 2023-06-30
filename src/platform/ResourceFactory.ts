@@ -1,6 +1,7 @@
 import type * as g from "@akashic/akashic-engine";
 import urlJoin from "url-join";
 import type { AssetLoaderFunctions } from "./AssetLoaderFunctions";
+import { BinaryAsset } from "./assets/BinaryAsset";
 import { GeneratedVectorImageAsset } from "./assets/GeneratedVectorImageAsset";
 import { ImageAsset } from "./assets/ImageAsset";
 import { ScriptAsset } from "./assets/ScriptAsset";
@@ -83,6 +84,10 @@ export class ResourceFactory implements g.ResourceFactory {
 			asset._overrideLoadFunc(this.assetLoaderFuncs.loadScriptAsset);
 		}
 		return asset;
+	}
+
+	createBinaryAsset(id: string, assetPath: string): g.BinaryAsset {
+		return new BinaryAsset(id, assetPath);
 	}
 
 	createPrimarySurface(width: number, height: number): g.Surface {

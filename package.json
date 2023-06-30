@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "npm run build",
     "pre-commit": "npm t",
-    "build": "rimraf \"./dist/**/{akashic-*,index*}.{js,html}\" && npm run format && run-s build:*",
+    "build": "rimraf --glob \"./dist/**/{akashic-*,index*}.{js,html}\" && npm run format && run-s build:*",
     "build:ts": "tsc -p ./tsconfig.json",
     "build:dev": "webpack --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",

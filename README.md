@@ -86,7 +86,7 @@ var finalize = AE.initialize({
 </head>
 <body>
   <canvas id="canvas" width="800" height="450"></canvas>
-  <script src="./dist/akashic-engine-standalone-3.0.0-beta.31.js"></script>
+  <script src="./dist/akashic-engine-standalone-3.14.0.js"></script>
   <script>
     AE.initialize({
       canvas: document.getElementById("canvas"),
@@ -140,8 +140,8 @@ var finalize = AE.initialize({
 
 ```html
 <body>
-  <script src="./dist/akashic-engine-standalone-3.0.0-beta.31.js"></script>
-  <script src="./dist/akashic-timeline-3.0.0-beta.2"></script>
+  <script src="./dist/akashic-engine-standalone-3.14.js"></script>
+  <script src="./dist/akashic-timeline-3.2.1.js"></script>
   <script>
     ...
     mainFunc: function(g) {

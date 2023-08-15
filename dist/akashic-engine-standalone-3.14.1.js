@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.14.0 */
+/*! akashic-engine-standalone@3.14.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -7299,6 +7299,7 @@
 		        this._ready = this._onReady;
 		        this.assets = {};
 		        this.asset = new AssetAccessor_1.AssetAccessor(game._assetManager);
+		        this.vars = {};
 		        this._loaded = false;
 		        this._prefetchRequested = false;
 		        this._loadingState = "initial";
@@ -7385,12 +7386,14 @@
 		        this.onAssetLoadFailure.destroy();
 		        this.onAssetLoadComplete.destroy();
 		        this.assets = {};
+		        this.vars = {};
 		        // アセットを参照しているEより先に解放しないよう最後に解放する
 		        for (var i = 0; i < this._assetHolders.length; ++i)
 		            this._assetHolders[i].destroy();
 		        this._sceneAssetHolder.destroy();
 		        this._storageLoader = undefined;
 		        this.game = undefined;
+		        this._waitingPrepare = undefined;
 		        this.state = "destroyed";
 		        this.onStateChange.fire(this.state);
 		        this.onStateChange.destroy();
@@ -7662,7 +7665,9 @@
 		     * @private
 		     */
 		    Scene.prototype._needsLoading = function () {
-		        return this._sceneAssetHolder.waitingAssetsCount > 0 || (!!this._storageLoader && !this._storageLoader._loaded);
+		        return (this._sceneAssetHolder.waitingAssetsCount > 0 ||
+		            (!!this._storageLoader && !this._storageLoader._loaded) ||
+		            !!this._waitingPrepare);
 		    };
 		    /**
 		     * @private
@@ -10793,31 +10798,30 @@
 		     * このメソッドの呼び出しにより、現在のシーンの `stateChanged` が引数 `"deactive"` でfireされる。
 		     * その後 `scene.stateChanged` が引数 `"active"` でfireされる。
 		     * @param scene 遷移後のシーン
+		     * @param option 遷移時のオプション
 		     */
-		    Game.prototype.pushScene = function (scene) {
+		    Game.prototype.pushScene = function (scene, option) {
 		        this._postTickTasks.push({
 		            type: 0 /* PostTickTaskType.PushScene */,
-		            scene: scene
+		            scene: scene,
+		            prepare: option === null || option === void 0 ? void 0 : option.prepare
 		        });
 		    };
-		    /**
-		     * 現在のシーンの置き換えを要求する。
-		     *
-		     * 現在のシーンをシーンスタックから取り除き、指定のシーンを追加することを要求する。
-		     * このメソッドは要求を行うだけである。呼び出し直後にはシーン遷移は行われていないことに注意。
-		     * 実際のシーン遷移は現在のフレームの終わり(Scene#update の fire 後) まで遅延される。
-		     * 引数 `preserveCurrent` が偽の場合、このメソッドの呼び出しにより現在のシーンは破棄される。
-		     * またその時 `stateChanged` が引数 `"destroyed"` でfireされる。
-		     * その後 `scene.stateChanged` が引数 `"active"` でfireされる。
-		     *
-		     * @param scene 遷移後のシーン
-		     * @param preserveCurrent 真の場合、現在のシーンを破棄しない(ゲーム開発者が明示的に破棄せねばならない)。省略された場合、偽
-		     */
-		    Game.prototype.replaceScene = function (scene, preserveCurrent) {
+		    Game.prototype.replaceScene = function (scene, preserveCurrentOrOption) {
+		        var preserveCurrent;
+		        var prepare;
+		        if (typeof preserveCurrentOrOption === "object") {
+		            preserveCurrent = !!preserveCurrentOrOption.preserveCurrent;
+		            prepare = preserveCurrentOrOption.prepare;
+		        }
+		        else {
+		            preserveCurrent = !!preserveCurrentOrOption;
+		        }
 		        this._postTickTasks.push({
 		            type: 1 /* PostTickTaskType.ReplaceScene */,
 		            scene: scene,
-		            preserveCurrent: !!preserveCurrent
+		            preserveCurrent: preserveCurrent,
+		            prepare: prepare
 		        });
 		    };
 		    /**
@@ -11582,12 +11586,16 @@
 		                        if (oldScene) {
 		                            oldScene._deactivate();
 		                        }
-		                        this._doPushScene(req.scene, false);
+		                        this._doPushScene(req.scene, false, req.prepare
+		                            ? this._createPreparingLoadingScene(req.scene, req.prepare, "akashic:preparing-".concat(req.scene.name))
+		                            : undefined);
 		                        break;
 		                    case 1 /* PostTickTaskType.ReplaceScene */:
 		                        // NOTE: replaceSceneの場合、pop時点では_sceneChangedをfireしない。_doPushScene() で一度だけfireする。
 		                        this._doPopScene(req.preserveCurrent, false, false);
-		                        this._doPushScene(req.scene, false);
+		                        this._doPushScene(req.scene, false, req.prepare
+		                            ? this._createPreparingLoadingScene(req.scene, req.prepare, "akashic:preparing-".concat(req.scene.name))
+		                            : undefined);
 		                        break;
 		                    case 2 /* PostTickTaskType.PopScene */:
 		                        this._doPopScene(req.preserveCurrent, false, true);
@@ -11672,7 +11680,9 @@
 		            // 取り除いた結果スタックトップがロード中のシーンになった場合はローディングシーンを積み直す
 		            var nextScene = this.scene();
 		            if (nextScene && nextScene._needsLoading() && nextScene._loadingState !== "loaded-fired") {
-		                var loadingScene = (_a = this.loadingScene) !== null && _a !== void 0 ? _a : this._defaultLoadingScene;
+		                var loadingScene = nextScene._waitingPrepare
+		                    ? this._createPreparingLoadingScene(nextScene, nextScene._waitingPrepare, "akashic:preparing-".concat(nextScene.name))
+		                    : (_a = this.loadingScene) !== null && _a !== void 0 ? _a : this._defaultLoadingScene;
 		                this._doPushScene(loadingScene, true, this._defaultLoadingScene);
 		                loadingScene.reset(nextScene);
 		            }
@@ -11755,6 +11765,36 @@
 		            }
 		        }
 		        this._modified = true;
+		    };
+		    /**
+		     * 引数に指定したハンドラが完了するまで待機する空のローディングシーンを作成する。
+		     */
+		    Game.prototype._createPreparingLoadingScene = function (scene, prepare, name) {
+		        var _this = this;
+		        scene._waitingPrepare = prepare;
+		        var loadingScene = new LoadingScene_1.LoadingScene({
+		            game: this,
+		            explicitEnd: true,
+		            name: name
+		        });
+		        // prepare 対象シーンを保持するためクロージャを許容
+		        loadingScene.onTargetReady.addOnce(function () {
+		            var done = function () {
+		                if (_this._isTerminated)
+		                    return;
+		                loadingScene.end();
+		            };
+		            var prepare = scene._waitingPrepare;
+		            scene._waitingPrepare = undefined;
+		            if (prepare) {
+		                prepare(done);
+		            }
+		            else {
+		                // NOTE: 異常系ではあるが prepare が存在しない場合は loadingScene.end() を直接呼ぶ
+		                _this._pushPostTickTask(loadingScene.end, loadingScene);
+		            }
+		        });
+		        return loadingScene;
 		    };
 		    Game.prototype._cleanDB = function () {
 		        this.db.clean();

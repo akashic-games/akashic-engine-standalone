@@ -86,8 +86,8 @@ export class ResourceFactory implements g.ResourceFactory {
 		return asset;
 	}
 
-	createBinaryAsset(id: string, assetPath: string): g.BinaryAsset {
-		return new BinaryAsset(id, assetPath);
+	createBinaryAsset(id: string, path: string): g.BinaryAsset {
+		return new BinaryAsset(id, urlJoin(this.assetBaseDir, path));
 	}
 
 	createPrimarySurface(width: number, height: number): g.Surface {

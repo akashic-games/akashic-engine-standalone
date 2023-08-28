@@ -19452,8 +19452,8 @@
 		        }
 		        return asset;
 		    };
-		    ResourceFactory.prototype.createBinaryAsset = function (id, assetPath) {
-		        return new BinaryAsset_1.BinaryAsset(id, assetPath);
+		    ResourceFactory.prototype.createBinaryAsset = function (id, path) {
+		        return new BinaryAsset_1.BinaryAsset(id, (0, url_join_1.default)(this.assetBaseDir, path));
 		    };
 		    ResourceFactory.prototype.createPrimarySurface = function (width, height) {
 		        return this.surfaceFactory.createPrimarySurface(width, height);

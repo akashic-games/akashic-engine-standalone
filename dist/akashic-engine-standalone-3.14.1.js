@@ -19445,8 +19445,8 @@
 		        }
 		        return asset;
 		    };
-		    ResourceFactory.prototype.createScriptAsset = function (id, path) {
-		        var asset = new ScriptAsset_1.ScriptAsset(id, (0, url_join_1.default)(this.assetBaseDir, path));
+		    ResourceFactory.prototype.createScriptAsset = function (id, path, exports) {
+		        var asset = new ScriptAsset_1.ScriptAsset(id, (0, url_join_1.default)(this.assetBaseDir, path), exports);
 		        if (this.assetLoaderFuncs && this.assetLoaderFuncs.loadScriptAsset) {
 		            asset._overrideLoadFunc(this.assetLoaderFuncs.loadScriptAsset);
 		        }

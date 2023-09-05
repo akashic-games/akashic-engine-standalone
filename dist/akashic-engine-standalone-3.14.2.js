@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.14.1 */
+/*! akashic-engine-standalone@3.14.2 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -7338,6 +7338,7 @@
 		            },
 		            userData: null
 		        });
+		        this.seethrough = param.seethrough != null ? param.seethrough : false;
 		    }
 		    /**
 		     * このシーンが変更されたことをエンジンに通知する。
@@ -10915,6 +10916,11 @@
 		            return;
 		        var camera = this.focusingCamera;
 		        var renderers = this.renderers; // unsafe
+		        // 描画するべき一番底のシーンを先に探しておく
+		        var index = this.scenes.length - 1;
+		        while (index >= 0 && this.scenes[index].seethrough)
+		            --index;
+		        var renderBottomIndex = index;
 		        for (var i = 0; i < renderers.length; ++i) {
 		            var renderer = renderers[i];
 		            renderer.begin();
@@ -10924,9 +10930,17 @@
 		                renderer.save();
 		                camera._applyTransformToRenderer(renderer);
 		            }
-		            var children = scene.children;
-		            for (var j = 0; j < children.length; ++j)
-		                children[j].render(renderer, camera);
+		            if (scene === skippingScene) {
+		                for (var k = 0; k < scene.children.length; ++k)
+		                    scene.children[k].render(renderer, camera);
+		            }
+		            else {
+		                for (var j = renderBottomIndex; j < this.scenes.length; ++j) {
+		                    var children = this.scenes[j].children;
+		                    for (var k = 0; k < children.length; ++k)
+		                        children[k].render(renderer, camera);
+		                }
+		            }
 		            if (camera) {
 		                renderer.restore();
 		            }

@@ -19682,6 +19682,7 @@
 	            window.cancelAnimationFrame(requestAnimationFrameId);
 	            requestAnimationFrameId = null;
 	        }
+	        game._destroy();
 	        unhandlePointEvent();
 	        primarySurface.renderer().clear();
 	    };

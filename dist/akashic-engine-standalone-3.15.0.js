@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.14.2 */
+/*! akashic-engine-standalone@3.15.0 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1908,132 +1908,132 @@
 	function requirePathUtil () {
 		if (hasRequiredPathUtil) return PathUtil;
 		hasRequiredPathUtil = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.PathUtil = void 0;
-			var ExceptionFactory_1 = requireExceptionFactory$2();
-			(function (PathUtil) {
-			    /**
-			     * 二つのパス文字列をつなぎ、相対パス表現 (".", "..") を解決して返す。
-			     * @param base 左辺パス文字列 (先頭の "./" を除き、".", ".." を含んではならない)
-			     * @param path 右辺パス文字列
-			     */
-			    function resolvePath(base, path) {
-			        function split(str) {
-			            var ret = str.split("/");
-			            if (ret[ret.length - 1] === "")
-			                ret.pop();
-			            return ret;
-			        }
-			        if (path === "")
-			            return base;
-			        var baseComponents = PathUtil.splitPath(base);
-			        var parts = split(baseComponents.path).concat(split(path));
-			        var resolved = [];
-			        for (var i = 0; i < parts.length; ++i) {
-			            var part = parts[i];
-			            switch (part) {
-			                case "..":
-			                    var popped = resolved.pop();
-			                    if (popped === undefined || popped === "" || popped === ".")
-			                        throw ExceptionFactory_1.ExceptionFactory.createAssertionError("PathUtil.resolvePath: invalid arguments");
-			                    break;
-			                case ".":
-			                    if (resolved.length === 0) {
-			                        resolved.push(".");
-			                    }
-			                    break;
-			                case "": // 絶対パス
-			                    resolved = [""];
-			                    break;
-			                default:
-			                    resolved.push(part);
-			            }
-			        }
-			        return baseComponents.host + resolved.join("/");
-			    }
-			    PathUtil.resolvePath = resolvePath;
-			    /**
-			     * パス文字列からディレクトリ名部分を切り出して返す。
-			     * @param path パス文字列
-			     */
-			    function resolveDirname(path) {
-			        var index = path.lastIndexOf("/");
-			        if (index === -1)
-			            return path;
-			        return path.substr(0, index);
-			    }
-			    PathUtil.resolveDirname = resolveDirname;
-			    /**
-			     * パス文字列から拡張子部分を切り出して返す。
-			     * @param path パス文字列
-			     */
-			    function resolveExtname(path) {
-			        for (var i = path.length - 1; i >= 0; --i) {
-			            var c = path.charAt(i);
-			            if (c === ".") {
-			                return path.substr(i);
-			            }
-			            else if (c === "/") {
-			                return "";
-			            }
-			        }
-			        return "";
-			    }
-			    PathUtil.resolveExtname = resolveExtname;
-			    /**
-			     * パス文字列から、node.js において require() の探索範囲になるパスの配列を作成して返す。
-			     * @param path ディレクトリを表すパス文字列
-			     */
-			    function makeNodeModulePaths(path) {
-			        var pathComponents = PathUtil.splitPath(path);
-			        var host = pathComponents.host;
-			        path = pathComponents.path;
-			        if (path[path.length - 1] === "/") {
-			            path = path.slice(0, path.length - 1);
-			        }
-			        var parts = path.split("/");
-			        var firstDir = parts.indexOf("node_modules");
-			        var root = firstDir > 0 ? firstDir - 1 : 0;
-			        var dirs = [];
-			        for (var i = parts.length - 1; i >= root; --i) {
-			            if (parts[i] === "node_modules")
-			                continue;
-			            var dirParts = parts.slice(0, i + 1);
-			            dirParts.push("node_modules");
-			            var dir = dirParts.join("/");
-			            dirs.push(host + dir);
-			        }
-			        return dirs;
-			    }
-			    PathUtil.makeNodeModulePaths = makeNodeModulePaths;
-			    /**
-			     * 与えられたパス文字列からホストを切り出す。
-			     * @param path パス文字列
-			     */
-			    function splitPath(path) {
-			        var host = "";
-			        var doubleSlashIndex = path.indexOf("//");
-			        if (doubleSlashIndex >= 0) {
-			            var hostSlashIndex = path.indexOf("/", doubleSlashIndex + 2); // 2 === "//".length
-			            if (hostSlashIndex >= 0) {
-			                host = path.slice(0, hostSlashIndex);
-			                path = path.slice(hostSlashIndex); // 先頭に "/" を残して絶対パス扱いさせる
-			            }
-			            else {
-			                host = path;
-			                path = "/"; // path全体がホストだったので、絶対パス扱いさせる
-			            }
-			        }
-			        else {
-			            host = "";
-			        }
-			        return { host: host, path: path };
-			    }
-			    PathUtil.splitPath = splitPath;
-			})(exports.PathUtil || (exports.PathUtil = {}));
-			
-		} (PathUtil));
+		Object.defineProperty(PathUtil, "__esModule", { value: true });
+		PathUtil.PathUtil = void 0;
+		/**
+		 * パスユーティリティ。
+		 */
+		var PathUtil$1;
+		(function (PathUtil) {
+		    /**
+		     * 二つのパス文字列をつなぎ、相対パス表現 (".", "..") を解決して返す。
+		     * @param base 左辺パス文字列 (先頭の "./" を除き、".", ".." を含んではならない)
+		     * @param path 右辺パス文字列
+		     */
+		    function resolvePath(base, path) {
+		        function split(str) {
+		            var ret = str.split("/");
+		            if (ret[ret.length - 1] === "")
+		                ret.pop();
+		            return ret;
+		        }
+		        if (path === "")
+		            return base;
+		        var baseComponents = PathUtil.splitPath(base);
+		        var parts = split(baseComponents.path).concat(split(path));
+		        var resolved = [];
+		        for (var i = 0; i < parts.length; ++i) {
+		            var part = parts[i];
+		            switch (part) {
+		                case "..":
+		                    var popped = resolved.pop();
+		                    if (popped === undefined || popped === "" || popped === ".")
+		                        throw new Error("PathUtil.resolvePath: invalid arguments");
+		                    break;
+		                case ".":
+		                    if (resolved.length === 0) {
+		                        resolved.push(".");
+		                    }
+		                    break;
+		                case "": // 絶対パス
+		                    resolved = [""];
+		                    break;
+		                default:
+		                    resolved.push(part);
+		            }
+		        }
+		        return baseComponents.host + resolved.join("/");
+		    }
+		    PathUtil.resolvePath = resolvePath;
+		    /**
+		     * パス文字列からディレクトリ名部分を切り出して返す。
+		     * @param path パス文字列
+		     */
+		    function resolveDirname(path) {
+		        var index = path.lastIndexOf("/");
+		        if (index === -1)
+		            return path;
+		        return path.substr(0, index);
+		    }
+		    PathUtil.resolveDirname = resolveDirname;
+		    /**
+		     * パス文字列から拡張子部分を切り出して返す。
+		     * @param path パス文字列
+		     */
+		    function resolveExtname(path) {
+		        for (var i = path.length - 1; i >= 0; --i) {
+		            var c = path.charAt(i);
+		            if (c === ".") {
+		                return path.substr(i);
+		            }
+		            else if (c === "/") {
+		                return "";
+		            }
+		        }
+		        return "";
+		    }
+		    PathUtil.resolveExtname = resolveExtname;
+		    /**
+		     * パス文字列から、node.js において require() の探索範囲になるパスの配列を作成して返す。
+		     * @param path ディレクトリを表すパス文字列
+		     */
+		    function makeNodeModulePaths(path) {
+		        var pathComponents = PathUtil.splitPath(path);
+		        var host = pathComponents.host;
+		        path = pathComponents.path;
+		        if (path[path.length - 1] === "/") {
+		            path = path.slice(0, path.length - 1);
+		        }
+		        var parts = path.split("/");
+		        var firstDir = parts.indexOf("node_modules");
+		        var root = firstDir > 0 ? firstDir - 1 : 0;
+		        var dirs = [];
+		        for (var i = parts.length - 1; i >= root; --i) {
+		            if (parts[i] === "node_modules")
+		                continue;
+		            var dirParts = parts.slice(0, i + 1);
+		            dirParts.push("node_modules");
+		            var dir = dirParts.join("/");
+		            dirs.push(host + dir);
+		        }
+		        return dirs;
+		    }
+		    PathUtil.makeNodeModulePaths = makeNodeModulePaths;
+		    /**
+		     * 与えられたパス文字列からホストを切り出す。
+		     * @param path パス文字列
+		     */
+		    function splitPath(path) {
+		        var host = "";
+		        var doubleSlashIndex = path.indexOf("//");
+		        if (doubleSlashIndex >= 0) {
+		            var hostSlashIndex = path.indexOf("/", doubleSlashIndex + 2); // 2 === "//".length
+		            if (hostSlashIndex >= 0) {
+		                host = path.slice(0, hostSlashIndex);
+		                path = path.slice(hostSlashIndex); // 先頭に "/" を残して絶対パス扱いさせる
+		            }
+		            else {
+		                host = path;
+		                path = "/"; // path全体がホストだったので、絶対パス扱いさせる
+		            }
+		        }
+		        else {
+		            host = "";
+		        }
+		        return { host: host, path: path };
+		    }
+		    PathUtil.splitPath = splitPath;
+		})(PathUtil$1 || (PathUtil.PathUtil = PathUtil$1 = {}));
 		return PathUtil;
 	}
 
@@ -2298,12 +2298,11 @@
 		 * JoinEvent#playerによって、参加したプレイヤーを取得出来る。
 		 */
 		var JoinEvent = /** @class */ (function () {
-		    function JoinEvent(player, storageValues, eventFlags) {
+		    function JoinEvent(player, eventFlags) {
 		        this.type = "join";
 		        // @ts-ignore TODO: eventFlags のデフォルト値の扱い
 		        this.eventFlags = eventFlags;
 		        this.player = player;
-		        this.storageValues = storageValues;
 		    }
 		    return JoinEvent;
 		}());
@@ -7281,14 +7280,6 @@
 		                    ? "full-local"
 		                    : param.local;
 		        var tickGenerationMode = param.tickGenerationMode !== undefined ? param.tickGenerationMode : "by-clock";
-		        if (!param.storageKeys) {
-		            this._storageLoader = undefined;
-		            this.storageValues = undefined;
-		        }
-		        else {
-		            this._storageLoader = game.storage._createLoader(param.storageKeys, param.storageValuesSerialization);
-		            this.storageValues = this._storageLoader._valueStore;
-		        }
 		        this.name = param.name;
 		        this.game = game;
 		        this.local = local;
@@ -7392,7 +7383,6 @@
 		        for (var i = 0; i < this._assetHolders.length; ++i)
 		            this._assetHolders[i].destroy();
 		        this._sceneAssetHolder.destroy();
-		        this._storageLoader = undefined;
 		        this.game = undefined;
 		        this._waitingPrepare = undefined;
 		        this.state = "destroyed";
@@ -7599,9 +7589,6 @@
 		     * `Scene` に必要なアセットは、通常、`Game#pushScene()` などによるシーン遷移にともなって暗黙に読み込みが開始される。
 		     * ゲーム開発者はこのメソッドを呼び出すことで、シーン遷移前にアセット読み込みを開始する(先読みする)ことができる。
 		     * 先読み開始後、シーン遷移時までに読み込みが完了していない場合、通常の読み込み処理同様にローディングシーンが表示される。
-		     *
-		     * このメソッドは `StorageLoader` についての先読み処理を行わない点に注意。
-		     * ストレージの場合、書き込みが行われる可能性があるため、順序を無視して先読みすることはできない。
 		     */
 		    Scene.prototype.prefetch = function () {
 		        if (this._loaded) {
@@ -7612,16 +7599,6 @@
 		            return;
 		        this._prefetchRequested = true;
 		        this._sceneAssetHolder.request();
-		    };
-		    /**
-		     * シーンが読み込んだストレージの値をシリアライズする。
-		     *
-		     * `Scene#storageValues` の内容をシリアライズする。
-		     */
-		    Scene.prototype.serializeStorageValues = function () {
-		        if (!this._storageLoader)
-		            return undefined;
-		        return this._storageLoader._valueStoreSerialization;
 		    };
 		    Scene.prototype.requestAssets = function (assetIds, handler) {
 		        var _this = this;
@@ -7666,9 +7643,7 @@
 		     * @private
 		     */
 		    Scene.prototype._needsLoading = function () {
-		        return (this._sceneAssetHolder.waitingAssetsCount > 0 ||
-		            (!!this._storageLoader && !this._storageLoader._loaded) ||
-		            !!this._waitingPrepare);
+		        return this._sceneAssetHolder.waitingAssetsCount > 0 || !!this._waitingPrepare;
 		    };
 		    /**
 		     * @private
@@ -7677,13 +7652,9 @@
 		        if (this._loaded)
 		            return;
 		        this._loaded = true;
-		        var needsWait = this._sceneAssetHolder.request();
-		        if (this._storageLoader) {
-		            this._storageLoader._load(this);
-		            needsWait = true;
-		        }
-		        if (!needsWait)
+		        if (!this._sceneAssetHolder.request()) {
 		            this._notifySceneReady();
+		        }
 		    };
 		    /**
 		     * @private
@@ -7718,25 +7689,7 @@
 		            // _notifySceneReady() は _load() 呼び出し後まで遅延する。
 		            return;
 		        }
-		        if (this._storageLoader && !this._storageLoader._loaded) {
-		            // アセット読み込みを完了したが、ストレージの読み込みが終わっていない。
-		            // _notifySceneReady() は  _onStorageLoaded() 呼び出し後まで遅延する。
-		            return;
-		        }
 		        this._notifySceneReady();
-		    };
-		    /**
-		     * @private
-		     */
-		    Scene.prototype._onStorageLoadError = function (_error) {
-		        this.game.terminateGame();
-		    };
-		    /**
-		     * @private
-		     */
-		    Scene.prototype._onStorageLoaded = function () {
-		        if (this._sceneAssetHolder.waitingAssetsCount === 0)
-		            this._notifySceneReady();
 		    };
 		    /**
 		     * @private
@@ -8867,225 +8820,6 @@
 
 	var EventConverter = {};
 
-	var Storage = {};
-
-	var hasRequiredStorage;
-
-	function requireStorage () {
-		if (hasRequiredStorage) return Storage;
-		hasRequiredStorage = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.Storage = exports.StorageLoader = exports.StorageValueStore = exports.StorageCountsOperation = exports.StorageCondition = exports.StorageOrder = exports.StorageRegion = void 0;
-			(function (StorageRegion) {
-			    /**
-			     * slotsを表す。
-			     */
-			    StorageRegion[StorageRegion["Slots"] = 1] = "Slots";
-			    /**
-			     * scoresを表す。
-			     */
-			    StorageRegion[StorageRegion["Scores"] = 2] = "Scores";
-			    /**
-			     * countsを表す。
-			     */
-			    StorageRegion[StorageRegion["Counts"] = 3] = "Counts";
-			    /**
-			     * valuesを表す。
-			     */
-			    StorageRegion[StorageRegion["Values"] = 4] = "Values";
-			})(exports.StorageRegion || (exports.StorageRegion = {}));
-			(function (StorageOrder) {
-			    /**
-			     * 昇順。
-			     */
-			    StorageOrder[StorageOrder["Asc"] = 0] = "Asc";
-			    /**
-			     * 降順。
-			     */
-			    StorageOrder[StorageOrder["Desc"] = 1] = "Desc";
-			})(exports.StorageOrder || (exports.StorageOrder = {}));
-			(function (StorageCondition) {
-			    /**
-			     * 等価を表す（==）。
-			     */
-			    StorageCondition[StorageCondition["Equal"] = 1] = "Equal";
-			    /**
-			     * 「より大きい」を表す（>）。
-			     */
-			    StorageCondition[StorageCondition["GreaterThan"] = 2] = "GreaterThan";
-			    /**
-			     * 「より小さい」を表す（<）。
-			     */
-			    StorageCondition[StorageCondition["LessThan"] = 3] = "LessThan";
-			})(exports.StorageCondition || (exports.StorageCondition = {}));
-			(function (StorageCountsOperation) {
-			    /**
-			     * インクリメント操作を実行する。
-			     */
-			    StorageCountsOperation[StorageCountsOperation["Incr"] = 1] = "Incr";
-			    /**
-			     * デクリメント操作を実行する。
-			     */
-			    StorageCountsOperation[StorageCountsOperation["Decr"] = 2] = "Decr";
-			})(exports.StorageCountsOperation || (exports.StorageCountsOperation = {}));
-			/**
-			 * ストレージの値を保持するクラス。
-			 * ゲーム開発者がこのクラスのインスタンスを直接生成することはない。
-			 */
-			var StorageValueStore = /** @class */ (function () {
-			    function StorageValueStore(keys, values) {
-			        this._keys = keys;
-			        this._values = values;
-			    }
-			    /**
-			     * 値の配列を `StorageKey` またはインデックスから取得する。
-			     * 通常、インデックスは `Scene` のコンストラクタに指定した `storageKeys` のインデックスに対応する。
-			     * @param keyOrIndex `StorageKey` 又はインデックス
-			     */
-			    StorageValueStore.prototype.get = function (keyOrIndex) {
-			        if (this._values === undefined) {
-			            return [];
-			        }
-			        if (typeof keyOrIndex === "number") {
-			            return this._values[keyOrIndex];
-			        }
-			        else {
-			            var index = this._keys.indexOf(keyOrIndex);
-			            if (index !== -1) {
-			                return this._values[index];
-			            }
-			            for (var i = 0; i < this._keys.length; ++i) {
-			                var target = this._keys[i];
-			                if (target.region === keyOrIndex.region &&
-			                    target.regionKey === keyOrIndex.regionKey &&
-			                    target.userId === keyOrIndex.userId &&
-			                    target.gameId === keyOrIndex.gameId) {
-			                    return this._values[i];
-			                }
-			            }
-			        }
-			        return [];
-			    };
-			    /**
-			     * 値を `StorageKey` またはインデックスから取得する。
-			     * 対応する値が複数ある場合は、先頭の値を取得する。
-			     * 通常、インデックスは `Scene` のコンストラクタに指定した `storageKeys` のインデックスに対応する。
-			     * @param keyOrIndex `StorageKey` 又はインデックス
-			     */
-			    StorageValueStore.prototype.getOne = function (keyOrIndex) {
-			        var values = this.get(keyOrIndex);
-			        if (!values)
-			            return undefined;
-			        return values[0];
-			    };
-			    return StorageValueStore;
-			}());
-			exports.StorageValueStore = StorageValueStore;
-			/**
-			 * ストレージの値をロードするクラス。
-			 * ゲーム開発者がこのクラスのインスタンスを直接生成することはなく、
-			 * 本クラスの機能を利用することもない。
-			 */
-			var StorageLoader = /** @class */ (function () {
-			    function StorageLoader(storage, keys, serialization) {
-			        this._loaded = false;
-			        this._storage = storage;
-			        this._valueStore = new StorageValueStore(keys);
-			        this._handler = undefined;
-			        this._valueStoreSerialization = serialization;
-			    }
-			    /**
-			     * @private
-			     */
-			    StorageLoader.prototype._load = function (handler) {
-			        this._handler = handler;
-			        if (this._storage._load) {
-			            this._storage._load.call(this._storage, this._valueStore._keys, this, this._valueStoreSerialization);
-			        }
-			    };
-			    /**
-			     * @private
-			     */
-			    // 値の取得が完了したタイミングで呼び出される。
-			    // `values` は `this._valueStore._keys` に対応する値を表す `StorageValue` の配列。
-			    // 順番は `this._valueStore._keys` と同じでなければならない。
-			    StorageLoader.prototype._onLoaded = function (values, serialization) {
-			        this._valueStore._values = values;
-			        this._loaded = true;
-			        if (serialization)
-			            this._valueStoreSerialization = serialization;
-			        if (this._handler)
-			            this._handler._onStorageLoaded();
-			    };
-			    /**
-			     * @private
-			     */
-			    StorageLoader.prototype._onError = function (error) {
-			        if (this._handler)
-			            this._handler._onStorageLoadError(error);
-			    };
-			    return StorageLoader;
-			}());
-			exports.StorageLoader = StorageLoader;
-			/**
-			 * ストレージ。
-			 * ゲーム開発者がこのクラスのインスタンスを直接生成することはない。
-			 */
-			var Storage = /** @class */ (function () {
-			    function Storage() {
-			    }
-			    /**
-			     * ストレージに値を書き込む。
-			     * @param key ストレージキーを表す `StorageKey`
-			     * @param value 値を表す `StorageValue`
-			     * @param option 書き込みオプション
-			     */
-			    Storage.prototype.write = function (key, value, option) {
-			        if (this._write) {
-			            this._write(key, value, option);
-			        }
-			    };
-			    /**
-			     * 参加してくるプレイヤーの値をストレージから取得することを要求する。
-			     * 取得した値は `JoinEvent#storageValues` に格納される。
-			     * @param keys ストレージキーを表す `StorageReadKey` の配列。`StorageReadKey#userId` は無視される。
-			     */
-			    Storage.prototype.requestValuesForJoinPlayer = function (keys) {
-			        this._requestedKeysForJoinPlayer = keys;
-			    };
-			    /**
-			     * @private
-			     */
-			    Storage.prototype._createLoader = function (keys, serialization) {
-			        return new StorageLoader(this, keys, serialization);
-			    };
-			    /**
-			     * @private
-			     */
-			    // ストレージに値の書き込むを行う関数を登録する。
-			    // 登録した関数内の `this` は `Storage` を指す。
-			    Storage.prototype._registerWrite = function (write) {
-			        this._write = write;
-			    };
-			    /**
-			     * @private
-			     */
-			    // ストレージから値の読み込みを行う関数を登録する。
-			    // 登録した関数内の `this` は `Storage` を指す。
-			    // 読み込み完了した場合は、登録した関数内で `loader._onLoaded(values)` を呼ばなければならない。
-			    // エラーが発生した場合は、登録した関数内で `loader._onError(error)` を呼ばなければならない。
-			    Storage.prototype._registerLoad = function (load) {
-			        this._load = load;
-			    };
-			    return Storage;
-			}());
-			exports.Storage = Storage;
-			
-		} (Storage));
-		return Storage;
-	}
-
 	var hasRequiredEventConverter;
 
 	function requireEventConverter () {
@@ -9096,7 +8830,6 @@
 		var E_1 = requireE();
 		var Event_1 = requireEvent();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
-		var Storage_1 = requireStorage();
 		/**
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはなく、ゲーム開発者が利用する必要もない。
 		 * @ignore
@@ -9140,17 +8873,7 @@
 		                }
 		                // @ts-ignore
 		                this._playerTable[playerId] = player;
-		                var store = undefined;
-		                if (pev[4 /* EventIndex.Join.StorageData */]) {
-		                    var keys_1 = [];
-		                    var values_1 = [];
-		                    pev[4 /* EventIndex.Join.StorageData */].map(function (data) {
-		                        keys_1.push(data.readKey);
-		                        values_1.push(data.values);
-		                    });
-		                    store = new Storage_1.StorageValueStore(keys_1, values_1);
-		                }
-		                return new Event_1.JoinEvent(player, store, prio);
+		                return new Event_1.JoinEvent(player, prio);
 		            case 1 /* pl.EventCode.Leave */:
 		                delete this._playerTable[player.id];
 		                return new Event_1.LeaveEvent(player, prio);
@@ -9533,9 +9256,9 @@
 		hasRequiredModuleManager = 1;
 		Object.defineProperty(ModuleManager, "__esModule", { value: true });
 		ModuleManager.ModuleManager = void 0;
+		var PathUtil_1 = requirePathUtil();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Module_1 = requireModule();
-		var PathUtil_1 = requirePathUtil();
 		var RequireCachedValue_1 = requireRequireCachedValue();
 		var ScriptAssetContext_1 = requireScriptAssetContext();
 		/**
@@ -10602,7 +10325,6 @@
 		var OperationPluginManager_1 = requireOperationPluginManager();
 		var PointEventResolver_1 = requirePointEventResolver();
 		var Scene_1 = requireScene();
-		var Storage_1 = requireStorage();
 		var SurfaceAtlasSet_1 = requireSurfaceAtlasSet();
 		var WeakRefKVS_1 = requireWeakRefKVS();
 		var XorshiftRandomGenerator_1 = requireXorshiftRandomGenerator();
@@ -10665,7 +10387,6 @@
 		        this.joinedPlayerIds = [];
 		        this.audio = new AudioSystemManager_1.AudioSystemManager(this.resourceFactory);
 		        this.defaultAudioSystemId = "sound";
-		        this.storage = new Storage_1.Storage();
 		        this.assets = {};
 		        this.surfaceAtlasSet = new SurfaceAtlasSet_1.SurfaceAtlasSet({ resourceFactory: this.resourceFactory });
 		        this.onJoin = new trigger_1.Trigger();
@@ -10783,7 +10504,7 @@
 		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#skippingScene: only 'full-local' scene is supported.");
 		                }
 		                if (scene._needsLoading()) {
-		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#skippingScene: must not depend on any assets/storages.");
+		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#skippingScene: must not depend on any assets.");
 		                }
 		            }
 		            this._skippingScene = scene;
@@ -11455,7 +11176,6 @@
 		        this._onStart = undefined;
 		        // TODO より能動的にdestroy処理を入れるべきかもしれない
 		        this.resourceFactory = undefined;
-		        this.storage = undefined;
 		        this.playId = undefined;
 		        this.operationPlugins = undefined; // this._operationPluginManager.pluginsのエイリアスなので、特に破棄処理はしない。
 		        this._eventTriggerMap = undefined;
@@ -11765,7 +11485,7 @@
 		        scenes.push(scene);
 		        if (scene._needsLoading() && scene._loadingState !== "loaded-fired") {
 		            if (this._defaultLoadingScene._needsLoading())
-		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#_doPushScene: _defaultLoadingScene must not depend on any assets/storages.");
+		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#_doPushScene: _defaultLoadingScene must not depend on any assets.");
 		            this._doPushScene(loadingScene, true, this._defaultLoadingScene);
 		            loadingScene.reset(scene);
 		        }
@@ -11842,7 +11562,7 @@
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;
+			exports.PathUtil = exports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;
 			__exportStar(requireLib$6(), exports);
 			__exportStar(requireLib$5(), exports);
 			// pdi-types 由来の型を g 直下から reexport する。
@@ -11858,6 +11578,9 @@
 			Object.defineProperty(exports, "ShaderProgram", { enumerable: true, get: function () { return ShaderProgram_1.ShaderProgram; } });
 			var VideoSystem_1 = requireVideoSystem();
 			Object.defineProperty(exports, "VideoSystem", { enumerable: true, get: function () { return VideoSystem_1.VideoSystem; } });
+			// 後方互換性のため PathUtil のみ reexport する。
+			var PathUtil_1 = requirePathUtil();
+			Object.defineProperty(exports, "PathUtil", { enumerable: true, get: function () { return PathUtil_1.PathUtil; } });
 			__exportStar(requireCacheableE(), exports);
 			__exportStar(requireE(), exports);
 			__exportStar(requireFilledRect(), exports);
@@ -11905,7 +11628,6 @@
 			__exportStar(requireOperationPluginManager(), exports);
 			__exportStar(requireOperationPluginOperation(), exports);
 			__exportStar(requireOperationPluginStatic(), exports);
-			__exportStar(requirePathUtil(), exports);
 			__exportStar(requirePlayer(), exports);
 			__exportStar(requirePointEventResolver(), exports);
 			__exportStar(requireRandomGenerator(), exports);
@@ -11916,7 +11638,6 @@
 			__exportStar(requireShaderProgram(), exports);
 			__exportStar(requireSnapshotSaveRequest(), exports);
 			__exportStar(requireSpriteFactory(), exports);
-			__exportStar(requireStorage(), exports);
 			__exportStar(requireSurfaceAtlas(), exports);
 			__exportStar(requireSurfaceAtlasSet(), exports);
 			__exportStar(requireSurfaceAtlasSlot(), exports);
@@ -19682,6 +19403,7 @@
 	            window.cancelAnimationFrame(requestAnimationFrameId);
 	            requestAnimationFrameId = null;
 	        }
+	        game._destroy();
 	        unhandlePointEvent();
 	        primarySurface.renderer().clear();
 	    };

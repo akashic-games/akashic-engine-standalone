@@ -15149,6 +15149,228 @@
 
 	var InputHandlerLayer = {};
 
+	var MouseTouchEventHandler = {};
+
+	var InputEventHandler = {};
+
+	var hasRequiredInputEventHandler;
+
+	function requireInputEventHandler () {
+		if (hasRequiredInputEventHandler) return InputEventHandler;
+		hasRequiredInputEventHandler = 1;
+		Object.defineProperty(InputEventHandler, "__esModule", { value: true });
+		InputEventHandler.preventEventDefault = InputEventHandler.InputEventHandler = void 0;
+		var trigger_1 = requireLib$2();
+		/**
+		 * 入力ハンドラ。
+		 *
+		 * コンストラクタで受け取ったViewに対してのハンドラを設定する。
+		 * DOMイベント情報から `PlatformPointEvent` へ変換したデータを `pointTrigger` を通して通知する。
+		 * Down -> Move -> Up のフローにおける、Moveイベントのロックを管理する。
+		 */
+		var InputEventHandler$1 = /** @class */ (function () {
+		    function InputEventHandler(inputView) {
+		        this.inputView = inputView;
+		        this.pointerEventLock = {};
+		        this._xScale = 1;
+		        this._yScale = 1;
+		        this.pointTrigger = new trigger_1.Trigger();
+		        inputView.style.touchAction = "none";
+		        inputView.style.userSelect = "none";
+		    }
+		    // `start()` で設定するDOMイベントをサポートしているかを返す
+		    InputEventHandler.isSupported = function () {
+		        return false;
+		    };
+		    InputEventHandler.prototype.setScale = function (xScale, yScale) {
+		        if (yScale === void 0) { yScale = xScale; }
+		        this._xScale = xScale;
+		        this._yScale = yScale;
+		    };
+		    InputEventHandler.prototype.pointDown = function (identifier, pagePosition, button) {
+		        this.pointTrigger.fire({
+		            type: 0 /* PlatformPointType.Down */,
+		            identifier: identifier,
+		            offset: this.getOffsetFromEvent(pagePosition),
+		            button: button
+		        });
+		        // downのイベントIDを保存して、moveとupのイベントの抑制をする(ロックする)
+		        this.pointerEventLock[identifier] = true;
+		    };
+		    InputEventHandler.prototype.pointMove = function (identifier, pagePosition, button) {
+		        if (!this.pointerEventLock.hasOwnProperty(identifier + "")) {
+		            return;
+		        }
+		        this.pointTrigger.fire({
+		            type: 1 /* PlatformPointType.Move */,
+		            identifier: identifier,
+		            offset: this.getOffsetFromEvent(pagePosition),
+		            button: button
+		        });
+		    };
+		    InputEventHandler.prototype.pointUp = function (identifier, pagePosition, button) {
+		        if (!this.pointerEventLock.hasOwnProperty(identifier + "")) {
+		            return;
+		        }
+		        this.pointTrigger.fire({
+		            type: 2 /* PlatformPointType.Up */,
+		            identifier: identifier,
+		            offset: this.getOffsetFromEvent(pagePosition),
+		            button: button
+		        });
+		        // Upが完了したら、Down->Upが完了したとしてロックを外す
+		        delete this.pointerEventLock[identifier];
+		    };
+		    InputEventHandler.prototype.getOffsetFromEvent = function (e) {
+		        return { x: e.offsetX, y: e.offsetY };
+		    };
+		    InputEventHandler.prototype.getScale = function () {
+		        return { x: this._xScale, y: this._yScale };
+		    };
+		    InputEventHandler.prototype.getOffsetPositionFromInputView = function (position) {
+		        // windowの左上を0,0とした時のinputViewのoffsetを取得する
+		        var bounding = this.inputView.getBoundingClientRect();
+		        var scale = this.getScale();
+		        return {
+		            offsetX: (position.pageX - Math.round(window.pageXOffset + bounding.left)) / scale.x,
+		            offsetY: (position.pageY - Math.round(window.pageYOffset + bounding.top)) / scale.y
+		        };
+		    };
+		    return InputEventHandler;
+		}());
+		InputEventHandler.InputEventHandler = InputEventHandler$1;
+		function preventEventDefault(ev) {
+		    ev.preventDefault();
+		}
+		InputEventHandler.preventEventDefault = preventEventDefault;
+		return InputEventHandler;
+	}
+
+	var hasRequiredMouseTouchEventHandler;
+
+	function requireMouseTouchEventHandler () {
+		if (hasRequiredMouseTouchEventHandler) return MouseTouchEventHandler;
+		hasRequiredMouseTouchEventHandler = 1;
+		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		    var extendStatics = function (d, b) {
+		        extendStatics = Object.setPrototypeOf ||
+		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+		        return extendStatics(d, b);
+		    };
+		    return function (d, b) {
+		        if (typeof b !== "function" && b !== null)
+		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+		        extendStatics(d, b);
+		        function __() { this.constructor = d; }
+		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+		    };
+		})();
+		Object.defineProperty(MouseTouchEventHandler, "__esModule", { value: true });
+		MouseTouchEventHandler.MouseTouchEventHandler = void 0;
+		var InputEventHandler_1 = requireInputEventHandler();
+		/**
+		 * Mouse/Touch Events を利用した入力ハンドラ。
+		 *
+		 * Pointer Event が利用できない環境を想定するフォールバック実装。
+		 * preventDefault() による副作用があるので、可能な環境では PointerEventHandler を利用すること。
+		 */
+		MouseTouchEventHandler.MouseTouchEventHandler = /** @class */ (function (_super) {
+		    __extends(MouseTouchEventHandler, _super);
+		    function MouseTouchEventHandler() {
+		        var _this = _super !== null && _super.apply(this, arguments) || this;
+		        _this.pressingMouseButton = null;
+		        _this.onMouseDown = function (e) {
+		            // TODO ボタンが複数押される状態をサポートする
+		            if (_this.pressingMouseButton != null)
+		                return;
+		            _this.pressingMouseButton = e.button;
+		            _this.pointDown(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            window.addEventListener("mousemove", _this.onWindowMouseMove, false);
+		            window.addEventListener("mouseup", _this.onWindowMouseUp, false);
+		            // NOTE ここで e.preventDefault() してはならない。
+		            // preventDefault() すると、iframe 内で動作していて iframe 外にドラッグした時に mousemove が途切れるようになる。
+		        };
+		        _this.onWindowMouseMove = function (e) {
+		            _this.pointMove(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		        };
+		        _this.onWindowMouseUp = function (e) {
+		            if (_this.pressingMouseButton !== e.button)
+		                return;
+		            _this.pressingMouseButton = null;
+		            _this.pointUp(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            window.removeEventListener("mousemove", _this.onWindowMouseMove, false);
+		            window.removeEventListener("mouseup", _this.onWindowMouseUp, false);
+		        };
+		        _this.onTouchStart = function (e) {
+		            var touches = e.changedTouches;
+		            for (var i = 0, len = touches.length; i < len; i++) {
+		                var touch = touches[i];
+		                _this.pointDown(touch.identifier, _this.getOffsetPositionFromInputView(touch), 0 /* PlatformButtonType.Primary */);
+		            }
+		            // NOTE touch に追従して発生する mouse イベントを抑止するために preventDefault() する。
+		            // ref. https://w3c.github.io/touch-events/#mouse-events
+		            // なおこの preventDefault() は iOS WebView では別の副作用を持つ: このクラスは iOS では利用すべきでない。
+		            e.preventDefault();
+		        };
+		        _this.onTouchMove = function (e) {
+		            var touches = e.changedTouches;
+		            for (var i = 0, len = touches.length; i < len; i++) {
+		                var touch = touches[i];
+		                _this.pointMove(touch.identifier, _this.getOffsetPositionFromInputView(touch), 0 /* PlatformButtonType.Primary */);
+		            }
+		        };
+		        _this.onTouchEnd = function (e) {
+		            var touches = e.changedTouches;
+		            for (var i = 0, len = touches.length; i < len; i++) {
+		                var touch = touches[i];
+		                _this.pointUp(touch.identifier, _this.getOffsetPositionFromInputView(touch), 0 /* PlatformButtonType.Primary */);
+		            }
+		            window.removeEventListener("touchmove", _this.onTouchMove, false);
+		            window.removeEventListener("touchend", _this.onTouchEnd, false);
+		        };
+		        return _this;
+		    }
+		    // `start()` で設定するDOMイベントをサポートしているかを返す
+		    MouseTouchEventHandler.isSupported = function () {
+		        return false;
+		    };
+		    MouseTouchEventHandler.prototype.start = function () {
+		        this.inputView.addEventListener("mousedown", this.onMouseDown, false);
+		        this.inputView.addEventListener("touchstart", this.onTouchStart);
+		        this.inputView.addEventListener("touchmove", this.onTouchMove);
+		        this.inputView.addEventListener("touchend", this.onTouchEnd);
+		        this.inputView.addEventListener("contextmenu", InputEventHandler_1.preventEventDefault);
+		    };
+		    MouseTouchEventHandler.prototype.stop = function () {
+		        this.inputView.removeEventListener("mousedown", this.onMouseDown, false);
+		        this.inputView.removeEventListener("touchstart", this.onTouchStart);
+		        this.inputView.removeEventListener("touchmove", this.onTouchMove);
+		        this.inputView.removeEventListener("touchend", this.onTouchEnd);
+		        this.inputView.removeEventListener("contextmenu", InputEventHandler_1.preventEventDefault);
+		    };
+		    MouseTouchEventHandler.prototype.getPlatformButtonType = function (e) {
+		        switch (e.button) {
+		            case 0:
+		                // 左クリック
+		                return 0 /* PlatformButtonType.Primary */;
+		            case 1:
+		                // ミドルクリック
+		                return 1 /* PlatformButtonType.Auxiliary */;
+		            case 2:
+		                // 右クリック
+		                return 2 /* PlatformButtonType.Secondary */;
+		            default:
+		                // 上記以外のボタンは左クリックとして扱う
+		                return 0 /* PlatformButtonType.Primary */;
+		        }
+		    };
+		    MouseTouchEventHandler.MOUSE_IDENTIFIER = 1;
+		    return MouseTouchEventHandler;
+		}(InputEventHandler_1.InputEventHandler));
+		return MouseTouchEventHandler;
+	}
+
 	var PointerEventHandler = {};
 
 	var hasRequiredPointerEventHandler;
@@ -15156,20 +15378,36 @@
 	function requirePointerEventHandler () {
 		if (hasRequiredPointerEventHandler) return PointerEventHandler;
 		hasRequiredPointerEventHandler = 1;
+		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		    var extendStatics = function (d, b) {
+		        extendStatics = Object.setPrototypeOf ||
+		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+		        return extendStatics(d, b);
+		    };
+		    return function (d, b) {
+		        if (typeof b !== "function" && b !== null)
+		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+		        extendStatics(d, b);
+		        function __() { this.constructor = d; }
+		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+		    };
+		})();
 		Object.defineProperty(PointerEventHandler, "__esModule", { value: true });
 		PointerEventHandler.PointerEventHandler = void 0;
-		var trigger_1 = requireLib$2();
+		var InputEventHandler_1 = requireInputEventHandler();
 		/**
-		 * pointer-events を利用した入力ハンドラ。
+		 * Pointer Events を利用した入力ハンドラ。
 		 *
-		 * コンストラクタで受け取ったViewに対して pointer-events のハンドラを設定する。
+		 * コンストラクタで受け取ったViewに対して Pointer Events のハンドラを設定する。
 		 * DOMイベント情報から `PlatformPointEvent` へ変換したデータを `pointTrigger` を通して通知する。
 		 * Down -> Move -> Up のフローにおける、Moveイベントのロックを管理する。
 		 */
-		var PointerEventHandler$1 = /** @class */ (function () {
+		var PointerEventHandler$1 = /** @class */ (function (_super) {
+		    __extends(PointerEventHandler, _super);
 		    function PointerEventHandler(inputView) {
-		        var _this = this;
-		        this.onPointerDown = function (e) {
+		        var _this = _super.call(this, inputView) || this;
+		        _this.onPointerDown = function (e) {
 		            _this.pointDown(e.pointerId, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
 		            var onPointerMove = function (event) {
 		                _this.pointMove(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event));
@@ -15190,17 +15428,8 @@
 		            window.addEventListener("pointerup", onPointerUp, false);
 		            _this._eventHandlersMap[e.pointerId] = { onPointerMove: onPointerMove, onPointerUp: onPointerUp };
 		        };
-		        this.onContextMenu = function (ev) {
-		            ev.preventDefault();
-		        };
-		        this.inputView = inputView;
-		        this.pointerEventLock = {};
-		        this._eventHandlersMap = Object.create(null);
-		        this._xScale = 1;
-		        this._yScale = 1;
-		        this.pointTrigger = new trigger_1.Trigger();
-		        inputView.style.touchAction = "none";
-		        inputView.style.userSelect = "none";
+		        _this._eventHandlersMap = Object.create(null);
+		        return _this;
 		    }
 		    // `start()` で設定するDOMイベントをサポートしているかを返す
 		    PointerEventHandler.isSupported = function () {
@@ -15208,65 +15437,11 @@
 		    };
 		    PointerEventHandler.prototype.start = function () {
 		        this.inputView.addEventListener("pointerdown", this.onPointerDown, false);
-		        this.inputView.addEventListener("contextmenu", this.onContextMenu, false);
+		        this.inputView.addEventListener("contextmenu", InputEventHandler_1.preventEventDefault, false);
 		    };
 		    PointerEventHandler.prototype.stop = function () {
 		        this.inputView.removeEventListener("pointerdown", this.onPointerDown, false);
-		        this.inputView.removeEventListener("contextmenu", this.onContextMenu, false);
-		    };
-		    PointerEventHandler.prototype.setScale = function (xScale, yScale) {
-		        if (yScale === void 0) { yScale = xScale; }
-		        this._xScale = xScale;
-		        this._yScale = yScale;
-		    };
-		    PointerEventHandler.prototype.pointDown = function (identifier, pagePosition, button) {
-		        this.pointTrigger.fire({
-		            type: 0 /* PlatformPointType.Down */,
-		            identifier: identifier,
-		            offset: this.getOffsetFromEvent(pagePosition),
-		            button: button
-		        });
-		        // downのイベントIDを保存して、moveとupのイベントの抑制をする(ロックする)
-		        this.pointerEventLock[identifier] = true;
-		    };
-		    PointerEventHandler.prototype.pointMove = function (identifier, pagePosition, button) {
-		        if (!this.pointerEventLock.hasOwnProperty(identifier + "")) {
-		            return;
-		        }
-		        this.pointTrigger.fire({
-		            type: 1 /* PlatformPointType.Move */,
-		            identifier: identifier,
-		            offset: this.getOffsetFromEvent(pagePosition),
-		            button: button
-		        });
-		    };
-		    PointerEventHandler.prototype.pointUp = function (identifier, pagePosition, button) {
-		        if (!this.pointerEventLock.hasOwnProperty(identifier + "")) {
-		            return;
-		        }
-		        this.pointTrigger.fire({
-		            type: 2 /* PlatformPointType.Up */,
-		            identifier: identifier,
-		            offset: this.getOffsetFromEvent(pagePosition),
-		            button: button
-		        });
-		        // Upが完了したら、Down->Upが完了したとしてロックを外す
-		        delete this.pointerEventLock[identifier];
-		    };
-		    PointerEventHandler.prototype.getOffsetFromEvent = function (e) {
-		        return { x: e.offsetX, y: e.offsetY };
-		    };
-		    PointerEventHandler.prototype.getScale = function () {
-		        return { x: this._xScale, y: this._yScale };
-		    };
-		    PointerEventHandler.prototype.getOffsetPositionFromInputView = function (position) {
-		        // windowの左上を0,0とした時のinputViewのoffsetを取得する
-		        var bounding = this.inputView.getBoundingClientRect();
-		        var scale = this.getScale();
-		        return {
-		            offsetX: (position.pageX - Math.round(window.pageXOffset + bounding.left)) / scale.x,
-		            offsetY: (position.pageY - Math.round(window.pageYOffset + bounding.top)) / scale.y
-		        };
+		        this.inputView.removeEventListener("contextmenu", InputEventHandler_1.preventEventDefault, false);
 		    };
 		    PointerEventHandler.prototype.getPlatformButtonType = function (e) {
 		        switch (e.button) {
@@ -15285,7 +15460,7 @@
 		        }
 		    };
 		    return PointerEventHandler;
-		}());
+		}(InputEventHandler_1.InputEventHandler));
 		PointerEventHandler.PointerEventHandler = PointerEventHandler$1;
 		return PointerEventHandler;
 	}
@@ -15298,6 +15473,7 @@
 		Object.defineProperty(InputHandlerLayer, "__esModule", { value: true });
 		InputHandlerLayer.InputHandlerLayer = void 0;
 		var trigger_1 = requireLib$2();
+		var MouseTouchEventHandler_1 = requireMouseTouchEventHandler();
 		var PointerEventHandler_1 = requirePointerEventHandler();
 		/**
 		 * ユーザの入力を受け付けるViewのレイヤー。
@@ -15324,7 +15500,8 @@
 		    // 実行環境でサポートしてるDOM Eventを使い、それぞれonPoint*Triggerを関連付ける
 		    InputHandlerLayer.prototype.enablePointerEvent = function () {
 		        var _this = this;
-		        this._inputHandler = new PointerEventHandler_1.PointerEventHandler(this.view);
+		        var pointerEventAvailable = !!window.PointerEvent;
+		        this._inputHandler = pointerEventAvailable ? new PointerEventHandler_1.PointerEventHandler(this.view) : new MouseTouchEventHandler_1.MouseTouchEventHandler(this.view);
 		        // 各種イベントのTrigger
 		        this._inputHandler.pointTrigger.add(function (e) {
 		            _this.pointEventTrigger.fire(e);

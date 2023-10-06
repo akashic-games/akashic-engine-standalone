@@ -1,7 +1,6 @@
-const semver = require("semver");
-const pkg = require("../package.json");
-const aksVer = semver.clean(pkg.dependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
-const extBox2dVer = semver.clean(pkg.devDependencies["@akashic-extension/akashic-box2d"]); // "~3.0.0" -> "3.0.0"
+const fetchModuleVersion = require("../scripts/fetch_module_version");
+const aksVer = fetchModuleVersion("@akashic/akashic-engine");
+const extBox2dVer = fetchModuleVersion("@akashic-extension/akashic-box2d");
 
 module.exports = {
 	title: "Akashic Game Sample (akashic-box2d)",

@@ -1,7 +1,6 @@
-const semver = require("semver");
-const pkg = require("../package.json");
-const aksVer = semver.clean(pkg.dependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
-const extTimelineVer = semver.clean(pkg.devDependencies["@akashic-extension/akashic-timeline"]); // "~3.0.0" -> "3.0.0"
+const fetchModuleVersion = require("../scripts/fetch_module_version");
+const aksVer = fetchModuleVersion("@akashic/akashic-engine");
+const extTimelineVer = fetchModuleVersion("@akashic-extension/akashic-timeline");
 
 module.exports = {
 	title: "Akashic Game Sample (akashic-timeline)",

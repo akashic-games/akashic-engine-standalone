@@ -161,12 +161,18 @@ export function initialize(param: InitializeParameter): () => void {
 		window.removeEventListener("pointerup", handlePointerUpEvent);
 	};
 
+	const handlePreventDefaultEvent = (event: MouseEvent): void => {
+		event.preventDefault();
+	};
+
 	const handlePointEvent = (): void => {
 		element.addEventListener("pointerdown", handlePointerDownEvent, { passive: false });
+		element.addEventListener("contextmenu", handlePreventDefaultEvent, { passive: false });
 	};
 
 	const unhandlePointEvent = (): void => {
 		element.removeEventListener("pointerdown", handlePointerDownEvent);
+		element.removeEventListener("contextmenu", handlePreventDefaultEvent);
 	};
 
 	handlePointEvent();

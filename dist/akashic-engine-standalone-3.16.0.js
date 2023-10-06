@@ -19392,11 +19392,16 @@
 	        window.removeEventListener("pointermove", handlePointerMoveEvent);
 	        window.removeEventListener("pointerup", handlePointerUpEvent);
 	    };
+	    var handlePreventDefaultEvent = function (event) {
+	        event.preventDefault();
+	    };
 	    var handlePointEvent = function () {
 	        element.addEventListener("pointerdown", handlePointerDownEvent, { passive: false });
+	        element.addEventListener("contextmenu", handlePreventDefaultEvent, { passive: false });
 	    };
 	    var unhandlePointEvent = function () {
 	        element.removeEventListener("pointerdown", handlePointerDownEvent);
+	        element.removeEventListener("contextmenu", handlePreventDefaultEvent);
 	    };
 	    handlePointEvent();
 	    // ゲームループ

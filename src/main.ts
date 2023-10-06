@@ -118,106 +118,55 @@ export function initialize(param: InitializeParameter): () => void {
 		return element.getBoundingClientRect().height / element.clientHeight;
 	};
 
-	const handleMouseDownEvent = (event: MouseEvent): void => {
+	const handlePointerDownEvent = (event: PointerEvent): void => {
 		const rect = element.getBoundingClientRect();
 		pointEvents.push({
 			type: g.PlatformPointType.Down,
-			identifier: 0,
+			identifier: event.pointerId,
 			offset: {
 				x: (event.clientX - rect.left) / getScaleX(),
 				y: (event.clientY - rect.top) / getScaleY()
-			}
+			},
+			button: event.button
 		});
-		window.addEventListener("mousemove", handleMouseMoveEvent, { passive: false });
-		window.addEventListener("mouseup", handleMouseUpEvent, { passive: false });
+		window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
+		window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
 	};
 
-	const handleMouseMoveEvent = (event: MouseEvent): void => {
+	const handlePointerMoveEvent = (event: PointerEvent): void => {
 		const rect = element.getBoundingClientRect();
 		pointEvents.push({
 			type: g.PlatformPointType.Move,
-			identifier: 0,
+			identifier: event.pointerId,
 			offset: {
 				x: (event.clientX - rect.left) / getScaleX(),
 				y: (event.clientY - rect.top) / getScaleY()
-			}
+			},
+			button: event.button
 		});
 	};
 
-	const handleMouseUpEvent = (event: MouseEvent): void => {
+	const handlePointerUpEvent = (event: PointerEvent): void => {
 		const rect = element.getBoundingClientRect();
 		pointEvents.push({
 			type: g.PlatformPointType.Up,
-			identifier: 0,
+			identifier: event.pointerId,
 			offset: {
 				x: (event.clientX - rect.left) / getScaleX(),
 				y: (event.clientY - rect.top) / getScaleY()
-			}
+			},
+			button: event.button
 		});
-		window.removeEventListener("mousemove", handleMouseMoveEvent);
-		window.removeEventListener("mouseup", handleMouseUpEvent);
-	};
-
-	const handleTouchStartEvent = (event: TouchEvent): void => {
-		const touches = event.changedTouches;
-		const rect = element.getBoundingClientRect();
-		for (let i = 0; i < touches.length; i++) {
-			const x = (touches[i].clientX - rect.left) / getScaleX();
-			const y = (touches[i].clientY - rect.top) / getScaleY();
-			const identifier = touches[i].identifier;
-			pointEvents.push({
-				type: g.PlatformPointType.Down,
-				identifier,
-				offset: { x, y }
-			});
-		}
-		window.addEventListener("touchmove", handleTouchMoveEvent, { passive: false });
-		window.addEventListener("touchend", handleTouchEndEvent, { passive: false });
-		if (event.cancelable) event.preventDefault();
-	};
-
-	const handleTouchMoveEvent = (event: TouchEvent): void => {
-		const touches = event.changedTouches;
-		const rect = element.getBoundingClientRect();
-		for (let i = 0; i < touches.length; i++) {
-			const x = (touches[i].clientX - rect.left) / getScaleX();
-			const y = (touches[i].clientY - rect.top) / getScaleY();
-			const identifier = touches[i].identifier;
-			pointEvents.push({
-				type: g.PlatformPointType.Move,
-				identifier,
-				offset: { x, y }
-			});
-		}
-		if (event.cancelable) event.preventDefault();
-	};
-
-	const handleTouchEndEvent = (event: TouchEvent): void => {
-		const touches = event.changedTouches;
-		const rect = element.getBoundingClientRect();
-		for (let i = 0; i < touches.length; i++) {
-			const x = (touches[i].clientX - rect.left) / getScaleX();
-			const y = (touches[i].clientY - rect.top) / getScaleY();
-			const identifier = touches[i].identifier;
-			pointEvents.push({
-				type: g.PlatformPointType.Up,
-				identifier,
-				offset: { x, y }
-			});
-		}
-		window.removeEventListener("touchmove", handleTouchMoveEvent);
-		window.removeEventListener("touchend", handleTouchEndEvent);
-		if (event.cancelable) event.preventDefault();
+		window.removeEventListener("pointermove", handlePointerMoveEvent);
+		window.removeEventListener("pointerup", handlePointerUpEvent);
 	};
 
 	const handlePointEvent = (): void => {
-		element.addEventListener("mousedown", handleMouseDownEvent, { passive: false });
-		element.addEventListener("touchstart", handleTouchStartEvent, { passive: false });
+		element.addEventListener("pointerdown", handlePointerDownEvent, { passive: false });
 	};
 
 	const unhandlePointEvent = (): void => {
-		element.removeEventListener("mousedown", handleMouseDownEvent);
-		element.removeEventListener("touchstart", handleTouchStartEvent);
+		element.removeEventListener("pointerdown", handlePointerDownEvent);
 	};
 
 	handlePointEvent();
@@ -232,7 +181,7 @@ export function initialize(param: InitializeParameter): () => void {
 		}
 		const now = Date.now();
 		if (before + frame * 2 < now) {
-			// NOTE: 別タブなどで長時間 (実フレームの2倍) tick() が呼ばれなかった場合は直前まで進める
+			// NOTE: 別タブなどで長時間 (ここでは実フレームの2倍以上の時間) tick() が呼ばれなかった場合は直前まで進める
 			before = now - frame - 1;
 		}
 		if (before + frame < now) {

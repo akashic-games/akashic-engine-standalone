@@ -5,6 +5,9 @@ on:
     # everyday 00:00 (UTC+9)
     - cron: "0 15 * * *"
 
+env:
+  NODE_VERSION: 18
+
 jobs:
   upload:
     runs-on: ubuntu-latest

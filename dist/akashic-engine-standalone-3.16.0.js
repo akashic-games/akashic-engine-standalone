@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.15.0 */
+/*! akashic-engine-standalone@3.16.0 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -280,11 +280,11 @@
 
 	var require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
 
-	var lib$6 = {};
+	var lib$5 = {};
 
 	var index_common = {};
 
-	var lib$5 = {};
+	var lib$4 = {};
 
 	var AssetConfiguration = {};
 
@@ -319,11 +319,11 @@
 		return OperationPluginInfo;
 	}
 
-	var hasRequiredLib$6;
+	var hasRequiredLib$5;
 
-	function requireLib$6 () {
-		if (hasRequiredLib$6) return lib$5;
-		hasRequiredLib$6 = 1;
+	function requireLib$5 () {
+		if (hasRequiredLib$5) return lib$4;
+		hasRequiredLib$5 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -343,62 +343,62 @@
 			__exportStar(requireAssetConfiguration(), exports);
 			__exportStar(requireGameConfiguration(), exports);
 			__exportStar(requireOperationPluginInfo(), exports); 
-		} (lib$5));
-		return lib$5;
+		} (lib$4));
+		return lib$4;
 	}
 
-	var lib$4 = {};
+	var lib$3 = {};
 
-	var TriggerLike$2 = {};
+	var TriggerLike$1 = {};
 
-	var hasRequiredTriggerLike$2;
+	var hasRequiredTriggerLike$1;
 
-	function requireTriggerLike$2 () {
-		if (hasRequiredTriggerLike$2) return TriggerLike$2;
-		hasRequiredTriggerLike$2 = 1;
-		Object.defineProperty(TriggerLike$2, "__esModule", { value: true });
-		return TriggerLike$2;
+	function requireTriggerLike$1 () {
+		if (hasRequiredTriggerLike$1) return TriggerLike$1;
+		hasRequiredTriggerLike$1 = 1;
+		Object.defineProperty(TriggerLike$1, "__esModule", { value: true });
+		return TriggerLike$1;
 	}
 
-	var ChainTriggerLike$2 = {};
+	var ChainTriggerLike$1 = {};
 
-	var hasRequiredChainTriggerLike$2;
+	var hasRequiredChainTriggerLike$1;
 
-	function requireChainTriggerLike$2 () {
-		if (hasRequiredChainTriggerLike$2) return ChainTriggerLike$2;
-		hasRequiredChainTriggerLike$2 = 1;
-		Object.defineProperty(ChainTriggerLike$2, "__esModule", { value: true });
-		return ChainTriggerLike$2;
+	function requireChainTriggerLike$1 () {
+		if (hasRequiredChainTriggerLike$1) return ChainTriggerLike$1;
+		hasRequiredChainTriggerLike$1 = 1;
+		Object.defineProperty(ChainTriggerLike$1, "__esModule", { value: true });
+		return ChainTriggerLike$1;
 	}
 
-	var Trigger$2 = {};
+	var Trigger$1 = {};
 
-	var isPromise$2 = {};
+	var isPromise$1 = {};
 
-	var hasRequiredIsPromise$2;
+	var hasRequiredIsPromise$1;
 
-	function requireIsPromise$2 () {
-		if (hasRequiredIsPromise$2) return isPromise$2;
-		hasRequiredIsPromise$2 = 1;
-		Object.defineProperty(isPromise$2, "__esModule", { value: true });
-		isPromise$2.isPromise = void 0;
+	function requireIsPromise$1 () {
+		if (hasRequiredIsPromise$1) return isPromise$1;
+		hasRequiredIsPromise$1 = 1;
+		Object.defineProperty(isPromise$1, "__esModule", { value: true });
+		isPromise$1.isPromise = void 0;
 		function isPromise(target) {
 		    return (target != null &&
 		        (typeof target === "object" || typeof target === "function") &&
 		        typeof target.then === "function");
 		}
-		isPromise$2.isPromise = isPromise;
-		return isPromise$2;
+		isPromise$1.isPromise = isPromise;
+		return isPromise$1;
 	}
 
-	var hasRequiredTrigger$2;
+	var hasRequiredTrigger$1;
 
-	function requireTrigger$2 () {
-		if (hasRequiredTrigger$2) return Trigger$2;
-		hasRequiredTrigger$2 = 1;
-		Object.defineProperty(Trigger$2, "__esModule", { value: true });
-		Trigger$2.Trigger = void 0;
-		var isPromise_1 = requireIsPromise$2();
+	function requireTrigger$1 () {
+		if (hasRequiredTrigger$1) return Trigger$1;
+		hasRequiredTrigger$1 = 1;
+		Object.defineProperty(Trigger$1, "__esModule", { value: true });
+		Trigger$1.Trigger = void 0;
+		var isPromise_1 = requireIsPromise$1();
 		/**
 		 * イベント通知機構クラス。
 		 */
@@ -574,17 +574,17 @@
 		    };
 		    return Trigger;
 		}());
-		Trigger$2.Trigger = Trigger;
-		return Trigger$2;
+		Trigger$1.Trigger = Trigger;
+		return Trigger$1;
 	}
 
-	var ChainTrigger$2 = {};
+	var ChainTrigger$1 = {};
 
-	var hasRequiredChainTrigger$2;
+	var hasRequiredChainTrigger$1;
 
-	function requireChainTrigger$2 () {
-		if (hasRequiredChainTrigger$2) return ChainTrigger$2;
-		hasRequiredChainTrigger$2 = 1;
+	function requireChainTrigger$1 () {
+		if (hasRequiredChainTrigger$1) return ChainTrigger$1;
+		hasRequiredChainTrigger$1 = 1;
 		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
@@ -600,9 +600,9 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
-		Object.defineProperty(ChainTrigger$2, "__esModule", { value: true });
-		ChainTrigger$2.ChainTrigger = void 0;
-		var Trigger_1 = requireTrigger$2();
+		Object.defineProperty(ChainTrigger$1, "__esModule", { value: true });
+		ChainTrigger$1.ChainTrigger = void 0;
+		var Trigger_1 = requireTrigger$1();
 		/**
 		 * 他のTriggerLikeに反応して発火するイベント通知機構。
 		 */
@@ -669,15 +669,15 @@
 		    };
 		    return ChainTrigger;
 		}(Trigger_1.Trigger));
-		ChainTrigger$2.ChainTrigger = ChainTrigger;
-		return ChainTrigger$2;
+		ChainTrigger$1.ChainTrigger = ChainTrigger;
+		return ChainTrigger$1;
 	}
 
-	var hasRequiredLib$5;
+	var hasRequiredLib$4;
 
-	function requireLib$5 () {
-		if (hasRequiredLib$5) return lib$4;
-		hasRequiredLib$5 = 1;
+	function requireLib$4 () {
+		if (hasRequiredLib$4) return lib$3;
+		hasRequiredLib$4 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -694,15 +694,15 @@
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
-			__exportStar(requireTriggerLike$2(), exports);
-			__exportStar(requireChainTriggerLike$2(), exports);
-			__exportStar(requireTrigger$2(), exports);
-			__exportStar(requireChainTrigger$2(), exports); 
-		} (lib$4));
-		return lib$4;
+			__exportStar(requireTriggerLike$1(), exports);
+			__exportStar(requireChainTriggerLike$1(), exports);
+			__exportStar(requireTrigger$1(), exports);
+			__exportStar(requireChainTrigger$1(), exports); 
+		} (lib$3));
+		return lib$3;
 	}
 
-	var lib$3 = {};
+	var lib$2 = {};
 
 	var commons = {};
 
@@ -1252,11 +1252,11 @@
 		return ResourceFactory$3;
 	}
 
-	var hasRequiredLib$4;
+	var hasRequiredLib$3;
 
-	function requireLib$4 () {
-		if (hasRequiredLib$4) return lib$3;
-		hasRequiredLib$4 = 1;
+	function requireLib$3 () {
+		if (hasRequiredLib$3) return lib$2;
+		hasRequiredLib$3 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -1313,8 +1313,8 @@
 			__exportStar(requirePlatformPointEvent(), exports);
 			__exportStar(requireRendererRequirement(), exports);
 			__exportStar(requireResourceFactory$3(), exports); 
-		} (lib$3));
-		return lib$3;
+		} (lib$2));
+		return lib$2;
 	}
 
 	var AudioSystem = {};
@@ -1328,7 +1328,7 @@
 		hasRequiredAudioPlayContext = 1;
 		Object.defineProperty(AudioPlayContext, "__esModule", { value: true });
 		AudioPlayContext.AudioPlayContext = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var AudioPlayContext$1 = /** @class */ (function () {
 		    function AudioPlayContext(param) {
 		        var _a;
@@ -2774,7 +2774,7 @@
 		(function (exports) {
 			Object.defineProperty(exports, "__esModule", { value: true });
 			exports.Util = void 0;
-			var pdi_types_1 = requireLib$4();
+			var pdi_types_1 = requireLib$3();
 			(function (Util) {
 			    var _a;
 			    /**
@@ -2897,7 +2897,7 @@
 		})();
 		Object.defineProperty(E, "__esModule", { value: true });
 		E.E = E.PointMoveEvent = E.PointUpEvent = E.PointDownEvent = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var Event_1 = requireEvent();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Matrix_1 = requireMatrix();
@@ -4205,7 +4205,7 @@
 		})();
 		Object.defineProperty(FrameSprite, "__esModule", { value: true });
 		FrameSprite.FrameSprite = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var Sprite_1 = requireSprite();
 		/**
 		 * フレームとタイマーによるアニメーション機構を持つ `Sprite` 。
@@ -5266,7 +5266,7 @@
 		hasRequiredEmptyBinaryAsset = 1;
 		Object.defineProperty(EmptyBinaryAsset, "__esModule", { value: true });
 		EmptyBinaryAsset.EmptyBinaryAsset = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var EmptyBinaryAsset$1 = /** @class */ (function () {
 		    function EmptyBinaryAsset(id, path) {
 		        this.type = "binary";
@@ -5313,7 +5313,7 @@
 		hasRequiredEmptyVectorImageAsset = 1;
 		Object.defineProperty(EmptyVectorImageAsset, "__esModule", { value: true });
 		EmptyVectorImageAsset.EmptyVectorImageAsset = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var EmptyVectorImageAsset$1 = /** @class */ (function () {
 		    function EmptyVectorImageAsset(id, path, width, height, hint) {
 		        this.type = "vector-image";
@@ -5402,7 +5402,7 @@
 		hasRequiredPartialImageAsset = 1;
 		Object.defineProperty(PartialImageAsset, "__esModule", { value: true });
 		PartialImageAsset.PartialImageAsset = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		/**
 		 * 部分画像アセット。
 		 *
@@ -7016,7 +7016,7 @@
 		hasRequiredTimer = 1;
 		Object.defineProperty(Timer, "__esModule", { value: true });
 		Timer.Timer = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		/**
 		 * 一定時間で繰り返される処理を表すタイマー。
 		 *
@@ -7256,7 +7256,7 @@
 		hasRequiredScene = 1;
 		Object.defineProperty(Scene, "__esModule", { value: true });
 		Scene.Scene = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var AssetAccessor_1 = requireAssetAccessor();
 		var AssetHolder_1 = requireAssetHolder();
 		var Camera2D_1 = requireCamera2D();
@@ -7748,7 +7748,7 @@
 		})();
 		Object.defineProperty(LoadingScene, "__esModule", { value: true });
 		LoadingScene.LoadingScene = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Scene_1 = requireScene();
 		/**
@@ -8627,7 +8627,7 @@
 		})();
 		Object.defineProperty(DynamicFont, "__esModule", { value: true });
 		DynamicFont.DynamicFont = void 0;
-		var pdi_types_1 = requireLib$4();
+		var pdi_types_1 = requireLib$3();
 		var BitmapFont_1 = requireBitmapFont();
 		var Font_1 = requireFont();
 		var SurfaceAtlasSet_1 = requireSurfaceAtlasSet();
@@ -8840,7 +8840,6 @@
 		        this._game = param.game;
 		        this._playerId = (_a = param.playerId) !== null && _a !== void 0 ? _a : null;
 		        this._playerTable = {};
-		        this._pointDownButtonTable = {};
 		    }
 		    /**
 		     * playlog.Eventからg.Eventへ変換する。
@@ -8904,10 +8903,9 @@
 		                    y: pev[5 /* EventIndex.PointDown.Y */]
 		                };
 		                button = pev[7 /* EventIndex.PointDown.Button */];
-		                this._pointDownButtonTable[pointerId] = button;
 		                return new E_1.PointDownEvent(pointerId, target, point, player, local, prio, button);
 		            case 34 /* pl.EventCode.PointMove */:
-		                local = pev[11 /* EventIndex.PointMove.Local */];
+		                local = pev[12 /* EventIndex.PointMove.Local */];
 		                pointerId = pev[3 /* EventIndex.PointMove.PointerId */];
 		                entityId = pev[10 /* EventIndex.PointMove.EntityId */];
 		                target = entityId == null ? undefined : entityId >= 0 ? this._game.db.get(entityId) : this._game._localDb.get(entityId);
@@ -8923,10 +8921,10 @@
 		                    x: pev[8 /* EventIndex.PointMove.PrevDeltaX */],
 		                    y: pev[9 /* EventIndex.PointMove.PrevDeltaY */]
 		                };
-		                button = this._pointDownButtonTable[pointerId];
+		                button = pev[11 /* EventIndex.PointMove.Button */];
 		                return new E_1.PointMoveEvent(pointerId, target, point, prevDelta, startDelta, player, local, prio, button);
 		            case 35 /* pl.EventCode.PointUp */:
-		                local = pev[11 /* EventIndex.PointUp.Local */];
+		                local = pev[12 /* EventIndex.PointUp.Local */];
 		                pointerId = pev[3 /* EventIndex.PointUp.PointerId */];
 		                entityId = pev[10 /* EventIndex.PointUp.EntityId */];
 		                target = entityId == null ? undefined : entityId >= 0 ? this._game.db.get(entityId) : this._game._localDb.get(entityId);
@@ -8942,8 +8940,7 @@
 		                    x: pev[8 /* EventIndex.PointUp.PrevDeltaX */],
 		                    y: pev[9 /* EventIndex.PointUp.PrevDeltaY */]
 		                };
-		                button = this._pointDownButtonTable[pointerId];
-		                delete this._pointDownButtonTable[pointerId];
+		                button = pev[11 /* EventIndex.PointUp.Button */];
 		                return new E_1.PointUpEvent(pointerId, target, point, prevDelta, startDelta, player, local, prio, button);
 		            case 64 /* pl.EventCode.Operation */:
 		                local = pev[5 /* EventIndex.Operation.Local */];
@@ -9018,7 +9015,8 @@
 		                    pointMove.prevDelta.x,
 		                    pointMove.prevDelta.y,
 		                    targetId,
-		                    !!pointMove.local //       11?: ローカルイベントかどうか
+		                    pointMove.button,
+		                    !!pointMove.local //       12?: ローカルイベントかどうか
 		                ];
 		            case "point-up":
 		                var pointUp = e;
@@ -9036,7 +9034,8 @@
 		                    pointUp.prevDelta.x,
 		                    pointUp.prevDelta.y,
 		                    targetId,
-		                    !!pointUp.local //       11?: ローカルイベントかどうか
+		                    pointUp.button,
+		                    !!pointUp.local //       12?: ローカルイベントかどうか
 		                ];
 		            case "message":
 		                var message = e;
@@ -9634,7 +9633,7 @@
 		};
 		Object.defineProperty(OperationPluginManager, "__esModule", { value: true });
 		OperationPluginManager.OperationPluginManager = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		/**
 		 * 操作プラグインからの通知をハンドルするクラス。
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはなく、ゲーム開発者が利用する必要もない。
@@ -9816,7 +9815,6 @@
 		        this._maxPoints = (_a = param.maxPoints) !== null && _a !== void 0 ? _a : null;
 		    }
 		    PointEventResolver.prototype.pointDown = function (e) {
-		        var _a;
 		        if (this._maxPoints != null && this._currentPoints >= this._maxPoints) {
 		            return null;
 		        }
@@ -9832,8 +9830,7 @@
 		            local: local,
 		            point: point,
 		            start: { x: e.offset.x, y: e.offset.y },
-		            prev: { x: e.offset.x, y: e.offset.y },
-		            button: (_a = e.button) !== null && _a !== void 0 ? _a : 0
+		            prev: { x: e.offset.x, y: e.offset.y }
 		        };
 		        this._currentPoints++;
 		        // NOTE: 優先度は機械的にJoinedをつけておく。Joinしていない限りPointDownEventなどはリジェクトされる。
@@ -9869,7 +9866,8 @@
 		            start.y,
 		            prev.x,
 		            prev.y,
-		            holder.targetId //         10?: エンティティID
+		            holder.targetId,
+		            e.button //                11?: ボタンの種類
 		        ];
 		        if (holder.local)
 		            ret.push(holder.local); // 11?: ローカル
@@ -9895,7 +9893,8 @@
 		            start.y,
 		            prev.x,
 		            prev.y,
-		            holder.targetId //       10?: エンティティID
+		            holder.targetId,
+		            e.button //              11?: ボタンの種類
 		        ];
 		        if (holder.local)
 		            ret.push(holder.local); // 11?: ローカル
@@ -10313,7 +10312,7 @@
 		hasRequiredGame = 1;
 		Object.defineProperty(Game, "__esModule", { value: true });
 		Game.Game = void 0;
-		var trigger_1 = requireLib$5();
+		var trigger_1 = requireLib$4();
 		var AssetManager_1 = requireAssetManager();
 		var AudioSystemManager_1 = requireAudioSystemManager();
 		var DefaultLoadingScene_1 = requireDefaultLoadingScene();
@@ -11563,13 +11562,13 @@
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
 			exports.PathUtil = exports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;
-			__exportStar(requireLib$6(), exports);
 			__exportStar(requireLib$5(), exports);
+			__exportStar(requireLib$4(), exports);
 			// pdi-types 由来の型を g 直下から reexport する。
 			// ただし一部の型名は、akashic-engine で同名のクラス実装を与えているため、
 			// そのままでは両方 export しようとして衝突する。
 			// ここで明示的に片方を export して衝突を解決している。
-			__exportStar(requireLib$4(), exports);
+			__exportStar(requireLib$3(), exports);
 			var AudioSystem_1 = requireAudioSystem();
 			Object.defineProperty(exports, "AudioSystem", { enumerable: true, get: function () { return AudioSystem_1.AudioSystem; } });
 			var Module_1 = requireModule();
@@ -11673,11 +11672,11 @@
 		return GameHandlerSet$1;
 	}
 
-	var hasRequiredLib$3;
+	var hasRequiredLib$2;
 
-	function requireLib$3 () {
-		if (hasRequiredLib$3) return lib$6;
-		hasRequiredLib$3 = 1;
+	function requireLib$2 () {
+		if (hasRequiredLib$2) return lib$5;
+		hasRequiredLib$2 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -11697,8 +11696,8 @@
 			__exportStar(requireIndex_common(), exports);
 			__exportStar(requireGameHandlerSet$1(), exports); // NOTE: コンテンツから参照する必要はない
 			
-		} (lib$6));
-		return lib$6;
+		} (lib$5));
+		return lib$5;
 	}
 
 	var akashicEngine;
@@ -11707,7 +11706,7 @@
 	function requireAkashicEngine () {
 		if (hasRequiredAkashicEngine) return akashicEngine;
 		hasRequiredAkashicEngine = 1;
-		akashicEngine = requireLib$3();
+		akashicEngine = requireLib$2();
 		return akashicEngine;
 	}
 
@@ -11890,22 +11889,21 @@
 	function requireExceptionFactory$1 () {
 		if (hasRequiredExceptionFactory$1) return ExceptionFactory$1;
 		hasRequiredExceptionFactory$1 = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.ExceptionFactory = void 0;
-			(function (ExceptionFactory) {
-			    function createAssetLoadError(message, retriable, cause) {
-			        if (retriable === void 0) { retriable = true; }
-			        return {
-			            name: "AssetLoadError",
-			            message: message,
-			            retriable: retriable,
-			            cause: cause
-			        };
-			    }
-			    ExceptionFactory.createAssetLoadError = createAssetLoadError;
-			})(exports.ExceptionFactory || (exports.ExceptionFactory = {})); 
-		} (ExceptionFactory$1));
+		Object.defineProperty(ExceptionFactory$1, "__esModule", { value: true });
+		ExceptionFactory$1.ExceptionFactory = void 0;
+		var ExceptionFactory;
+		(function (ExceptionFactory) {
+		    function createAssetLoadError(message, retriable, cause) {
+		        if (retriable === void 0) { retriable = true; }
+		        return {
+		            name: "AssetLoadError",
+		            message: message,
+		            retriable: retriable,
+		            cause: cause
+		        };
+		    }
+		    ExceptionFactory.createAssetLoadError = createAssetLoadError;
+		})(ExceptionFactory || (ExceptionFactory$1.ExceptionFactory = ExceptionFactory = {}));
 		return ExceptionFactory$1;
 	}
 
@@ -11967,77 +11965,39 @@
 
 	var Asset$2 = {};
 
-	var lib$2 = {};
+	var cjs = {};
 
-	var TriggerLike$1 = {};
+	var hasRequiredCjs;
 
-	var hasRequiredTriggerLike$1;
+	function requireCjs () {
+		if (hasRequiredCjs) return cjs;
+		hasRequiredCjs = 1;
 
-	function requireTriggerLike$1 () {
-		if (hasRequiredTriggerLike$1) return TriggerLike$1;
-		hasRequiredTriggerLike$1 = 1;
-		Object.defineProperty(TriggerLike$1, "__esModule", { value: true });
-		return TriggerLike$1;
-	}
-
-	var ChainTriggerLike$1 = {};
-
-	var hasRequiredChainTriggerLike$1;
-
-	function requireChainTriggerLike$1 () {
-		if (hasRequiredChainTriggerLike$1) return ChainTriggerLike$1;
-		hasRequiredChainTriggerLike$1 = 1;
-		Object.defineProperty(ChainTriggerLike$1, "__esModule", { value: true });
-		return ChainTriggerLike$1;
-	}
-
-	var Trigger$1 = {};
-
-	var isPromise$1 = {};
-
-	var hasRequiredIsPromise$1;
-
-	function requireIsPromise$1 () {
-		if (hasRequiredIsPromise$1) return isPromise$1;
-		hasRequiredIsPromise$1 = 1;
-		Object.defineProperty(isPromise$1, "__esModule", { value: true });
-		isPromise$1.isPromise = void 0;
 		function isPromise(target) {
 		    return (target != null &&
 		        (typeof target === "object" || typeof target === "function") &&
 		        typeof target.then === "function");
 		}
-		isPromise$1.isPromise = isPromise;
-		return isPromise$1;
-	}
 
-	var hasRequiredTrigger$1;
-
-	function requireTrigger$1 () {
-		if (hasRequiredTrigger$1) return Trigger$1;
-		hasRequiredTrigger$1 = 1;
-		Object.defineProperty(Trigger$1, "__esModule", { value: true });
-		Trigger$1.Trigger = void 0;
-		var isPromise_1 = requireIsPromise$1();
 		/**
 		 * イベント通知機構クラス。
 		 */
-		var Trigger = /** @class */ (function () {
-		    function Trigger() {
+		class Trigger {
+		    constructor() {
 		        this._handlers = [];
 		        this.length = 0;
 		    }
-		    Trigger.prototype.add = function (paramsOrFunc, owner) {
+		    add(paramsOrFunc, owner) {
 		        if (typeof paramsOrFunc === "function") {
 		            this._handlers.push({
 		                func: paramsOrFunc,
-		                owner: owner,
+		                owner,
 		                once: false,
 		                name: undefined
 		            });
 		        }
 		        else {
-		            var params = paramsOrFunc;
+		            const params = paramsOrFunc;
 		            if (typeof params.index === "number") {
 		                this._handlers.splice(params.index, 0, {
 		                    func: params.func,
@@ -12056,18 +12016,18 @@
 		            }
 		        }
 		        this.length = this._handlers.length;
-		    };
-		    Trigger.prototype.addOnce = function (paramsOrFunc, owner) {
+		    }
+		    addOnce(paramsOrFunc, owner) {
 		        if (typeof paramsOrFunc === "function") {
 		            this._handlers.push({
 		                func: paramsOrFunc,
-		                owner: owner,
+		                owner,
 		                once: true,
 		                name: undefined
 		            });
 		        }
 		        else {
-		            var params = paramsOrFunc;
+		            const params = paramsOrFunc;
 		            if (typeof params.index === "number") {
 		                this._handlers.splice(params.index, 0, {
 		                    func: params.func,
@@ -12086,14 +12046,14 @@
 		            }
 		        }
 		        this.length = this._handlers.length;
-		    };
+		    }
 		    /**
 		     * このTriggerにハンドラを追加する。
 		     * @deprecated 互換性のために残されている。代わりに `add()` を利用すべきである。実装の変化のため、 `func` が `boolean` を返した時の動作はサポートされていない。
 		     */
-		    Trigger.prototype.handle = function (owner, func, name) {
-		        this.add(func ? { owner: owner, func: func, name: name } : { func: owner });
-		    };
+		    handle(owner, func, name) {
+		        this.add(func ? { owner, func, name } : { func: owner });
+		    }
 		    /**
 		     * このTriggerを発火する。
 		     *
@@ -12105,45 +12065,45 @@
 		     *
 		     * @param arg ハンドラに与えられる引数
 		     */
-		    Trigger.prototype.fire = function (arg) {
+		    fire(arg) {
 		        if (!this._handlers || !this._handlers.length)
 		            return;
-		        var handlers = this._handlers.concat();
-		        for (var i = 0; i < handlers.length; i++) {
-		            var handler = handlers[i];
-		            var ret = handler.func.call(handler.owner, arg);
-		            var returnedTruthy = !(0, isPromise_1.isPromise)(ret) && !!ret;
+		        const handlers = this._handlers.concat();
+		        for (let i = 0; i < handlers.length; i++) {
+		            const handler = handlers[i];
+		            const ret = handler.func.call(handler.owner, arg);
+		            const returnedTruthy = !isPromise(ret) && !!ret;
 		            if (returnedTruthy || handler.once) {
 		                if (!this._handlers)
 		                    continue;
-		                var index = this._handlers.indexOf(handler);
+		                const index = this._handlers.indexOf(handler);
 		                if (index !== -1)
 		                    this._handlers.splice(index, 1);
 		            }
 		        }
 		        if (this._handlers != null)
 		            this.length = this._handlers.length;
-		    };
-		    Trigger.prototype.contains = function (paramsOrFunc, owner) {
-		        var condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner: owner } : paramsOrFunc;
-		        for (var i = 0; i < this._handlers.length; i++) {
+		    }
+		    contains(paramsOrFunc, owner) {
+		        const condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner } : paramsOrFunc;
+		        for (let i = 0; i < this._handlers.length; i++) {
 		            if (this._comparePartial(condition, this._handlers[i])) {
 		                return true;
 		            }
 		        }
 		        return false;
-		    };
-		    Trigger.prototype.remove = function (paramsOrFunc, owner) {
-		        var condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner: owner } : paramsOrFunc;
-		        for (var i = 0; i < this._handlers.length; i++) {
-		            var handler = this._handlers[i];
+		    }
+		    remove(paramsOrFunc, owner) {
+		        const condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner } : paramsOrFunc;
+		        for (let i = 0; i < this._handlers.length; i++) {
+		            const handler = this._handlers[i];
 		            if (condition.func === handler.func && condition.owner === handler.owner && condition.name === handler.name) {
 		                this._handlers.splice(i, 1);
 		                --this.length;
 		                return;
 		            }
 		        }
-		    };
+		    }
 		    /**
 		     * 指定した条件に部分一致するイベントハンドラを削除する。
 		     *
@@ -12154,11 +12114,11 @@
 		     *
 		     * @param params 削除するイベントハンドラの条件
 		     */
-		    Trigger.prototype.removeAll = function (params) {
-		        var handlers = [];
+		    removeAll(params) {
+		        const handlers = [];
 		        if (params) {
-		            for (var i = 0; i < this._handlers.length; i++) {
-		                var handler = this._handlers[i];
+		            for (let i = 0; i < this._handlers.length; i++) {
+		                const handler = this._handlers[i];
 		                if (!this._comparePartial(params, handler)) {
 		                    handlers.push(handler);
 		                }
@@ -12166,24 +12126,24 @@
 		        }
 		        this._handlers = handlers;
 		        this.length = this._handlers.length;
-		    };
+		    }
 		    /**
 		     * このTriggerを破棄する。
 		     */
-		    Trigger.prototype.destroy = function () {
+		    destroy() {
 		        this._handlers = null;
 		        this.length = null;
-		    };
+		    }
 		    /**
 		     * このTriggerが破棄されているかを返す。
 		     */
-		    Trigger.prototype.destroyed = function () {
+		    destroyed() {
 		        return this._handlers === null;
-		    };
+		    }
 		    /**
 		     * @private
 		     */
-		    Trigger.prototype._comparePartial = function (target, compare) {
+		    _comparePartial(target, compare) {
 		        if (target.func !== undefined && target.func !== compare.func)
 		            return false;
 		        if (target.owner !== undefined && target.owner !== compare.owner)
@@ -12191,43 +12151,13 @@
 		        if (target.name !== undefined && target.name !== compare.name)
 		            return false;
 		        return true;
-		    };
-		    return Trigger;
-		}());
-		Trigger$1.Trigger = Trigger;
-		return Trigger$1;
-	}
+		    }
+		}
 
-	var ChainTrigger$1 = {};
-
-	var hasRequiredChainTrigger$1;
-
-	function requireChainTrigger$1 () {
-		if (hasRequiredChainTrigger$1) return ChainTrigger$1;
-		hasRequiredChainTrigger$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
-		    var extendStatics = function (d, b) {
-		        extendStatics = Object.setPrototypeOf ||
-		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-		        return extendStatics(d, b);
-		    };
-		    return function (d, b) {
-		        if (typeof b !== "function" && b !== null)
-		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-		        extendStatics(d, b);
-		        function __() { this.constructor = d; }
-		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-		    };
-		})();
-		Object.defineProperty(ChainTrigger$1, "__esModule", { value: true });
-		ChainTrigger$1.ChainTrigger = void 0;
-		var Trigger_1 = requireTrigger$1();
 		/**
 		 * 他のTriggerLikeに反応して発火するイベント通知機構。
 		 */
-		var ChainTrigger = /** @class */ (function (_super) {
-		    __extends(ChainTrigger, _super);
+		class ChainTrigger extends Trigger {
 		    /**
 		     * `ChainTrigger` のインスタンスを生成する。
 		     *
@@ -12236,90 +12166,61 @@
 		     * @param filter `chain` がfireされたときに実行される関数。省略された場合、または本関数の戻り値が真の場合、このインスタンスをfireする。
 		     * @param filterOwner `filter` 呼び出し時に使われる `this` の値。
 		     */
-		    function ChainTrigger(chain, filter, filterOwner) {
-		        var _this = _super.call(this) || this;
-		        _this.chain = chain;
-		        _this.filter = filter != null ? filter : null;
-		        _this.filterOwner = filterOwner;
-		        _this._isActivated = false;
-		        return _this;
+		    constructor(chain, filter, filterOwner) {
+		        super();
+		        this.chain = chain;
+		        this.filter = filter != null ? filter : null;
+		        this.filterOwner = filterOwner;
+		        this._isActivated = false;
 		    }
-		    ChainTrigger.prototype.add = function (paramsOrHandler, owner) {
-		        _super.prototype.add.call(this, paramsOrHandler, owner);
+		    add(paramsOrHandler, owner) {
+		        super.add(paramsOrHandler, owner);
 		        if (!this._isActivated) {
 		            this.chain.add(this._onChainTriggerFired, this);
 		            this._isActivated = true;
 		        }
-		    };
-		    ChainTrigger.prototype.addOnce = function (paramsOrHandler, owner) {
-		        _super.prototype.addOnce.call(this, paramsOrHandler, owner);
+		    }
+		    addOnce(paramsOrHandler, owner) {
+		        super.addOnce(paramsOrHandler, owner);
 		        if (!this._isActivated) {
 		            this.chain.add(this._onChainTriggerFired, this);
 		            this._isActivated = true;
 		        }
-		    };
-		    ChainTrigger.prototype.remove = function (paramsOrFunc, owner) {
-		        _super.prototype.remove.call(this, paramsOrFunc, owner);
+		    }
+		    remove(paramsOrFunc, owner) {
+		        super.remove(paramsOrFunc, owner);
 		        if (this.length === 0 && this._isActivated) {
 		            this.chain.remove(this._onChainTriggerFired, this);
 		            this._isActivated = false;
 		        }
-		    };
-		    ChainTrigger.prototype.removeAll = function (params) {
-		        _super.prototype.removeAll.call(this, params);
+		    }
+		    removeAll(params) {
+		        super.removeAll(params);
 		        if (this.length === 0 && this._isActivated) {
 		            this.chain.remove(this._onChainTriggerFired, this);
 		            this._isActivated = false;
 		        }
-		    };
-		    ChainTrigger.prototype.destroy = function () {
-		        _super.prototype.destroy.call(this);
+		    }
+		    destroy() {
+		        super.destroy();
 		        this.chain.remove(this._onChainTriggerFired, this);
 		        this.filter = null;
 		        this.filterOwner = null;
 		        this._isActivated = false;
-		    };
+		    }
 		    /**
 		     * @private
 		     */
-		    ChainTrigger.prototype._onChainTriggerFired = function (args) {
+		    _onChainTriggerFired(args) {
 		        if (!this.filter || this.filter.call(this.filterOwner, args)) {
 		            this.fire(args);
 		        }
-		    };
-		    return ChainTrigger;
-		}(Trigger_1.Trigger));
-		ChainTrigger$1.ChainTrigger = ChainTrigger;
-		return ChainTrigger$1;
-	}
+		    }
+		}
 
-	var hasRequiredLib$2;
-
-	function requireLib$2 () {
-		if (hasRequiredLib$2) return lib$2;
-		hasRequiredLib$2 = 1;
-		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-			    if (k2 === undefined) k2 = k;
-			    var desc = Object.getOwnPropertyDescriptor(m, k);
-			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-			      desc = { enumerable: true, get: function() { return m[k]; } };
-			    }
-			    Object.defineProperty(o, k2, desc);
-			}) : (function(o, m, k, k2) {
-			    if (k2 === undefined) k2 = k;
-			    o[k2] = m[k];
-			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
-			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-			};
-			Object.defineProperty(exports, "__esModule", { value: true });
-			__exportStar(requireTriggerLike$1(), exports);
-			__exportStar(requireChainTriggerLike$1(), exports);
-			__exportStar(requireTrigger$1(), exports);
-			__exportStar(requireChainTrigger$1(), exports); 
-		} (lib$2));
-		return lib$2;
+		cjs.ChainTrigger = ChainTrigger;
+		cjs.Trigger = Trigger;
+		return cjs;
 	}
 
 	var hasRequiredAsset$2;
@@ -12329,7 +12230,7 @@
 		hasRequiredAsset$2 = 1;
 		Object.defineProperty(Asset$2, "__esModule", { value: true });
 		Asset$2.Asset = void 0;
-		var trigger_1 = requireLib$2();
+		var trigger_1 = requireCjs();
 		var Asset = /** @class */ (function () {
 		    function Asset(id, path) {
 		        this.onDestroyed = new trigger_1.Trigger();
@@ -14905,7 +14806,7 @@
 		hasRequiredHTMLVideoPlayer = 1;
 		Object.defineProperty(HTMLVideoPlayer, "__esModule", { value: true });
 		HTMLVideoPlayer.HTMLVideoPlayer = void 0;
-		var trigger_1 = requireLib$2();
+		var trigger_1 = requireCjs();
 		var HTMLVideoPlayer$1 = /** @class */ (function () {
 		    function HTMLVideoPlayer(loop) {
 		        this._loop = !!loop;
@@ -15149,53 +15050,29 @@
 
 	var InputHandlerLayer = {};
 
-	var PointerEventHandler = {};
+	var MouseTouchEventHandler = {};
 
-	var hasRequiredPointerEventHandler;
+	var InputEventHandler = {};
 
-	function requirePointerEventHandler () {
-		if (hasRequiredPointerEventHandler) return PointerEventHandler;
-		hasRequiredPointerEventHandler = 1;
-		Object.defineProperty(PointerEventHandler, "__esModule", { value: true });
-		PointerEventHandler.PointerEventHandler = void 0;
-		var trigger_1 = requireLib$2();
+	var hasRequiredInputEventHandler;
+
+	function requireInputEventHandler () {
+		if (hasRequiredInputEventHandler) return InputEventHandler;
+		hasRequiredInputEventHandler = 1;
+		Object.defineProperty(InputEventHandler, "__esModule", { value: true });
+		InputEventHandler.preventEventDefault = InputEventHandler.InputEventHandler = void 0;
+		var trigger_1 = requireCjs();
 		/**
-		 * pointer-events を利用した入力ハンドラ。
+		 * 入力ハンドラ。
 		 *
-		 * コンストラクタで受け取ったViewに対して pointer-events のハンドラを設定する。
+		 * コンストラクタで受け取ったViewに対してのハンドラを設定する。
 		 * DOMイベント情報から `PlatformPointEvent` へ変換したデータを `pointTrigger` を通して通知する。
 		 * Down -> Move -> Up のフローにおける、Moveイベントのロックを管理する。
 		 */
-		var PointerEventHandler$1 = /** @class */ (function () {
-		    function PointerEventHandler(inputView) {
-		        var _this = this;
-		        this.onPointerDown = function (e) {
-		            _this.pointDown(e.pointerId, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
-		            var onPointerMove = function (event) {
-		                _this.pointMove(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event));
-		            };
-		            var onPointerUp = function (event) {
-		                _this.pointUp(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event));
-		                if (e.pointerId === event.pointerId) {
-		                    var handlers = _this._eventHandlersMap[event.pointerId];
-		                    if (!handlers)
-		                        return;
-		                    var onPointerMove_1 = handlers.onPointerMove, onPointerUp_1 = handlers.onPointerUp;
-		                    window.removeEventListener("pointermove", onPointerMove_1, false);
-		                    window.removeEventListener("pointerup", onPointerUp_1, false);
-		                    delete _this._eventHandlersMap[event.pointerId];
-		                }
-		            };
-		            window.addEventListener("pointermove", onPointerMove, false);
-		            window.addEventListener("pointerup", onPointerUp, false);
-		            _this._eventHandlersMap[e.pointerId] = { onPointerMove: onPointerMove, onPointerUp: onPointerUp };
-		        };
-		        this.onContextMenu = function (ev) {
-		            ev.preventDefault();
-		        };
+		var InputEventHandler$1 = /** @class */ (function () {
+		    function InputEventHandler(inputView) {
 		        this.inputView = inputView;
 		        this.pointerEventLock = {};
-		        this._eventHandlersMap = Object.create(null);
 		        this._xScale = 1;
 		        this._yScale = 1;
 		        this.pointTrigger = new trigger_1.Trigger();
@@ -15203,23 +15080,15 @@
 		        inputView.style.userSelect = "none";
 		    }
 		    // `start()` で設定するDOMイベントをサポートしているかを返す
-		    PointerEventHandler.isSupported = function () {
+		    InputEventHandler.isSupported = function () {
 		        return false;
 		    };
-		    PointerEventHandler.prototype.start = function () {
-		        this.inputView.addEventListener("pointerdown", this.onPointerDown, false);
-		        this.inputView.addEventListener("contextmenu", this.onContextMenu, false);
-		    };
-		    PointerEventHandler.prototype.stop = function () {
-		        this.inputView.removeEventListener("pointerdown", this.onPointerDown, false);
-		        this.inputView.removeEventListener("contextmenu", this.onContextMenu, false);
-		    };
-		    PointerEventHandler.prototype.setScale = function (xScale, yScale) {
+		    InputEventHandler.prototype.setScale = function (xScale, yScale) {
 		        if (yScale === void 0) { yScale = xScale; }
 		        this._xScale = xScale;
 		        this._yScale = yScale;
 		    };
-		    PointerEventHandler.prototype.pointDown = function (identifier, pagePosition, button) {
+		    InputEventHandler.prototype.pointDown = function (identifier, pagePosition, button) {
 		        this.pointTrigger.fire({
 		            type: 0 /* PlatformPointType.Down */,
 		            identifier: identifier,
@@ -15229,7 +15098,7 @@
 		        // downのイベントIDを保存して、moveとupのイベントの抑制をする(ロックする)
 		        this.pointerEventLock[identifier] = true;
 		    };
-		    PointerEventHandler.prototype.pointMove = function (identifier, pagePosition, button) {
+		    InputEventHandler.prototype.pointMove = function (identifier, pagePosition, button) {
 		        if (!this.pointerEventLock.hasOwnProperty(identifier + "")) {
 		            return;
 		        }
@@ -15240,7 +15109,7 @@
 		            button: button
 		        });
 		    };
-		    PointerEventHandler.prototype.pointUp = function (identifier, pagePosition, button) {
+		    InputEventHandler.prototype.pointUp = function (identifier, pagePosition, button) {
 		        if (!this.pointerEventLock.hasOwnProperty(identifier + "")) {
 		            return;
 		        }
@@ -15253,13 +15122,13 @@
 		        // Upが完了したら、Down->Upが完了したとしてロックを外す
 		        delete this.pointerEventLock[identifier];
 		    };
-		    PointerEventHandler.prototype.getOffsetFromEvent = function (e) {
+		    InputEventHandler.prototype.getOffsetFromEvent = function (e) {
 		        return { x: e.offsetX, y: e.offsetY };
 		    };
-		    PointerEventHandler.prototype.getScale = function () {
+		    InputEventHandler.prototype.getScale = function () {
 		        return { x: this._xScale, y: this._yScale };
 		    };
-		    PointerEventHandler.prototype.getOffsetPositionFromInputView = function (position) {
+		    InputEventHandler.prototype.getOffsetPositionFromInputView = function (position) {
 		        // windowの左上を0,0とした時のinputViewのoffsetを取得する
 		        var bounding = this.inputView.getBoundingClientRect();
 		        var scale = this.getScale();
@@ -15268,7 +15137,120 @@
 		            offsetY: (position.pageY - Math.round(window.pageYOffset + bounding.top)) / scale.y
 		        };
 		    };
-		    PointerEventHandler.prototype.getPlatformButtonType = function (e) {
+		    return InputEventHandler;
+		}());
+		InputEventHandler.InputEventHandler = InputEventHandler$1;
+		function preventEventDefault(ev) {
+		    ev.preventDefault();
+		}
+		InputEventHandler.preventEventDefault = preventEventDefault;
+		return InputEventHandler;
+	}
+
+	var hasRequiredMouseTouchEventHandler;
+
+	function requireMouseTouchEventHandler () {
+		if (hasRequiredMouseTouchEventHandler) return MouseTouchEventHandler;
+		hasRequiredMouseTouchEventHandler = 1;
+		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		    var extendStatics = function (d, b) {
+		        extendStatics = Object.setPrototypeOf ||
+		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+		        return extendStatics(d, b);
+		    };
+		    return function (d, b) {
+		        if (typeof b !== "function" && b !== null)
+		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+		        extendStatics(d, b);
+		        function __() { this.constructor = d; }
+		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+		    };
+		})();
+		Object.defineProperty(MouseTouchEventHandler, "__esModule", { value: true });
+		MouseTouchEventHandler.MouseTouchEventHandler = void 0;
+		var InputEventHandler_1 = requireInputEventHandler();
+		/**
+		 * Mouse/Touch Events を利用した入力ハンドラ。
+		 *
+		 * Pointer Event が利用できない環境を想定するフォールバック実装。
+		 * preventDefault() による副作用があるので、可能な環境では PointerEventHandler を利用すること。
+		 */
+		var MouseTouchEventHandler$1 = /** @class */ (function (_super) {
+		    __extends(MouseTouchEventHandler, _super);
+		    function MouseTouchEventHandler() {
+		        var _this = _super !== null && _super.apply(this, arguments) || this;
+		        _this.pressingMouseButton = null;
+		        _this.onMouseDown = function (e) {
+		            // TODO ボタンが複数押される状態をサポートする
+		            if (_this.pressingMouseButton != null)
+		                return;
+		            _this.pressingMouseButton = e.button;
+		            _this.pointDown(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            window.addEventListener("mousemove", _this.onWindowMouseMove, false);
+		            window.addEventListener("mouseup", _this.onWindowMouseUp, false);
+		            // NOTE ここで e.preventDefault() してはならない。
+		            // preventDefault() すると、iframe 内で動作していて iframe 外にドラッグした時に mousemove が途切れるようになる。
+		        };
+		        _this.onWindowMouseMove = function (e) {
+		            _this.pointMove(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		        };
+		        _this.onWindowMouseUp = function (e) {
+		            if (_this.pressingMouseButton !== e.button)
+		                return;
+		            _this.pressingMouseButton = null;
+		            _this.pointUp(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            window.removeEventListener("mousemove", _this.onWindowMouseMove, false);
+		            window.removeEventListener("mouseup", _this.onWindowMouseUp, false);
+		        };
+		        _this.onTouchStart = function (e) {
+		            var touches = e.changedTouches;
+		            for (var i = 0, len = touches.length; i < len; i++) {
+		                var touch = touches[i];
+		                _this.pointDown(touch.identifier, _this.getOffsetPositionFromInputView(touch), 0 /* PlatformButtonType.Primary */);
+		            }
+		            // NOTE touch に追従して発生する mouse イベントを抑止するために preventDefault() する。
+		            // ref. https://w3c.github.io/touch-events/#mouse-events
+		            // なおこの preventDefault() は iOS WebView では別の副作用を持つ: このクラスは iOS では利用すべきでない。
+		            e.preventDefault();
+		        };
+		        _this.onTouchMove = function (e) {
+		            var touches = e.changedTouches;
+		            for (var i = 0, len = touches.length; i < len; i++) {
+		                var touch = touches[i];
+		                _this.pointMove(touch.identifier, _this.getOffsetPositionFromInputView(touch), 0 /* PlatformButtonType.Primary */);
+		            }
+		        };
+		        _this.onTouchEnd = function (e) {
+		            var touches = e.changedTouches;
+		            for (var i = 0, len = touches.length; i < len; i++) {
+		                var touch = touches[i];
+		                _this.pointUp(touch.identifier, _this.getOffsetPositionFromInputView(touch), 0 /* PlatformButtonType.Primary */);
+		            }
+		            window.removeEventListener("touchmove", _this.onTouchMove, false);
+		            window.removeEventListener("touchend", _this.onTouchEnd, false);
+		        };
+		        return _this;
+		    }
+		    // `start()` で設定するDOMイベントをサポートしているかを返す
+		    MouseTouchEventHandler.isSupported = function () {
+		        return false;
+		    };
+		    MouseTouchEventHandler.prototype.start = function () {
+		        this.inputView.addEventListener("mousedown", this.onMouseDown, false);
+		        this.inputView.addEventListener("touchstart", this.onTouchStart);
+		        this.inputView.addEventListener("touchmove", this.onTouchMove);
+		        this.inputView.addEventListener("touchend", this.onTouchEnd);
+		        this.inputView.addEventListener("contextmenu", InputEventHandler_1.preventEventDefault);
+		    };
+		    MouseTouchEventHandler.prototype.stop = function () {
+		        this.inputView.removeEventListener("mousedown", this.onMouseDown, false);
+		        this.inputView.removeEventListener("touchstart", this.onTouchStart);
+		        this.inputView.removeEventListener("touchmove", this.onTouchMove);
+		        this.inputView.removeEventListener("touchend", this.onTouchEnd);
+		        this.inputView.removeEventListener("contextmenu", InputEventHandler_1.preventEventDefault);
+		    };
+		    MouseTouchEventHandler.prototype.getPlatformButtonType = function (e) {
 		        switch (e.button) {
 		            case 0:
 		                // 左クリック
@@ -15284,8 +15266,105 @@
 		                return 0 /* PlatformButtonType.Primary */;
 		        }
 		    };
+		    MouseTouchEventHandler.MOUSE_IDENTIFIER = 1;
+		    return MouseTouchEventHandler;
+		}(InputEventHandler_1.InputEventHandler));
+		MouseTouchEventHandler.MouseTouchEventHandler = MouseTouchEventHandler$1;
+		return MouseTouchEventHandler;
+	}
+
+	var PointerEventHandler = {};
+
+	var hasRequiredPointerEventHandler;
+
+	function requirePointerEventHandler () {
+		if (hasRequiredPointerEventHandler) return PointerEventHandler;
+		hasRequiredPointerEventHandler = 1;
+		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		    var extendStatics = function (d, b) {
+		        extendStatics = Object.setPrototypeOf ||
+		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+		        return extendStatics(d, b);
+		    };
+		    return function (d, b) {
+		        if (typeof b !== "function" && b !== null)
+		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+		        extendStatics(d, b);
+		        function __() { this.constructor = d; }
+		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+		    };
+		})();
+		Object.defineProperty(PointerEventHandler, "__esModule", { value: true });
+		PointerEventHandler.PointerEventHandler = void 0;
+		var InputEventHandler_1 = requireInputEventHandler();
+		/**
+		 * Pointer Events を利用した入力ハンドラ。
+		 *
+		 * コンストラクタで受け取ったViewに対して Pointer Events のハンドラを設定する。
+		 * DOMイベント情報から `PlatformPointEvent` へ変換したデータを `pointTrigger` を通して通知する。
+		 * Down -> Move -> Up のフローにおける、Moveイベントのロックを管理する。
+		 */
+		var PointerEventHandler$1 = /** @class */ (function (_super) {
+		    __extends(PointerEventHandler, _super);
+		    function PointerEventHandler(inputView) {
+		        var _this = _super.call(this, inputView) || this;
+		        _this.onPointerDown = function (e) {
+		            _this.pointDown(e.pointerId, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e, 0 /* PlatformButtonType.Primary */));
+		            var onPointerMove = function (event) {
+		                _this.pointMove(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, -1 /* PlatformButtonType.Unchanged */));
+		            };
+		            var onPointerUp = function (event) {
+		                _this.pointUp(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, 0 /* PlatformButtonType.Primary */));
+		                if (e.pointerId === event.pointerId) {
+		                    var handlers = _this._eventHandlersMap[event.pointerId];
+		                    if (!handlers)
+		                        return;
+		                    var onPointerMove_1 = handlers.onPointerMove, onPointerUp_1 = handlers.onPointerUp;
+		                    window.removeEventListener("pointermove", onPointerMove_1, false);
+		                    window.removeEventListener("pointerup", onPointerUp_1, false);
+		                    delete _this._eventHandlersMap[event.pointerId];
+		                }
+		            };
+		            window.addEventListener("pointermove", onPointerMove, false);
+		            window.addEventListener("pointerup", onPointerUp, false);
+		            _this._eventHandlersMap[e.pointerId] = { onPointerMove: onPointerMove, onPointerUp: onPointerUp };
+		        };
+		        _this._eventHandlersMap = Object.create(null);
+		        return _this;
+		    }
+		    // `start()` で設定するDOMイベントをサポートしているかを返す
+		    PointerEventHandler.isSupported = function () {
+		        return false;
+		    };
+		    PointerEventHandler.prototype.start = function () {
+		        this.inputView.addEventListener("pointerdown", this.onPointerDown, false);
+		        this.inputView.addEventListener("contextmenu", InputEventHandler_1.preventEventDefault, false);
+		    };
+		    PointerEventHandler.prototype.stop = function () {
+		        this.inputView.removeEventListener("pointerdown", this.onPointerDown, false);
+		        this.inputView.removeEventListener("contextmenu", InputEventHandler_1.preventEventDefault, false);
+		    };
+		    PointerEventHandler.prototype.getPlatformButtonType = function (e, defaultValue) {
+		        switch (e.button) {
+		            case -1:
+		                // 変化なし
+		                return -1 /* PlatformButtonType.Unchanged */;
+		            case 0:
+		                // 主ボタン（通常は左ボタン）
+		                return 0 /* PlatformButtonType.Primary */;
+		            case 1:
+		                // 予備ボタン（通常は中ボタン）
+		                return 1 /* PlatformButtonType.Auxiliary */;
+		            case 2:
+		                // 副ボタン（通常は右ボタン）
+		                return 2 /* PlatformButtonType.Secondary */;
+		            default:
+		                return defaultValue;
+		        }
+		    };
 		    return PointerEventHandler;
-		}());
+		}(InputEventHandler_1.InputEventHandler));
 		PointerEventHandler.PointerEventHandler = PointerEventHandler$1;
 		return PointerEventHandler;
 	}
@@ -15297,7 +15376,8 @@
 		hasRequiredInputHandlerLayer = 1;
 		Object.defineProperty(InputHandlerLayer, "__esModule", { value: true });
 		InputHandlerLayer.InputHandlerLayer = void 0;
-		var trigger_1 = requireLib$2();
+		var trigger_1 = requireCjs();
+		var MouseTouchEventHandler_1 = requireMouseTouchEventHandler();
 		var PointerEventHandler_1 = requirePointerEventHandler();
 		/**
 		 * ユーザの入力を受け付けるViewのレイヤー。
@@ -15324,7 +15404,8 @@
 		    // 実行環境でサポートしてるDOM Eventを使い、それぞれonPoint*Triggerを関連付ける
 		    InputHandlerLayer.prototype.enablePointerEvent = function () {
 		        var _this = this;
-		        this._inputHandler = new PointerEventHandler_1.PointerEventHandler(this.view);
+		        var pointerEventAvailable = !!window.PointerEvent;
+		        this._inputHandler = pointerEventAvailable ? new PointerEventHandler_1.PointerEventHandler(this.view) : new MouseTouchEventHandler_1.MouseTouchEventHandler(this.view);
 		        // 各種イベントのTrigger
 		        this._inputHandler.pointTrigger.add(function (e) {
 		            _this.pointEventTrigger.fire(e);
@@ -15365,7 +15446,7 @@
 		hasRequiredContainerController = 1;
 		Object.defineProperty(ContainerController, "__esModule", { value: true });
 		ContainerController.ContainerController = void 0;
-		var trigger_1 = requireLib$2();
+		var trigger_1 = requireCjs();
 		var InputHandlerLayer_1 = requireInputHandlerLayer();
 		/*
 		 HTML要素のContainerを管理するクラス。
@@ -15822,35 +15903,34 @@
 	function requireRenderingHelper () {
 		if (hasRequiredRenderingHelper) return RenderingHelper;
 		hasRequiredRenderingHelper = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.RenderingHelper = void 0;
-			(function (RenderingHelper) {
-			    function toPowerOfTwo(x) {
-			        if ((x & (x - 1)) !== 0) {
-			            var y = 1;
-			            while (y < x) {
-			                y *= 2;
-			            }
-			            return y;
-			        }
-			        return x;
-			    }
-			    RenderingHelper.toPowerOfTwo = toPowerOfTwo;
-			    function clamp(x) {
-			        return Math.min(Math.max(x, 0.0), 1.0);
-			    }
-			    RenderingHelper.clamp = clamp;
-			    function usedWebGL(rendererCandidates) {
-			        var used = false;
-			        if (rendererCandidates && (0 < rendererCandidates.length)) {
-			            used = (rendererCandidates[0] === "webgl");
-			        }
-			        return used;
-			    }
-			    RenderingHelper.usedWebGL = usedWebGL;
-			})(exports.RenderingHelper || (exports.RenderingHelper = {})); 
-		} (RenderingHelper));
+		Object.defineProperty(RenderingHelper, "__esModule", { value: true });
+		RenderingHelper.RenderingHelper = void 0;
+		var RenderingHelper$1;
+		(function (RenderingHelper) {
+		    function toPowerOfTwo(x) {
+		        if ((x & (x - 1)) !== 0) {
+		            var y = 1;
+		            while (y < x) {
+		                y *= 2;
+		            }
+		            return y;
+		        }
+		        return x;
+		    }
+		    RenderingHelper.toPowerOfTwo = toPowerOfTwo;
+		    function clamp(x) {
+		        return Math.min(Math.max(x, 0.0), 1.0);
+		    }
+		    RenderingHelper.clamp = clamp;
+		    function usedWebGL(rendererCandidates) {
+		        var used = false;
+		        if (rendererCandidates && (0 < rendererCandidates.length)) {
+		            used = (rendererCandidates[0] === "webgl");
+		        }
+		        return used;
+		    }
+		    RenderingHelper.usedWebGL = usedWebGL;
+		})(RenderingHelper$1 || (RenderingHelper.RenderingHelper = RenderingHelper$1 = {}));
 		return RenderingHelper;
 	}
 
@@ -15869,254 +15949,253 @@
 	function requireWebGLColor () {
 		if (hasRequiredWebGLColor) return WebGLColor;
 		hasRequiredWebGLColor = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.WebGLColor = void 0;
-			var RenderingHelper_1 = requireRenderingHelper();
-			(function (WebGLColor) {
-			    WebGLColor.colorMap = {
-			        "ALICEBLUE": [0xF0 / 255.0, 0xF8 / 255.0, 0xFF / 255.0, 1.0],
-			        "ANTIQUEWHITE": [0xFA / 255.0, 0xEB / 255.0, 0xD7 / 255.0, 1.0],
-			        "AQUA": [0x00 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
-			        "AQUAMARINE": [0x7F / 255.0, 0xFF / 255.0, 0xD4 / 255.0, 1.0],
-			        "AZURE": [0xF0 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
-			        "BEIGE": [0xF5 / 255.0, 0xF5 / 255.0, 0xDC / 255.0, 1.0],
-			        "BISQUE": [0xFF / 255.0, 0xE4 / 255.0, 0xC4 / 255.0, 1.0],
-			        "BLACK": [0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
-			        "BLANCHEDALMOND": [0xFF / 255.0, 0xEB / 255.0, 0xCD / 255.0, 1.0],
-			        "BLUE": [0x00 / 255.0, 0x00 / 255.0, 0xFF / 255.0, 1.0],
-			        "BLUEVIOLET": [0x8A / 255.0, 0x2B / 255.0, 0xE2 / 255.0, 1.0],
-			        "BROWN": [0xA5 / 255.0, 0x2A / 255.0, 0x2A / 255.0, 1.0],
-			        "BURLYWOOD": [0xDE / 255.0, 0xB8 / 255.0, 0x87 / 255.0, 1.0],
-			        "CADETBLUE": [0x5F / 255.0, 0x9E / 255.0, 0xA0 / 255.0, 1.0],
-			        "CHARTREUSE": [0x7F / 255.0, 0xFF / 255.0, 0x00 / 255.0, 1.0],
-			        "CHOCOLATE": [0xD2 / 255.0, 0x69 / 255.0, 0x1E / 255.0, 1.0],
-			        "CORAL": [0xFF / 255.0, 0x7F / 255.0, 0x50 / 255.0, 1.0],
-			        "CORNFLOWERBLUE": [0x64 / 255.0, 0x95 / 255.0, 0xED / 255.0, 1.0],
-			        "CORNSILK": [0xFF / 255.0, 0xF8 / 255.0, 0xDC / 255.0, 1.0],
-			        "CRIMSON": [0xDC / 255.0, 0x14 / 255.0, 0x3C / 255.0, 1.0],
-			        "CYAN": [0x00 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
-			        "DARKBLUE": [0x00 / 255.0, 0x00 / 255.0, 0x8B / 255.0, 1.0],
-			        "DARKCYAN": [0x00 / 255.0, 0x8B / 255.0, 0x8B / 255.0, 1.0],
-			        "DARKGOLDENROD": [0xB8 / 255.0, 0x86 / 255.0, 0x0B / 255.0, 1.0],
-			        "DARKGRAY": [0xA9 / 255.0, 0xA9 / 255.0, 0xA9 / 255.0, 1.0],
-			        "DARKGREEN": [0x00 / 255.0, 0x64 / 255.0, 0x00 / 255.0, 1.0],
-			        "DARKGREY": [0xA9 / 255.0, 0xA9 / 255.0, 0xA9 / 255.0, 1.0],
-			        "DARKKHAKI": [0xBD / 255.0, 0xB7 / 255.0, 0x6B / 255.0, 1.0],
-			        "DARKMAGENTA": [0x8B / 255.0, 0x00 / 255.0, 0x8B / 255.0, 1.0],
-			        "DARKOLIVEGREEN": [0x55 / 255.0, 0x6B / 255.0, 0x2F / 255.0, 1.0],
-			        "DARKORANGE": [0xFF / 255.0, 0x8C / 255.0, 0x00 / 255.0, 1.0],
-			        "DARKORCHID": [0x99 / 255.0, 0x32 / 255.0, 0xCC / 255.0, 1.0],
-			        "DARKRED": [0x8B / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
-			        "DARKSALMON": [0xE9 / 255.0, 0x96 / 255.0, 0x7A / 255.0, 1.0],
-			        "DARKSEAGREEN": [0x8F / 255.0, 0xBC / 255.0, 0x8F / 255.0, 1.0],
-			        "DARKSLATEBLUE": [0x48 / 255.0, 0x3D / 255.0, 0x8B / 255.0, 1.0],
-			        "DARKSLATEGRAY": [0x2F / 255.0, 0x4F / 255.0, 0x4F / 255.0, 1.0],
-			        "DARKSLATEGREY": [0x2F / 255.0, 0x4F / 255.0, 0x4F / 255.0, 1.0],
-			        "DARKTURQUOISE": [0x00 / 255.0, 0xCE / 255.0, 0xD1 / 255.0, 1.0],
-			        "DARKVIOLET": [0x94 / 255.0, 0x00 / 255.0, 0xD3 / 255.0, 1.0],
-			        "DEEPPINK": [0xFF / 255.0, 0x14 / 255.0, 0x93 / 255.0, 1.0],
-			        "DEEPSKYBLUE": [0x00 / 255.0, 0xBF / 255.0, 0xFF / 255.0, 1.0],
-			        "DIMGRAY": [0x69 / 255.0, 0x69 / 255.0, 0x69 / 255.0, 1.0],
-			        "DIMGREY": [0x69 / 255.0, 0x69 / 255.0, 0x69 / 255.0, 1.0],
-			        "DODGERBLUE": [0x1E / 255.0, 0x90 / 255.0, 0xFF / 255.0, 1.0],
-			        "FIREBRICK": [0xB2 / 255.0, 0x22 / 255.0, 0x22 / 255.0, 1.0],
-			        "FLORALWHITE": [0xFF / 255.0, 0xFA / 255.0, 0xF0 / 255.0, 1.0],
-			        "FORESTGREEN": [0x22 / 255.0, 0x8B / 255.0, 0x22 / 255.0, 1.0],
-			        "FUCHSIA": [0xFF / 255.0, 0x00 / 255.0, 0xFF / 255.0, 1.0],
-			        "GAINSBORO": [0xDC / 255.0, 0xDC / 255.0, 0xDC / 255.0, 1.0],
-			        "GHOSTWHITE": [0xF8 / 255.0, 0xF8 / 255.0, 0xFF / 255.0, 1.0],
-			        "GOLD": [0xFF / 255.0, 0xD7 / 255.0, 0x00 / 255.0, 1.0],
-			        "GOLDENROD": [0xDA / 255.0, 0xA5 / 255.0, 0x20 / 255.0, 1.0],
-			        "GRAY": [0x80 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
-			        "GREEN": [0x00 / 255.0, 0x80 / 255.0, 0x00 / 255.0, 1.0],
-			        "GREENYELLOW": [0xAD / 255.0, 0xFF / 255.0, 0x2F / 255.0, 1.0],
-			        "GREY": [0x80 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
-			        "HONEYDEW": [0xF0 / 255.0, 0xFF / 255.0, 0xF0 / 255.0, 1.0],
-			        "HOTPINK": [0xFF / 255.0, 0x69 / 255.0, 0xB4 / 255.0, 1.0],
-			        "INDIANRED": [0xCD / 255.0, 0x5C / 255.0, 0x5C / 255.0, 1.0],
-			        "INDIGO": [0x4B / 255.0, 0x00 / 255.0, 0x82 / 255.0, 1.0],
-			        "IVORY": [0xFF / 255.0, 0xFF / 255.0, 0xF0 / 255.0, 1.0],
-			        "KHAKI": [0xF0 / 255.0, 0xE6 / 255.0, 0x8C / 255.0, 1.0],
-			        "LAVENDER": [0xE6 / 255.0, 0xE6 / 255.0, 0xFA / 255.0, 1.0],
-			        "LAVENDERBLUSH": [0xFF / 255.0, 0xF0 / 255.0, 0xF5 / 255.0, 1.0],
-			        "LAWNGREEN": [0x7C / 255.0, 0xFC / 255.0, 0x00 / 255.0, 1.0],
-			        "LEMONCHIFFON": [0xFF / 255.0, 0xFA / 255.0, 0xCD / 255.0, 1.0],
-			        "LIGHTBLUE": [0xAD / 255.0, 0xD8 / 255.0, 0xE6 / 255.0, 1.0],
-			        "LIGHTCORAL": [0xF0 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
-			        "LIGHTCYAN": [0xE0 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
-			        "LIGHTGOLDENRODYELLOW": [0xFA / 255.0, 0xFA / 255.0, 0xD2 / 255.0, 1.0],
-			        "LIGHTGRAY": [0xD3 / 255.0, 0xD3 / 255.0, 0xD3 / 255.0, 1.0],
-			        "LIGHTGREEN": [0x90 / 255.0, 0xEE / 255.0, 0x90 / 255.0, 1.0],
-			        "LIGHTGREY": [0xD3 / 255.0, 0xD3 / 255.0, 0xD3 / 255.0, 1.0],
-			        "LIGHTPINK": [0xFF / 255.0, 0xB6 / 255.0, 0xC1 / 255.0, 1.0],
-			        "LIGHTSALMON": [0xFF / 255.0, 0xA0 / 255.0, 0x7A / 255.0, 1.0],
-			        "LIGHTSEAGREEN": [0x20 / 255.0, 0xB2 / 255.0, 0xAA / 255.0, 1.0],
-			        "LIGHTSKYBLUE": [0x87 / 255.0, 0xCE / 255.0, 0xFA / 255.0, 1.0],
-			        "LIGHTSLATEGRAY": [0x77 / 255.0, 0x88 / 255.0, 0x99 / 255.0, 1.0],
-			        "LIGHTSLATEGREY": [0x77 / 255.0, 0x88 / 255.0, 0x99 / 255.0, 1.0],
-			        "LIGHTSTEELBLUE": [0xB0 / 255.0, 0xC4 / 255.0, 0xDE / 255.0, 1.0],
-			        "LIGHTYELLOW": [0xFF / 255.0, 0xFF / 255.0, 0xE0 / 255.0, 1.0],
-			        "LIME": [0x00 / 255.0, 0xFF / 255.0, 0x00 / 255.0, 1.0],
-			        "LIMEGREEN": [0x32 / 255.0, 0xCD / 255.0, 0x32 / 255.0, 1.0],
-			        "LINEN": [0xFA / 255.0, 0xF0 / 255.0, 0xE6 / 255.0, 1.0],
-			        "MAGENTA": [0xFF / 255.0, 0x00 / 255.0, 0xFF / 255.0, 1.0],
-			        "MAROON": [0x80 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
-			        "MEDIUMAQUAMARINE": [0x66 / 255.0, 0xCD / 255.0, 0xAA / 255.0, 1.0],
-			        "MEDIUMBLUE": [0x00 / 255.0, 0x00 / 255.0, 0xCD / 255.0, 1.0],
-			        "MEDIUMORCHID": [0xBA / 255.0, 0x55 / 255.0, 0xD3 / 255.0, 1.0],
-			        "MEDIUMPURPLE": [0x93 / 255.0, 0x70 / 255.0, 0xDB / 255.0, 1.0],
-			        "MEDIUMSEAGREEN": [0x3C / 255.0, 0xB3 / 255.0, 0x71 / 255.0, 1.0],
-			        "MEDIUMSLATEBLUE": [0x7B / 255.0, 0x68 / 255.0, 0xEE / 255.0, 1.0],
-			        "MEDIUMSPRINGGREEN": [0x00 / 255.0, 0xFA / 255.0, 0x9A / 255.0, 1.0],
-			        "MEDIUMTURQUOISE": [0x48 / 255.0, 0xD1 / 255.0, 0xCC / 255.0, 1.0],
-			        "MEDIUMVIOLETRED": [0xC7 / 255.0, 0x15 / 255.0, 0x85 / 255.0, 1.0],
-			        "MIDNIGHTBLUE": [0x19 / 255.0, 0x19 / 255.0, 0x70 / 255.0, 1.0],
-			        "MINTCREAM": [0xF5 / 255.0, 0xFF / 255.0, 0xFA / 255.0, 1.0],
-			        "MISTYROSE": [0xFF / 255.0, 0xE4 / 255.0, 0xE1 / 255.0, 1.0],
-			        "MOCCASIN": [0xFF / 255.0, 0xE4 / 255.0, 0xB5 / 255.0, 1.0],
-			        "NAVAJOWHITE": [0xFF / 255.0, 0xDE / 255.0, 0xAD / 255.0, 1.0],
-			        "NAVY": [0x00 / 255.0, 0x00 / 255.0, 0x80 / 255.0, 1.0],
-			        "OLDLACE": [0xFD / 255.0, 0xF5 / 255.0, 0xE6 / 255.0, 1.0],
-			        "OLIVE": [0x80 / 255.0, 0x80 / 255.0, 0x00 / 255.0, 1.0],
-			        "OLIVEDRAB": [0x6B / 255.0, 0x8E / 255.0, 0x23 / 255.0, 1.0],
-			        "ORANGE": [0xFF / 255.0, 0xA5 / 255.0, 0x00 / 255.0, 1.0],
-			        "ORANGERED": [0xFF / 255.0, 0x45 / 255.0, 0x00 / 255.0, 1.0],
-			        "ORCHID": [0xDA / 255.0, 0x70 / 255.0, 0xD6 / 255.0, 1.0],
-			        "PALEGOLDENROD": [0xEE / 255.0, 0xE8 / 255.0, 0xAA / 255.0, 1.0],
-			        "PALEGREEN": [0x98 / 255.0, 0xFB / 255.0, 0x98 / 255.0, 1.0],
-			        "PALETURQUOISE": [0xAF / 255.0, 0xEE / 255.0, 0xEE / 255.0, 1.0],
-			        "PALEVIOLETRED": [0xDB / 255.0, 0x70 / 255.0, 0x93 / 255.0, 1.0],
-			        "PAPAYAWHIP": [0xFF / 255.0, 0xEF / 255.0, 0xD5 / 255.0, 1.0],
-			        "PEACHPUFF": [0xFF / 255.0, 0xDA / 255.0, 0xB9 / 255.0, 1.0],
-			        "PERU": [0xCD / 255.0, 0x85 / 255.0, 0x3F / 255.0, 1.0],
-			        "PINK": [0xFF / 255.0, 0xC0 / 255.0, 0xCB / 255.0, 1.0],
-			        "PLUM": [0xDD / 255.0, 0xA0 / 255.0, 0xDD / 255.0, 1.0],
-			        "POWDERBLUE": [0xB0 / 255.0, 0xE0 / 255.0, 0xE6 / 255.0, 1.0],
-			        "PURPLE": [0x80 / 255.0, 0x00 / 255.0, 0x80 / 255.0, 1.0],
-			        "RED": [0xFF / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
-			        "ROSYBROWN": [0xBC / 255.0, 0x8F / 255.0, 0x8F / 255.0, 1.0],
-			        "ROYALBLUE": [0x41 / 255.0, 0x69 / 255.0, 0xE1 / 255.0, 1.0],
-			        "SADDLEBROWN": [0x8B / 255.0, 0x45 / 255.0, 0x13 / 255.0, 1.0],
-			        "SALMON": [0xFA / 255.0, 0x80 / 255.0, 0x72 / 255.0, 1.0],
-			        "SANDYBROWN": [0xF4 / 255.0, 0xA4 / 255.0, 0x60 / 255.0, 1.0],
-			        "SEAGREEN": [0x2E / 255.0, 0x8B / 255.0, 0x57 / 255.0, 1.0],
-			        "SEASHELL": [0xFF / 255.0, 0xF5 / 255.0, 0xEE / 255.0, 1.0],
-			        "SIENNA": [0xA0 / 255.0, 0x52 / 255.0, 0x2D / 255.0, 1.0],
-			        "SILVER": [0xC0 / 255.0, 0xC0 / 255.0, 0xC0 / 255.0, 1.0],
-			        "SKYBLUE": [0x87 / 255.0, 0xCE / 255.0, 0xEB / 255.0, 1.0],
-			        "SLATEBLUE": [0x6A / 255.0, 0x5A / 255.0, 0xCD / 255.0, 1.0],
-			        "SLATEGRAY": [0x70 / 255.0, 0x80 / 255.0, 0x90 / 255.0, 1.0],
-			        "SLATEGREY": [0x70 / 255.0, 0x80 / 255.0, 0x90 / 255.0, 1.0],
-			        "SNOW": [0xFF / 255.0, 0xFA / 255.0, 0xFA / 255.0, 1.0],
-			        "SPRINGGREEN": [0x00 / 255.0, 0xFF / 255.0, 0x7F / 255.0, 1.0],
-			        "STEELBLUE": [0x46 / 255.0, 0x82 / 255.0, 0xB4 / 255.0, 1.0],
-			        "TAN": [0xD2 / 255.0, 0xB4 / 255.0, 0x8C / 255.0, 1.0],
-			        "TEAL": [0x00 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
-			        "THISTLE": [0xD8 / 255.0, 0xBF / 255.0, 0xD8 / 255.0, 1.0],
-			        "TOMATO": [0xFF / 255.0, 0x63 / 255.0, 0x47 / 255.0, 1.0],
-			        "TURQUOISE": [0x40 / 255.0, 0xE0 / 255.0, 0xD0 / 255.0, 1.0],
-			        "VIOLET": [0xEE / 255.0, 0x82 / 255.0, 0xEE / 255.0, 1.0],
-			        "WHEAT": [0xF5 / 255.0, 0xDE / 255.0, 0xB3 / 255.0, 1.0],
-			        "WHITE": [0xFF / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
-			        "WHITESMOKE": [0xF5 / 255.0, 0xF5 / 255.0, 0xF5 / 255.0, 1.0],
-			        "YELLOW": [0xFF / 255.0, 0xFF / 255.0, 0x00 / 255.0, 1.0],
-			        "YELLOWGREEN": [0x9A / 255.0, 0xCD / 255.0, 0x32 / 255.0, 1.0]
-			    };
-			    function get(color) {
-			        var rgba = (typeof color === "string") ? WebGLColor._toColor(color) : [color[0], color[1], color[2], color[3]];
-			        rgba[3] = RenderingHelper_1.RenderingHelper.clamp(rgba[3]);
-			        rgba[0] = RenderingHelper_1.RenderingHelper.clamp(rgba[0]) * rgba[3];
-			        rgba[1] = RenderingHelper_1.RenderingHelper.clamp(rgba[1]) * rgba[3];
-			        rgba[2] = RenderingHelper_1.RenderingHelper.clamp(rgba[2]) * rgba[3];
-			        return rgba;
-			    }
-			    WebGLColor.get = get;
-			    function _hsl2rgb(hsl) {
-			        var h = hsl[0] % 360;
-			        var s = hsl[1];
-			        var l = (hsl[2] > 50) ? 100 - hsl[2] : hsl[2];
-			        var a = hsl[3];
-			        var max = l + l * s;
-			        var min = l - l * s;
-			        if (h < 60) {
-			            return [max, (h / 60.0) * (max - min) + min, min, a];
-			        }
-			        else if (h < 120) {
-			            return [((120 - h) / 60.0) * (max - min) + min, max, min, a];
-			        }
-			        else if (h < 180) {
-			            return [min, max, ((h - 120) / 60.0) * (max - min) + min, a];
-			        }
-			        else if (h < 240) {
-			            return [min, ((240 - h) / 60.0) * (max - min) + min, max, a];
-			        }
-			        else if (h < 300) {
-			            return [((h - 240) / 60.0) * (max - min) + min, min, max, a];
-			        }
-			        else {
-			            return [max, min, ((360 - h) / 60.0) * (max - min) + min, a];
-			        }
-			    }
-			    WebGLColor._hsl2rgb = _hsl2rgb;
-			    function _toColor(cssColor) {
-			        // 大文字化して空白を削除 (ncc: normalized css color)
-			        var ncc = cssColor.toUpperCase().replace(/\s+/g, "");
-			        var rgba = WebGLColor.colorMap[ncc];
-			        if (rgba) {
-			            return rgba;
-			        }
-			        if (ncc.match(/^#([\dA-F])([\dA-F])([\dA-F])$/)) {
-			            return [
-			                parseInt(RegExp.$1, 16) / 15.0,
-			                parseInt(RegExp.$2, 16) / 15.0,
-			                parseInt(RegExp.$3, 16) / 15.0, 1.0
-			            ];
-			        }
-			        else if (ncc.match(/^#([\dA-F]{2})([\dA-F]{2})([\dA-F]{2})$/)) {
-			            return [
-			                parseInt(RegExp.$1, 16) / 255.0,
-			                parseInt(RegExp.$2, 16) / 255.0,
-			                parseInt(RegExp.$3, 16) / 255.0, 1.0
-			            ];
-			        }
-			        else if (ncc.match(/^RGB\((\d{1,3}),(\d{1,3}),(\d{1,3})\)$/)) {
-			            return [
-			                parseInt(RegExp.$1, 10) / 255.0,
-			                parseInt(RegExp.$2, 10) / 255.0,
-			                parseInt(RegExp.$3, 10) / 255.0, 1.0
-			            ];
-			        }
-			        else if (ncc.match(/^RGBA\((\d{1,3}),(\d{1,3}),(\d{1,3}),(\d(\.\d*)?)\)$/)) {
-			            return [
-			                parseInt(RegExp.$1, 10) / 255.0,
-			                parseInt(RegExp.$2, 10) / 255.0,
-			                parseInt(RegExp.$3, 10) / 255.0,
-			                parseFloat(RegExp.$4)
-			            ];
-			        }
-			        else if (ncc.match(/^HSL\((\d{1,3}),(\d{1,3})%,(\d{1,3})%\)$/)) {
-			            return WebGLColor._hsl2rgb([
-			                parseInt(RegExp.$1, 10),
-			                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$2, 10) / 100.0),
-			                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$3, 10) / 100.0), 1.0
-			            ]);
-			        }
-			        else if (ncc.match(/^HSLA\((\d{1,3}),(\d{1,3})%,(\d{1,3})%,(\d(\.\d*)?)\)$/)) {
-			            return WebGLColor._hsl2rgb([
-			                parseInt(RegExp.$1, 10),
-			                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$2, 10) / 100.0),
-			                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$3, 10) / 100.0),
-			                parseFloat(RegExp.$4)
-			            ]);
-			        }
-			        else {
-			            throw Error("illigal cssColor format: " + ncc);
-			        }
-			    }
-			    WebGLColor._toColor = _toColor;
-			})(exports.WebGLColor || (exports.WebGLColor = {})); 
-		} (WebGLColor));
+		Object.defineProperty(WebGLColor, "__esModule", { value: true });
+		WebGLColor.WebGLColor = void 0;
+		var RenderingHelper_1 = requireRenderingHelper();
+		var WebGLColor$1;
+		(function (WebGLColor) {
+		    WebGLColor.colorMap = {
+		        "ALICEBLUE": [0xF0 / 255.0, 0xF8 / 255.0, 0xFF / 255.0, 1.0],
+		        "ANTIQUEWHITE": [0xFA / 255.0, 0xEB / 255.0, 0xD7 / 255.0, 1.0],
+		        "AQUA": [0x00 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
+		        "AQUAMARINE": [0x7F / 255.0, 0xFF / 255.0, 0xD4 / 255.0, 1.0],
+		        "AZURE": [0xF0 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
+		        "BEIGE": [0xF5 / 255.0, 0xF5 / 255.0, 0xDC / 255.0, 1.0],
+		        "BISQUE": [0xFF / 255.0, 0xE4 / 255.0, 0xC4 / 255.0, 1.0],
+		        "BLACK": [0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
+		        "BLANCHEDALMOND": [0xFF / 255.0, 0xEB / 255.0, 0xCD / 255.0, 1.0],
+		        "BLUE": [0x00 / 255.0, 0x00 / 255.0, 0xFF / 255.0, 1.0],
+		        "BLUEVIOLET": [0x8A / 255.0, 0x2B / 255.0, 0xE2 / 255.0, 1.0],
+		        "BROWN": [0xA5 / 255.0, 0x2A / 255.0, 0x2A / 255.0, 1.0],
+		        "BURLYWOOD": [0xDE / 255.0, 0xB8 / 255.0, 0x87 / 255.0, 1.0],
+		        "CADETBLUE": [0x5F / 255.0, 0x9E / 255.0, 0xA0 / 255.0, 1.0],
+		        "CHARTREUSE": [0x7F / 255.0, 0xFF / 255.0, 0x00 / 255.0, 1.0],
+		        "CHOCOLATE": [0xD2 / 255.0, 0x69 / 255.0, 0x1E / 255.0, 1.0],
+		        "CORAL": [0xFF / 255.0, 0x7F / 255.0, 0x50 / 255.0, 1.0],
+		        "CORNFLOWERBLUE": [0x64 / 255.0, 0x95 / 255.0, 0xED / 255.0, 1.0],
+		        "CORNSILK": [0xFF / 255.0, 0xF8 / 255.0, 0xDC / 255.0, 1.0],
+		        "CRIMSON": [0xDC / 255.0, 0x14 / 255.0, 0x3C / 255.0, 1.0],
+		        "CYAN": [0x00 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
+		        "DARKBLUE": [0x00 / 255.0, 0x00 / 255.0, 0x8B / 255.0, 1.0],
+		        "DARKCYAN": [0x00 / 255.0, 0x8B / 255.0, 0x8B / 255.0, 1.0],
+		        "DARKGOLDENROD": [0xB8 / 255.0, 0x86 / 255.0, 0x0B / 255.0, 1.0],
+		        "DARKGRAY": [0xA9 / 255.0, 0xA9 / 255.0, 0xA9 / 255.0, 1.0],
+		        "DARKGREEN": [0x00 / 255.0, 0x64 / 255.0, 0x00 / 255.0, 1.0],
+		        "DARKGREY": [0xA9 / 255.0, 0xA9 / 255.0, 0xA9 / 255.0, 1.0],
+		        "DARKKHAKI": [0xBD / 255.0, 0xB7 / 255.0, 0x6B / 255.0, 1.0],
+		        "DARKMAGENTA": [0x8B / 255.0, 0x00 / 255.0, 0x8B / 255.0, 1.0],
+		        "DARKOLIVEGREEN": [0x55 / 255.0, 0x6B / 255.0, 0x2F / 255.0, 1.0],
+		        "DARKORANGE": [0xFF / 255.0, 0x8C / 255.0, 0x00 / 255.0, 1.0],
+		        "DARKORCHID": [0x99 / 255.0, 0x32 / 255.0, 0xCC / 255.0, 1.0],
+		        "DARKRED": [0x8B / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
+		        "DARKSALMON": [0xE9 / 255.0, 0x96 / 255.0, 0x7A / 255.0, 1.0],
+		        "DARKSEAGREEN": [0x8F / 255.0, 0xBC / 255.0, 0x8F / 255.0, 1.0],
+		        "DARKSLATEBLUE": [0x48 / 255.0, 0x3D / 255.0, 0x8B / 255.0, 1.0],
+		        "DARKSLATEGRAY": [0x2F / 255.0, 0x4F / 255.0, 0x4F / 255.0, 1.0],
+		        "DARKSLATEGREY": [0x2F / 255.0, 0x4F / 255.0, 0x4F / 255.0, 1.0],
+		        "DARKTURQUOISE": [0x00 / 255.0, 0xCE / 255.0, 0xD1 / 255.0, 1.0],
+		        "DARKVIOLET": [0x94 / 255.0, 0x00 / 255.0, 0xD3 / 255.0, 1.0],
+		        "DEEPPINK": [0xFF / 255.0, 0x14 / 255.0, 0x93 / 255.0, 1.0],
+		        "DEEPSKYBLUE": [0x00 / 255.0, 0xBF / 255.0, 0xFF / 255.0, 1.0],
+		        "DIMGRAY": [0x69 / 255.0, 0x69 / 255.0, 0x69 / 255.0, 1.0],
+		        "DIMGREY": [0x69 / 255.0, 0x69 / 255.0, 0x69 / 255.0, 1.0],
+		        "DODGERBLUE": [0x1E / 255.0, 0x90 / 255.0, 0xFF / 255.0, 1.0],
+		        "FIREBRICK": [0xB2 / 255.0, 0x22 / 255.0, 0x22 / 255.0, 1.0],
+		        "FLORALWHITE": [0xFF / 255.0, 0xFA / 255.0, 0xF0 / 255.0, 1.0],
+		        "FORESTGREEN": [0x22 / 255.0, 0x8B / 255.0, 0x22 / 255.0, 1.0],
+		        "FUCHSIA": [0xFF / 255.0, 0x00 / 255.0, 0xFF / 255.0, 1.0],
+		        "GAINSBORO": [0xDC / 255.0, 0xDC / 255.0, 0xDC / 255.0, 1.0],
+		        "GHOSTWHITE": [0xF8 / 255.0, 0xF8 / 255.0, 0xFF / 255.0, 1.0],
+		        "GOLD": [0xFF / 255.0, 0xD7 / 255.0, 0x00 / 255.0, 1.0],
+		        "GOLDENROD": [0xDA / 255.0, 0xA5 / 255.0, 0x20 / 255.0, 1.0],
+		        "GRAY": [0x80 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
+		        "GREEN": [0x00 / 255.0, 0x80 / 255.0, 0x00 / 255.0, 1.0],
+		        "GREENYELLOW": [0xAD / 255.0, 0xFF / 255.0, 0x2F / 255.0, 1.0],
+		        "GREY": [0x80 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
+		        "HONEYDEW": [0xF0 / 255.0, 0xFF / 255.0, 0xF0 / 255.0, 1.0],
+		        "HOTPINK": [0xFF / 255.0, 0x69 / 255.0, 0xB4 / 255.0, 1.0],
+		        "INDIANRED": [0xCD / 255.0, 0x5C / 255.0, 0x5C / 255.0, 1.0],
+		        "INDIGO": [0x4B / 255.0, 0x00 / 255.0, 0x82 / 255.0, 1.0],
+		        "IVORY": [0xFF / 255.0, 0xFF / 255.0, 0xF0 / 255.0, 1.0],
+		        "KHAKI": [0xF0 / 255.0, 0xE6 / 255.0, 0x8C / 255.0, 1.0],
+		        "LAVENDER": [0xE6 / 255.0, 0xE6 / 255.0, 0xFA / 255.0, 1.0],
+		        "LAVENDERBLUSH": [0xFF / 255.0, 0xF0 / 255.0, 0xF5 / 255.0, 1.0],
+		        "LAWNGREEN": [0x7C / 255.0, 0xFC / 255.0, 0x00 / 255.0, 1.0],
+		        "LEMONCHIFFON": [0xFF / 255.0, 0xFA / 255.0, 0xCD / 255.0, 1.0],
+		        "LIGHTBLUE": [0xAD / 255.0, 0xD8 / 255.0, 0xE6 / 255.0, 1.0],
+		        "LIGHTCORAL": [0xF0 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
+		        "LIGHTCYAN": [0xE0 / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
+		        "LIGHTGOLDENRODYELLOW": [0xFA / 255.0, 0xFA / 255.0, 0xD2 / 255.0, 1.0],
+		        "LIGHTGRAY": [0xD3 / 255.0, 0xD3 / 255.0, 0xD3 / 255.0, 1.0],
+		        "LIGHTGREEN": [0x90 / 255.0, 0xEE / 255.0, 0x90 / 255.0, 1.0],
+		        "LIGHTGREY": [0xD3 / 255.0, 0xD3 / 255.0, 0xD3 / 255.0, 1.0],
+		        "LIGHTPINK": [0xFF / 255.0, 0xB6 / 255.0, 0xC1 / 255.0, 1.0],
+		        "LIGHTSALMON": [0xFF / 255.0, 0xA0 / 255.0, 0x7A / 255.0, 1.0],
+		        "LIGHTSEAGREEN": [0x20 / 255.0, 0xB2 / 255.0, 0xAA / 255.0, 1.0],
+		        "LIGHTSKYBLUE": [0x87 / 255.0, 0xCE / 255.0, 0xFA / 255.0, 1.0],
+		        "LIGHTSLATEGRAY": [0x77 / 255.0, 0x88 / 255.0, 0x99 / 255.0, 1.0],
+		        "LIGHTSLATEGREY": [0x77 / 255.0, 0x88 / 255.0, 0x99 / 255.0, 1.0],
+		        "LIGHTSTEELBLUE": [0xB0 / 255.0, 0xC4 / 255.0, 0xDE / 255.0, 1.0],
+		        "LIGHTYELLOW": [0xFF / 255.0, 0xFF / 255.0, 0xE0 / 255.0, 1.0],
+		        "LIME": [0x00 / 255.0, 0xFF / 255.0, 0x00 / 255.0, 1.0],
+		        "LIMEGREEN": [0x32 / 255.0, 0xCD / 255.0, 0x32 / 255.0, 1.0],
+		        "LINEN": [0xFA / 255.0, 0xF0 / 255.0, 0xE6 / 255.0, 1.0],
+		        "MAGENTA": [0xFF / 255.0, 0x00 / 255.0, 0xFF / 255.0, 1.0],
+		        "MAROON": [0x80 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
+		        "MEDIUMAQUAMARINE": [0x66 / 255.0, 0xCD / 255.0, 0xAA / 255.0, 1.0],
+		        "MEDIUMBLUE": [0x00 / 255.0, 0x00 / 255.0, 0xCD / 255.0, 1.0],
+		        "MEDIUMORCHID": [0xBA / 255.0, 0x55 / 255.0, 0xD3 / 255.0, 1.0],
+		        "MEDIUMPURPLE": [0x93 / 255.0, 0x70 / 255.0, 0xDB / 255.0, 1.0],
+		        "MEDIUMSEAGREEN": [0x3C / 255.0, 0xB3 / 255.0, 0x71 / 255.0, 1.0],
+		        "MEDIUMSLATEBLUE": [0x7B / 255.0, 0x68 / 255.0, 0xEE / 255.0, 1.0],
+		        "MEDIUMSPRINGGREEN": [0x00 / 255.0, 0xFA / 255.0, 0x9A / 255.0, 1.0],
+		        "MEDIUMTURQUOISE": [0x48 / 255.0, 0xD1 / 255.0, 0xCC / 255.0, 1.0],
+		        "MEDIUMVIOLETRED": [0xC7 / 255.0, 0x15 / 255.0, 0x85 / 255.0, 1.0],
+		        "MIDNIGHTBLUE": [0x19 / 255.0, 0x19 / 255.0, 0x70 / 255.0, 1.0],
+		        "MINTCREAM": [0xF5 / 255.0, 0xFF / 255.0, 0xFA / 255.0, 1.0],
+		        "MISTYROSE": [0xFF / 255.0, 0xE4 / 255.0, 0xE1 / 255.0, 1.0],
+		        "MOCCASIN": [0xFF / 255.0, 0xE4 / 255.0, 0xB5 / 255.0, 1.0],
+		        "NAVAJOWHITE": [0xFF / 255.0, 0xDE / 255.0, 0xAD / 255.0, 1.0],
+		        "NAVY": [0x00 / 255.0, 0x00 / 255.0, 0x80 / 255.0, 1.0],
+		        "OLDLACE": [0xFD / 255.0, 0xF5 / 255.0, 0xE6 / 255.0, 1.0],
+		        "OLIVE": [0x80 / 255.0, 0x80 / 255.0, 0x00 / 255.0, 1.0],
+		        "OLIVEDRAB": [0x6B / 255.0, 0x8E / 255.0, 0x23 / 255.0, 1.0],
+		        "ORANGE": [0xFF / 255.0, 0xA5 / 255.0, 0x00 / 255.0, 1.0],
+		        "ORANGERED": [0xFF / 255.0, 0x45 / 255.0, 0x00 / 255.0, 1.0],
+		        "ORCHID": [0xDA / 255.0, 0x70 / 255.0, 0xD6 / 255.0, 1.0],
+		        "PALEGOLDENROD": [0xEE / 255.0, 0xE8 / 255.0, 0xAA / 255.0, 1.0],
+		        "PALEGREEN": [0x98 / 255.0, 0xFB / 255.0, 0x98 / 255.0, 1.0],
+		        "PALETURQUOISE": [0xAF / 255.0, 0xEE / 255.0, 0xEE / 255.0, 1.0],
+		        "PALEVIOLETRED": [0xDB / 255.0, 0x70 / 255.0, 0x93 / 255.0, 1.0],
+		        "PAPAYAWHIP": [0xFF / 255.0, 0xEF / 255.0, 0xD5 / 255.0, 1.0],
+		        "PEACHPUFF": [0xFF / 255.0, 0xDA / 255.0, 0xB9 / 255.0, 1.0],
+		        "PERU": [0xCD / 255.0, 0x85 / 255.0, 0x3F / 255.0, 1.0],
+		        "PINK": [0xFF / 255.0, 0xC0 / 255.0, 0xCB / 255.0, 1.0],
+		        "PLUM": [0xDD / 255.0, 0xA0 / 255.0, 0xDD / 255.0, 1.0],
+		        "POWDERBLUE": [0xB0 / 255.0, 0xE0 / 255.0, 0xE6 / 255.0, 1.0],
+		        "PURPLE": [0x80 / 255.0, 0x00 / 255.0, 0x80 / 255.0, 1.0],
+		        "RED": [0xFF / 255.0, 0x00 / 255.0, 0x00 / 255.0, 1.0],
+		        "ROSYBROWN": [0xBC / 255.0, 0x8F / 255.0, 0x8F / 255.0, 1.0],
+		        "ROYALBLUE": [0x41 / 255.0, 0x69 / 255.0, 0xE1 / 255.0, 1.0],
+		        "SADDLEBROWN": [0x8B / 255.0, 0x45 / 255.0, 0x13 / 255.0, 1.0],
+		        "SALMON": [0xFA / 255.0, 0x80 / 255.0, 0x72 / 255.0, 1.0],
+		        "SANDYBROWN": [0xF4 / 255.0, 0xA4 / 255.0, 0x60 / 255.0, 1.0],
+		        "SEAGREEN": [0x2E / 255.0, 0x8B / 255.0, 0x57 / 255.0, 1.0],
+		        "SEASHELL": [0xFF / 255.0, 0xF5 / 255.0, 0xEE / 255.0, 1.0],
+		        "SIENNA": [0xA0 / 255.0, 0x52 / 255.0, 0x2D / 255.0, 1.0],
+		        "SILVER": [0xC0 / 255.0, 0xC0 / 255.0, 0xC0 / 255.0, 1.0],
+		        "SKYBLUE": [0x87 / 255.0, 0xCE / 255.0, 0xEB / 255.0, 1.0],
+		        "SLATEBLUE": [0x6A / 255.0, 0x5A / 255.0, 0xCD / 255.0, 1.0],
+		        "SLATEGRAY": [0x70 / 255.0, 0x80 / 255.0, 0x90 / 255.0, 1.0],
+		        "SLATEGREY": [0x70 / 255.0, 0x80 / 255.0, 0x90 / 255.0, 1.0],
+		        "SNOW": [0xFF / 255.0, 0xFA / 255.0, 0xFA / 255.0, 1.0],
+		        "SPRINGGREEN": [0x00 / 255.0, 0xFF / 255.0, 0x7F / 255.0, 1.0],
+		        "STEELBLUE": [0x46 / 255.0, 0x82 / 255.0, 0xB4 / 255.0, 1.0],
+		        "TAN": [0xD2 / 255.0, 0xB4 / 255.0, 0x8C / 255.0, 1.0],
+		        "TEAL": [0x00 / 255.0, 0x80 / 255.0, 0x80 / 255.0, 1.0],
+		        "THISTLE": [0xD8 / 255.0, 0xBF / 255.0, 0xD8 / 255.0, 1.0],
+		        "TOMATO": [0xFF / 255.0, 0x63 / 255.0, 0x47 / 255.0, 1.0],
+		        "TURQUOISE": [0x40 / 255.0, 0xE0 / 255.0, 0xD0 / 255.0, 1.0],
+		        "VIOLET": [0xEE / 255.0, 0x82 / 255.0, 0xEE / 255.0, 1.0],
+		        "WHEAT": [0xF5 / 255.0, 0xDE / 255.0, 0xB3 / 255.0, 1.0],
+		        "WHITE": [0xFF / 255.0, 0xFF / 255.0, 0xFF / 255.0, 1.0],
+		        "WHITESMOKE": [0xF5 / 255.0, 0xF5 / 255.0, 0xF5 / 255.0, 1.0],
+		        "YELLOW": [0xFF / 255.0, 0xFF / 255.0, 0x00 / 255.0, 1.0],
+		        "YELLOWGREEN": [0x9A / 255.0, 0xCD / 255.0, 0x32 / 255.0, 1.0]
+		    };
+		    function get(color) {
+		        var rgba = (typeof color === "string") ? WebGLColor._toColor(color) : [color[0], color[1], color[2], color[3]];
+		        rgba[3] = RenderingHelper_1.RenderingHelper.clamp(rgba[3]);
+		        rgba[0] = RenderingHelper_1.RenderingHelper.clamp(rgba[0]) * rgba[3];
+		        rgba[1] = RenderingHelper_1.RenderingHelper.clamp(rgba[1]) * rgba[3];
+		        rgba[2] = RenderingHelper_1.RenderingHelper.clamp(rgba[2]) * rgba[3];
+		        return rgba;
+		    }
+		    WebGLColor.get = get;
+		    function _hsl2rgb(hsl) {
+		        var h = hsl[0] % 360;
+		        var s = hsl[1];
+		        var l = (hsl[2] > 50) ? 100 - hsl[2] : hsl[2];
+		        var a = hsl[3];
+		        var max = l + l * s;
+		        var min = l - l * s;
+		        if (h < 60) {
+		            return [max, (h / 60.0) * (max - min) + min, min, a];
+		        }
+		        else if (h < 120) {
+		            return [((120 - h) / 60.0) * (max - min) + min, max, min, a];
+		        }
+		        else if (h < 180) {
+		            return [min, max, ((h - 120) / 60.0) * (max - min) + min, a];
+		        }
+		        else if (h < 240) {
+		            return [min, ((240 - h) / 60.0) * (max - min) + min, max, a];
+		        }
+		        else if (h < 300) {
+		            return [((h - 240) / 60.0) * (max - min) + min, min, max, a];
+		        }
+		        else {
+		            return [max, min, ((360 - h) / 60.0) * (max - min) + min, a];
+		        }
+		    }
+		    WebGLColor._hsl2rgb = _hsl2rgb;
+		    function _toColor(cssColor) {
+		        // 大文字化して空白を削除 (ncc: normalized css color)
+		        var ncc = cssColor.toUpperCase().replace(/\s+/g, "");
+		        var rgba = WebGLColor.colorMap[ncc];
+		        if (rgba) {
+		            return rgba;
+		        }
+		        if (ncc.match(/^#([\dA-F])([\dA-F])([\dA-F])$/)) {
+		            return [
+		                parseInt(RegExp.$1, 16) / 15.0,
+		                parseInt(RegExp.$2, 16) / 15.0,
+		                parseInt(RegExp.$3, 16) / 15.0, 1.0
+		            ];
+		        }
+		        else if (ncc.match(/^#([\dA-F]{2})([\dA-F]{2})([\dA-F]{2})$/)) {
+		            return [
+		                parseInt(RegExp.$1, 16) / 255.0,
+		                parseInt(RegExp.$2, 16) / 255.0,
+		                parseInt(RegExp.$3, 16) / 255.0, 1.0
+		            ];
+		        }
+		        else if (ncc.match(/^RGB\((\d{1,3}),(\d{1,3}),(\d{1,3})\)$/)) {
+		            return [
+		                parseInt(RegExp.$1, 10) / 255.0,
+		                parseInt(RegExp.$2, 10) / 255.0,
+		                parseInt(RegExp.$3, 10) / 255.0, 1.0
+		            ];
+		        }
+		        else if (ncc.match(/^RGBA\((\d{1,3}),(\d{1,3}),(\d{1,3}),(\d(\.\d*)?)\)$/)) {
+		            return [
+		                parseInt(RegExp.$1, 10) / 255.0,
+		                parseInt(RegExp.$2, 10) / 255.0,
+		                parseInt(RegExp.$3, 10) / 255.0,
+		                parseFloat(RegExp.$4)
+		            ];
+		        }
+		        else if (ncc.match(/^HSL\((\d{1,3}),(\d{1,3})%,(\d{1,3})%\)$/)) {
+		            return WebGLColor._hsl2rgb([
+		                parseInt(RegExp.$1, 10),
+		                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$2, 10) / 100.0),
+		                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$3, 10) / 100.0), 1.0
+		            ]);
+		        }
+		        else if (ncc.match(/^HSLA\((\d{1,3}),(\d{1,3})%,(\d{1,3})%,(\d(\.\d*)?)\)$/)) {
+		            return WebGLColor._hsl2rgb([
+		                parseInt(RegExp.$1, 10),
+		                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$2, 10) / 100.0),
+		                RenderingHelper_1.RenderingHelper.clamp(parseInt(RegExp.$3, 10) / 100.0),
+		                parseFloat(RegExp.$4)
+		            ]);
+		        }
+		        else {
+		            throw Error("illigal cssColor format: " + ncc);
+		        }
+		    }
+		    WebGLColor._toColor = _toColor;
+		})(WebGLColor$1 || (WebGLColor.WebGLColor = WebGLColor$1 = {}));
 		return WebGLColor;
 	}
 
@@ -16167,7 +16246,7 @@
 		WebGLRenderer.WebGLRenderer = void 0;
 		var WebGLColor_1 = requireWebGLColor();
 		var WebGLRenderingState_1 = requireWebGLRenderingState();
-		WebGLRenderer.WebGLRenderer = /** @class */ (function () {
+		var WebGLRenderer$1 = /** @class */ (function () {
 		    function WebGLRenderer(shared, renderTarget) {
 		        this._stateStack = [];
 		        this._stateStackPointer = 0;
@@ -16308,6 +16387,7 @@
 		    WebGLRenderer.DEFAULT_CAPACITY = 16;
 		    return WebGLRenderer;
 		}());
+		WebGLRenderer.WebGLRenderer = WebGLRenderer$1;
 		return WebGLRenderer;
 	}
 
@@ -16530,7 +16610,7 @@
 		hasRequiredWebGLShaderProgram = 1;
 		Object.defineProperty(WebGLShaderProgram, "__esModule", { value: true });
 		WebGLShaderProgram.WebGLShaderProgram = void 0;
-		WebGLShaderProgram.WebGLShaderProgram = /** @class */ (function () {
+		var WebGLShaderProgram$1 = /** @class */ (function () {
 		    function WebGLShaderProgram(context, fSrc, uniforms) {
 		        if (uniforms === void 0) { uniforms = Object.create(null); }
 		        var vSrc = WebGLShaderProgram._DEFAULT_VERTEX_SHADER;
@@ -16760,6 +16840,7 @@
 		        "}";
 		    return WebGLShaderProgram;
 		}());
+		WebGLShaderProgram.WebGLShaderProgram = WebGLShaderProgram$1;
 		return WebGLShaderProgram;
 	}
 
@@ -16774,7 +16855,7 @@
 		hasRequiredWebGLTextureMap = 1;
 		Object.defineProperty(WebGLTextureMap, "__esModule", { value: true });
 		WebGLTextureMap.WebGLTextureMap = void 0;
-		WebGLTextureMap.WebGLTextureMap = /** @class */ (function () {
+		var WebGLTextureMap$1 = /** @class */ (function () {
 		    function WebGLTextureMap(texture, offsetX, offsetY, width, height) {
 		        this._left = null;
 		        this._right = null;
@@ -16864,6 +16945,7 @@
 		    WebGLTextureMap.TEXTURE_MARGIN = 1;
 		    return WebGLTextureMap;
 		}());
+		WebGLTextureMap.WebGLTextureMap = WebGLTextureMap$1;
 		return WebGLTextureMap;
 	}
 
@@ -16876,7 +16958,7 @@
 		WebGLTextureAtlas.WebGLTextureAtlas = void 0;
 		var RenderingHelper_1 = requireRenderingHelper();
 		var WebGLTextureMap_1 = requireWebGLTextureMap();
-		WebGLTextureAtlas.WebGLTextureAtlas = /** @class */ (function () {
+		var WebGLTextureAtlas$1 = /** @class */ (function () {
 		    function WebGLTextureAtlas() {
 		        this._maps = [];
 		        this._insertPos = 0;
@@ -16983,6 +17065,7 @@
 		    WebGLTextureAtlas.TEXTURE_COUNT = 16;
 		    return WebGLTextureAtlas;
 		}());
+		WebGLTextureAtlas.WebGLTextureAtlas = WebGLTextureAtlas$1;
 		return WebGLTextureAtlas;
 	}
 
@@ -17991,7 +18074,7 @@
 		hasRequiredAudioPlayer = 1;
 		Object.defineProperty(AudioPlayer, "__esModule", { value: true });
 		AudioPlayer.AudioPlayer = void 0;
-		var trigger_1 = requireLib$2();
+		var trigger_1 = requireCjs();
 		var AudioPlayer$1 = /** @class */ (function () {
 		    function AudioPlayer(system) {
 		        this.onPlay = new trigger_1.Trigger();
@@ -18420,7 +18503,7 @@
 		Object.defineProperty(ProxyAudioPlayer, "__esModule", { value: true });
 		ProxyAudioPlayer.ProxyAudioPlayer = void 0;
 		var AudioPlayer_1 = requireAudioPlayer();
-		ProxyAudioPlayer.ProxyAudioPlayer = /** @class */ (function (_super) {
+		var ProxyAudioPlayer$1 = /** @class */ (function (_super) {
 		    __extends(ProxyAudioPlayer, _super);
 		    function ProxyAudioPlayer(handlerSet, system, manager) {
 		        var _this = _super.call(this, system) || this;
@@ -18473,6 +18556,7 @@
 		    ProxyAudioPlayer._audioPlayerIdCounter = 0;
 		    return ProxyAudioPlayer;
 		}(AudioPlayer_1.AudioPlayer));
+		ProxyAudioPlayer.ProxyAudioPlayer = ProxyAudioPlayer$1;
 		return ProxyAudioPlayer;
 	}
 
@@ -18602,7 +18686,7 @@
 		var XHRLoader_1 = requireXHRLoader();
 		var audioUtil_1 = requireAudioUtil();
 		var helper = requireWebAudioHelper();
-		WebAudioAsset.WebAudioAsset = /** @class */ (function (_super) {
+		var WebAudioAsset$1 = /** @class */ (function (_super) {
 		    __extends(WebAudioAsset, _super);
 		    function WebAudioAsset() {
 		        return _super !== null && _super.apply(this, arguments) || this;
@@ -18674,6 +18758,7 @@
 		    WebAudioAsset.supportedFormats = [];
 		    return WebAudioAsset;
 		}(AudioAsset_1.AudioAsset));
+		WebAudioAsset.WebAudioAsset = WebAudioAsset$1;
 		return WebAudioAsset;
 	}
 

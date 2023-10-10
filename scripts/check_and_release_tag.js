@@ -1,3 +1,4 @@
+const { execSync } = require("child_process");
 const { Octokit } = require("@octokit/rest");
 const fetchModuleVersion = require("./fetch_module_version");
 const octokit = new Octokit();

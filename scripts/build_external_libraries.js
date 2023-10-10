@@ -1,7 +1,6 @@
-const semver = require("semver");
 const path = require("path");
 const { execSync } = require("child_process");
-const pkg = require("../package.json");
+const fetchModuleVersion = require("./fetch_module_version");
 const outputDir = path.join(__dirname, "..", "dist");
 
 for (const {name, entry} of [
@@ -18,7 +17,7 @@ for (const {name, entry} of [
 		entry: "./node_modules/@akashic-extension/akashic-box2d/lib/index.js",
 	},
 ]) {
-	const ver = semver.clean(pkg.devDependencies[name]); // "~3.0.0" -> "3.0.0"
+	const ver = fetchModuleVersion(name);
 	const pkgName = name.match(/[^/]+$/)[0]; // @akashic-extension/akashic-timeline -> akashic-timeline
 	const output = path.join(outputDir, `${pkgName}-${ver}.js`); // /path/to/akashic-timeline-x.y.z.js
 	execSync(`npx browserify ${entry} -o ${output} -r ${entry}:${name}`);

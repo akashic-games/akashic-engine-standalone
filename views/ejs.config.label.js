@@ -1,7 +1,6 @@
-const semver = require("semver");
-const pkg = require("../package.json");
-const aksVer = semver.clean(pkg.dependencies["@akashic/akashic-engine"]); // "~3.0.0" -> "3.0.0"
-const extLabelVer = semver.clean(pkg.devDependencies["@akashic-extension/akashic-label"]);
+const fetchModuleVersion = require("../scripts/fetch_module_version");
+const aksVer = fetchModuleVersion("@akashic/akashic-engine");
+const extLabelVer = fetchModuleVersion("@akashic-extension/akashic-label");
 
 module.exports = {
 	title: "Akashic Game Sample (akashic-label)",

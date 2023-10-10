@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.15.0 */
+/*! akashic-engine-standalone@3.16.0 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :

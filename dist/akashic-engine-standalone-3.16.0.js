@@ -15426,11 +15426,16 @@
 		        view.style.width = size.width + "px";
 		        view.style.height = size.height + "px";
 		    };
+		    InputHandlerLayer.prototype.setViewTabindex = function (tabindex) {
+		        var view = this.view;
+		        view.setAttribute("tabindex", tabindex);
+		    };
 		    InputHandlerLayer.prototype._createInputView = function (width, height) {
 		        var view = document.createElement("div");
 		        view.setAttribute("style", "display:inline-block; outline:none;");
 		        view.style.width = width + "px";
 		        view.style.height = height + "px";
+		        view.setAttribute("tabindex", "0");
 		        return view;
 		    };
 		    return InputHandlerLayer;
@@ -15521,6 +15526,9 @@
 		                this.rootView.removeChild(this.rootView.firstChild);
 		            }
 		        }
+		    };
+		    ContainerController.prototype.setTabindex = function (tabindex) {
+		        this.inputHandlerLayer.setViewTabindex(tabindex);
 		    };
 		    ContainerController.prototype._loadView = function () {
 		        var _a = this._rendererReq, width = _a.primarySurfaceWidth, height = _a.primarySurfaceHeight;
@@ -17740,6 +17748,9 @@
 		     */
 		    Platform.prototype.getMasterVolume = function () {
 		        return this._audioManager.getMasterVolume();
+		    };
+		    Platform.prototype.setTabindex = function (tabindex) {
+		        this.containerController.setTabindex(tabindex);
 		    };
 		    Platform.prototype.destroy = function () {
 		        this.setRendererRequirement(undefined);

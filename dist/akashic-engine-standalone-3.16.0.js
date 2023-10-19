@@ -15426,9 +15426,9 @@
 		        view.style.width = size.width + "px";
 		        view.style.height = size.height + "px";
 		    };
-		    InputHandlerLayer.prototype.setViewTabindex = function (tabindex) {
+		    InputHandlerLayer.prototype.setViewTabIndex = function (tabIndex) {
 		        var view = this.view;
-		        view.setAttribute("tabindex", tabindex);
+		        view.setAttribute("tabindex", tabIndex);
 		    };
 		    InputHandlerLayer.prototype._createInputView = function (width, height) {
 		        var view = document.createElement("div");
@@ -15527,8 +15527,8 @@
 		            }
 		        }
 		    };
-		    ContainerController.prototype.setTabindex = function (tabindex) {
-		        this.inputHandlerLayer.setViewTabindex(tabindex);
+		    ContainerController.prototype.setTabIndex = function (tabIndex) {
+		        this.inputHandlerLayer.setViewTabIndex(tabIndex);
 		    };
 		    ContainerController.prototype._loadView = function () {
 		        var _a = this._rendererReq, width = _a.primarySurfaceWidth, height = _a.primarySurfaceHeight;
@@ -17749,8 +17749,8 @@
 		    Platform.prototype.getMasterVolume = function () {
 		        return this._audioManager.getMasterVolume();
 		    };
-		    Platform.prototype.setTabindex = function (tabindex) {
-		        this.containerController.setTabindex(tabindex);
+		    Platform.prototype.setTabIndex = function (tabIndex) {
+		        this.containerController.setTabIndex(tabIndex);
 		    };
 		    Platform.prototype.destroy = function () {
 		        this.setRendererRequirement(undefined);

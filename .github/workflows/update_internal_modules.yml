@@ -51,7 +51,7 @@ jobs:
           git add -A
           git commit -m "Update to ${{ steps.version.outputs.LATEST_VERSION }}"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         if: 2 <= steps.diff.outputs.count # package.json, package-lock.json
         with:
           title: update to akashic-engine@${{ steps.version.outputs.LATEST_VERSION }}

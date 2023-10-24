@@ -15186,20 +15186,20 @@
 		            if (_this.pressingMouseButton != null)
 		                return;
 		            _this.pressingMouseButton = e.button;
-		            _this.pointDown(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            _this.pointDown(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e, 0 /* PlatformButtonType.Primary */));
 		            window.addEventListener("mousemove", _this.onWindowMouseMove, false);
 		            window.addEventListener("mouseup", _this.onWindowMouseUp, false);
 		            // NOTE ここで e.preventDefault() してはならない。
 		            // preventDefault() すると、iframe 内で動作していて iframe 外にドラッグした時に mousemove が途切れるようになる。
 		        };
 		        _this.onWindowMouseMove = function (e) {
-		            _this.pointMove(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            _this.pointMove(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), -1 /* PlatformButtonType.Unchanged */);
 		        };
 		        _this.onWindowMouseUp = function (e) {
 		            if (_this.pressingMouseButton !== e.button)
 		                return;
 		            _this.pressingMouseButton = null;
-		            _this.pointUp(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e));
+		            _this.pointUp(MouseTouchEventHandler.MOUSE_IDENTIFIER, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e, 0 /* PlatformButtonType.Primary */));
 		            window.removeEventListener("mousemove", _this.onWindowMouseMove, false);
 		            window.removeEventListener("mouseup", _this.onWindowMouseUp, false);
 		        };
@@ -15250,20 +15250,22 @@
 		        this.inputView.removeEventListener("touchend", this.onTouchEnd);
 		        this.inputView.removeEventListener("contextmenu", InputEventHandler_1.preventEventDefault);
 		    };
-		    MouseTouchEventHandler.prototype.getPlatformButtonType = function (e) {
+		    MouseTouchEventHandler.prototype.getPlatformButtonType = function (e, defaultValue) {
 		        switch (e.button) {
+		            case -1:
+		                // 変化なし
+		                return -1 /* PlatformButtonType.Unchanged */;
 		            case 0:
-		                // 左クリック
+		                // 主ボタン（通常は左ボタン）
 		                return 0 /* PlatformButtonType.Primary */;
 		            case 1:
-		                // ミドルクリック
+		                // 予備ボタン（通常は中ボタン）
 		                return 1 /* PlatformButtonType.Auxiliary */;
 		            case 2:
-		                // 右クリック
+		                // 副ボタン（通常は右ボタン）
 		                return 2 /* PlatformButtonType.Secondary */;
 		            default:
-		                // 上記以外のボタンは左クリックとして扱う
-		                return 0 /* PlatformButtonType.Primary */;
+		                return defaultValue;
 		        }
 		    };
 		    MouseTouchEventHandler.MOUSE_IDENTIFIER = 1;

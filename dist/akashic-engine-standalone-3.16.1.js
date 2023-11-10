@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.16.0 */
+/*! akashic-engine-standalone@3.16.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -10998,6 +10998,7 @@
 		     * @private
 		     */
 		    Game.prototype._reset = function (param) {
+		        var _a;
 		        this.operationPluginManager.reset();
 		        this.operationPluginManager.onOperate.add(this._onOperationPluginOperated.fire, this._onOperationPluginOperated);
 		        if (this.scene()) {
@@ -11016,8 +11017,6 @@
 		        if (param) {
 		            if (param.age !== undefined)
 		                this.age = param.age;
-		            if (param.nextEntityId !== undefined)
-		                this._idx = param.nextEntityId;
 		            if (param.randGenSer !== undefined) {
 		                this.random = XorshiftRandomGenerator_1.XorshiftRandomGenerator.deserialize(param.randGenSer);
 		            }
@@ -11040,7 +11039,7 @@
 		        this.joinedPlayerIds = [];
 		        this.onJoin.add(this._handleJoinEvent, this);
 		        this.onLeave.add(this._handleLeaveEvent, this);
-		        this._idx = 0;
+		        this._idx = (_a = param === null || param === void 0 ? void 0 : param.nextEntityId) !== null && _a !== void 0 ? _a : 0;
 		        this._localIdx = 0;
 		        this._cameraIdx = 0;
 		        this.db = new WeakRefKVS_1.WeakRefKVS();

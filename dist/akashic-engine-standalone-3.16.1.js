@@ -15433,7 +15433,7 @@
 		    };
 		    InputHandlerLayer.prototype._createInputView = function (width, height) {
 		        var view = document.createElement("div");
-		        view.setAttribute("style", "display:inline-block; outline:none;");
+		        view.setAttribute("style", "display:inline-block; outline:none; touch-action:none");
 		        view.style.width = width + "px";
 		        view.style.height = height + "px";
 		        view.setAttribute("tabindex", "0");

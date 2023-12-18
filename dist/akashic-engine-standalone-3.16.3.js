@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.16.1 */
+/*! akashic-engine-standalone@3.16.3 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1406,57 +1406,60 @@
 	function requireExceptionFactory$2 () {
 		if (hasRequiredExceptionFactory$2) return ExceptionFactory$2;
 		hasRequiredExceptionFactory$2 = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.ExceptionFactory = void 0;
-			(function (ExceptionFactory) {
-			    function createAssertionError(message, cause) {
-			        var e = new Error(message);
-			        e.name = "AssertionError";
-			        e.cause = cause;
-			        return e;
-			    }
-			    ExceptionFactory.createAssertionError = createAssertionError;
-			    function createTypeMismatchError(methodName, expected, actual, cause) {
-			        var message = "Type mismatch on " + methodName + "," + " expected type is " + expected;
-			        if (arguments.length > 2) {
-			            // actual 指定時
-			            try {
-			                var actualString = void 0;
-			                if (actual && actual.constructor && actual.constructor.name) {
-			                    actualString = actual.constructor.name;
-			                }
-			                else {
-			                    actualString = typeof actual;
-			                }
-			                message += ", actual type is " + (actualString.length > 40 ? actualString.substr(0, 40) : actualString);
-			            }
-			            catch (ex) {
-			                // メッセージ取得時に例外が発生したらactualの型情報出力はあきらめる
-			            }
-			        }
-			        message += ".";
-			        var e = new Error(message);
-			        e.name = "TypeMismatchError";
-			        e.cause = cause;
-			        e.expected = expected;
-			        e.actual = actual;
-			        return e;
-			    }
-			    ExceptionFactory.createTypeMismatchError = createTypeMismatchError;
-			    function createAssetLoadError(message, retriable, _type, // 歴史的経緯により残っている値。利用していない。
-			    cause) {
-			        if (retriable === void 0) { retriable = true; }
-			        var e = new Error(message);
-			        e.name = "AssetLoadError";
-			        e.cause = cause;
-			        e.retriable = retriable;
-			        return e;
-			    }
-			    ExceptionFactory.createAssetLoadError = createAssetLoadError;
-			})(exports.ExceptionFactory || (exports.ExceptionFactory = {}));
-			
-		} (ExceptionFactory$2));
+		Object.defineProperty(ExceptionFactory$2, "__esModule", { value: true });
+		ExceptionFactory$2.ExceptionFactory = void 0;
+		/**
+		 * 例外生成ファクトリ。
+		 * エンジン内部での例外生成に利用するもので、ゲーム開発者は通常本モジュールを利用する必要はない。
+		 */
+		var ExceptionFactory;
+		(function (ExceptionFactory) {
+		    function createAssertionError(message, cause) {
+		        var e = new Error(message);
+		        e.name = "AssertionError";
+		        e.cause = cause;
+		        return e;
+		    }
+		    ExceptionFactory.createAssertionError = createAssertionError;
+		    function createTypeMismatchError(methodName, expected, actual, cause) {
+		        var message = "Type mismatch on " + methodName + "," + " expected type is " + expected;
+		        if (arguments.length > 2) {
+		            // actual 指定時
+		            try {
+		                var actualString = void 0;
+		                if (actual && actual.constructor && actual.constructor.name) {
+		                    actualString = actual.constructor.name;
+		                }
+		                else {
+		                    actualString = typeof actual;
+		                }
+		                message += ", actual type is " + (actualString.length > 40 ? actualString.substr(0, 40) : actualString);
+		            }
+		            catch (ex) {
+		                // メッセージ取得時に例外が発生したらactualの型情報出力はあきらめる
+		            }
+		        }
+		        message += ".";
+		        var e = new Error(message);
+		        e.name = "TypeMismatchError";
+		        e.cause = cause;
+		        e.expected = expected;
+		        e.actual = actual;
+		        return e;
+		    }
+		    ExceptionFactory.createTypeMismatchError = createTypeMismatchError;
+		    function createAssetLoadError(message, retriable, _type, // 歴史的経緯により残っている値。利用していない。
+		    cause) {
+		        if (retriable === void 0) { retriable = true; }
+		        var e = new Error(message);
+		        e.name = "AssetLoadError";
+		        e.cause = cause;
+		        e.retriable = retriable;
+		        return e;
+		    }
+		    ExceptionFactory.createAssetLoadError = createAssetLoadError;
+		})(ExceptionFactory || (ExceptionFactory$2.ExceptionFactory = ExceptionFactory = {}));
+		
 		return ExceptionFactory$2;
 	}
 
@@ -1487,7 +1490,13 @@
 		 */
 		var WeakRefKVS$1 = /** @class */ (function () {
 		    function WeakRefKVS() {
+		        /**
+		         * @ignore
+		         */
 		        this._weakRefClass = typeof WeakRef !== "undefined" ? WeakRef : PseudoWeakRef;
+		        /**
+		         * @ignore
+		         */
 		        this._refMap = Object.create(null);
 		    }
 		    WeakRefKVS.prototype.set = function (key, value) {
@@ -2771,107 +2780,109 @@
 	function requireUtil () {
 		if (hasRequiredUtil) return Util;
 		hasRequiredUtil = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.Util = void 0;
-			var pdi_types_1 = requireLib$3();
-			(function (Util) {
-			    var _a;
-			    /**
-			     * 2点間(P1..P2)の距離(pixel)を返す。
-			     * @param {number} p1x P1-X
-			     * @param {number} p1y P1-Y
-			     * @param {number} p2x P2-X
-			     * @param {number} p2y P2-Y
-			     */
-			    function distance(p1x, p1y, p2x, p2y) {
-			        return Math.sqrt(Math.pow(p1x - p2x, 2) + Math.pow(p1y - p2y, 2));
-			    }
-			    Util.distance = distance;
-			    /**
-			     * 2点間(P1..P2)の距離(pixel)を返す。
-			     * @param {CommonOffset} p1 座標1
-			     * @param {CommonOffset} p2 座標2
-			     */
-			    function distanceBetweenOffsets(p1, p2) {
-			        return Util.distance(p1.x, p1.y, p2.x, p2.y);
-			    }
-			    Util.distanceBetweenOffsets = distanceBetweenOffsets;
-			    /**
-			     * 2つの矩形の中心座標(P1..P2)間の距離(pixel)を返す。
-			     * @param {CommonArea} p1 矩形1
-			     * @param {CommonArea} p2 矩形2
-			     */
-			    function distanceBetweenAreas(p1, p2) {
-			        return Util.distance(p1.x + p1.width / 2, p1.y + p1.height / 2, p2.x + p2.width / 2, p2.y + p2.height / 2);
-			    }
-			    Util.distanceBetweenAreas = distanceBetweenAreas;
-			    /**
-			     * idx文字目の文字のchar codeを返す。
-			     *
-			     * これはString#charCodeAt()と次の点で異なる。
-			     * - idx文字目が上位サロゲートの時これを16bit左シフトし、idx+1文字目の下位サロゲートと論理和をとった値を返す。
-			     * - idx文字目が下位サロゲートの時nullを返す。
-			     *
-			     * @param str 文字を取り出される文字列
-			     * @param idx 取り出される文字の位置
-			     */
-			    // highly based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
-			    function charCodeAt(str, idx) {
-			        var code = str.charCodeAt(idx);
-			        if (0xd800 <= code && code <= 0xdbff) {
-			            var hi = code;
-			            var low = str.charCodeAt(idx + 1);
-			            return (hi << 16) | low;
-			        }
-			        if (0xdc00 <= code && code <= 0xdfff) {
-			            // Low surrogate
-			            return null;
-			        }
-			        return code;
-			    }
-			    Util.charCodeAt = charCodeAt;
-			    /**
-			     * enum の値の文字列を snake-case に変換した文字列を返す。
-			     * @deprecated 非推奨である。非推奨の機能との互換性確保のために存在する。ゲーム開発者が使用すべきではない。
-			     */
-			    function enumToSnakeCase(enumDef, val) {
-			        var s = enumDef[val];
-			        // 呼び出し元で型が正しいことの保証が必要
-			        return (s[0].toLowerCase() + s.slice(1).replace(/[A-Z]/g, function (c) { return "-" + c.toLowerCase(); }));
-			    }
-			    Util.enumToSnakeCase = enumToSnakeCase;
-			    /**
-			     * 数値を範囲内［min, max］に丸める
-			     * @param num 丸める値
-			     * @param min 値の下限
-			     * @param max 値の上限
-			     */
-			    function clamp(num, min, max) {
-			        return Math.min(Math.max(num, min), max);
-			    }
-			    Util.clamp = clamp;
-			    /**
-			     * CompositeOperation を CompositeOperationString に読み替えるテーブル。
-			     * @deprecated 非推奨である。非推奨の機能との互換性のために存在する。ゲーム開発者が使用すべきではない。
-			     */
-			    // enumToSnakeCase() で代用できるが、 CompositeOperation の変換は複数回実行されうるので専用のテーブルを作っている。
-			    Util.compositeOperationStringTable = (_a = {},
-			        _a[pdi_types_1.CompositeOperation.SourceOver] = "source-over",
-			        _a[pdi_types_1.CompositeOperation.SourceAtop] = "source-atop",
-			        _a[pdi_types_1.CompositeOperation.Lighter] = "lighter",
-			        _a[pdi_types_1.CompositeOperation.Copy] = "copy",
-			        _a[pdi_types_1.CompositeOperation.ExperimentalSourceIn] = "experimental-source-in",
-			        _a[pdi_types_1.CompositeOperation.ExperimentalSourceOut] = "experimental-source-out",
-			        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationAtop] = "experimental-destination-atop",
-			        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationIn] = "experimental-destination-in",
-			        _a[pdi_types_1.CompositeOperation.DestinationOut] = "destination-out",
-			        _a[pdi_types_1.CompositeOperation.DestinationOver] = "destination-over",
-			        _a[pdi_types_1.CompositeOperation.Xor] = "xor",
-			        _a);
-			})(exports.Util || (exports.Util = {}));
-			
-		} (Util));
+		Object.defineProperty(Util, "__esModule", { value: true });
+		Util.Util = void 0;
+		var pdi_types_1 = requireLib$3();
+		/**
+		 * ユーティリティ。
+		 */
+		var Util$1;
+		(function (Util) {
+		    var _a;
+		    /**
+		     * 2点間(P1..P2)の距離(pixel)を返す。
+		     * @param {number} p1x P1-X
+		     * @param {number} p1y P1-Y
+		     * @param {number} p2x P2-X
+		     * @param {number} p2y P2-Y
+		     */
+		    function distance(p1x, p1y, p2x, p2y) {
+		        return Math.sqrt(Math.pow(p1x - p2x, 2) + Math.pow(p1y - p2y, 2));
+		    }
+		    Util.distance = distance;
+		    /**
+		     * 2点間(P1..P2)の距離(pixel)を返す。
+		     * @param {CommonOffset} p1 座標1
+		     * @param {CommonOffset} p2 座標2
+		     */
+		    function distanceBetweenOffsets(p1, p2) {
+		        return Util.distance(p1.x, p1.y, p2.x, p2.y);
+		    }
+		    Util.distanceBetweenOffsets = distanceBetweenOffsets;
+		    /**
+		     * 2つの矩形の中心座標(P1..P2)間の距離(pixel)を返す。
+		     * @param {CommonArea} p1 矩形1
+		     * @param {CommonArea} p2 矩形2
+		     */
+		    function distanceBetweenAreas(p1, p2) {
+		        return Util.distance(p1.x + p1.width / 2, p1.y + p1.height / 2, p2.x + p2.width / 2, p2.y + p2.height / 2);
+		    }
+		    Util.distanceBetweenAreas = distanceBetweenAreas;
+		    /**
+		     * idx文字目の文字のchar codeを返す。
+		     *
+		     * これはString#charCodeAt()と次の点で異なる。
+		     * - idx文字目が上位サロゲートの時これを16bit左シフトし、idx+1文字目の下位サロゲートと論理和をとった値を返す。
+		     * - idx文字目が下位サロゲートの時nullを返す。
+		     *
+		     * @param str 文字を取り出される文字列
+		     * @param idx 取り出される文字の位置
+		     */
+		    // highly based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+		    function charCodeAt(str, idx) {
+		        var code = str.charCodeAt(idx);
+		        if (0xd800 <= code && code <= 0xdbff) {
+		            var hi = code;
+		            var low = str.charCodeAt(idx + 1);
+		            return (hi << 16) | low;
+		        }
+		        if (0xdc00 <= code && code <= 0xdfff) {
+		            // Low surrogate
+		            return null;
+		        }
+		        return code;
+		    }
+		    Util.charCodeAt = charCodeAt;
+		    /**
+		     * enum の値の文字列を snake-case に変換した文字列を返す。
+		     * @deprecated 非推奨である。非推奨の機能との互換性確保のために存在する。ゲーム開発者が使用すべきではない。
+		     */
+		    function enumToSnakeCase(enumDef, val) {
+		        var s = enumDef[val];
+		        // 呼び出し元で型が正しいことの保証が必要
+		        return (s[0].toLowerCase() + s.slice(1).replace(/[A-Z]/g, function (c) { return "-" + c.toLowerCase(); }));
+		    }
+		    Util.enumToSnakeCase = enumToSnakeCase;
+		    /**
+		     * 数値を範囲内［min, max］に丸める
+		     * @param num 丸める値
+		     * @param min 値の下限
+		     * @param max 値の上限
+		     */
+		    function clamp(num, min, max) {
+		        return Math.min(Math.max(num, min), max);
+		    }
+		    Util.clamp = clamp;
+		    /**
+		     * CompositeOperation を CompositeOperationString に読み替えるテーブル。
+		     * @deprecated 非推奨である。非推奨の機能との互換性のために存在する。ゲーム開発者が使用すべきではない。
+		     */
+		    // enumToSnakeCase() で代用できるが、 CompositeOperation の変換は複数回実行されうるので専用のテーブルを作っている。
+		    Util.compositeOperationStringTable = (_a = {},
+		        _a[pdi_types_1.CompositeOperation.SourceOver] = "source-over",
+		        _a[pdi_types_1.CompositeOperation.SourceAtop] = "source-atop",
+		        _a[pdi_types_1.CompositeOperation.Lighter] = "lighter",
+		        _a[pdi_types_1.CompositeOperation.Copy] = "copy",
+		        _a[pdi_types_1.CompositeOperation.ExperimentalSourceIn] = "experimental-source-in",
+		        _a[pdi_types_1.CompositeOperation.ExperimentalSourceOut] = "experimental-source-out",
+		        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationAtop] = "experimental-destination-atop",
+		        _a[pdi_types_1.CompositeOperation.ExperimentalDestinationIn] = "experimental-destination-in",
+		        _a[pdi_types_1.CompositeOperation.DestinationOut] = "destination-out",
+		        _a[pdi_types_1.CompositeOperation.DestinationOver] = "destination-over",
+		        _a[pdi_types_1.CompositeOperation.Xor] = "xor",
+		        _a);
+		})(Util$1 || (Util.Util = Util$1 = {}));
+		
 		return Util;
 	}
 
@@ -3828,208 +3839,210 @@
 	function requireSurfaceUtil () {
 		if (hasRequiredSurfaceUtil) return SurfaceUtil;
 		hasRequiredSurfaceUtil = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.SurfaceUtil = void 0;
-			var ExceptionFactory_1 = requireExceptionFactory$2();
-			(function (SurfaceUtil) {
-			    /**
-			     * 引数 `src` が `undefined` または `Surface` でそのまま返す。
-			     * そうでなくかつ `ImageAsset` であれば `Surface` に変換して返す。
-			     *
-			     * @param src
-			     */
-			    function asSurface(src) {
-			        if (!src) {
-			            return undefined;
-			        }
-			        else if ("type" in src && src.type === "image") {
-			            return src.asSurface();
-			        }
-			        else if ("_drawable" in src) {
-			            return src;
-			        }
-			        throw ExceptionFactory_1.ExceptionFactory.createTypeMismatchError("SurfaceUtil#asSurface", "ImageAsset|Surface", src);
-			    }
-			    SurfaceUtil.asSurface = asSurface;
-			    /**
-			     * サーフェスのアニメーティングイベントへのハンドラ登録。
-			     *
-			     * これはエンジンが利用するものであり、ゲーム開発者が呼び出す必要はない。
-			     *
-			     * @param animatingHandler アニメーティングハンドラ
-			     * @param surface サーフェス
-			     */
-			    function setupAnimatingHandler(animatingHandler, surface) {
-			        if (surface.isPlaying()) {
-			            animatingHandler._handleAnimationStart();
-			        }
-			    }
-			    SurfaceUtil.setupAnimatingHandler = setupAnimatingHandler;
-			    /**
-			     * アニメーティングハンドラを別のサーフェスへ移動する。
-			     *
-			     * これはエンジンが利用するものであり、ゲーム開発者が呼び出す必要はない。
-			     *
-			     * @param animatingHandler アニメーティングハンドラ
-			     * @param beforeSurface ハンドラ登録を解除するサーフェス
-			     * @param afterSurface ハンドラを登録するサーフェス
-			     */
-			    function migrateAnimatingHandler(animatingHandler, _beforeSurface, afterSurface) {
-			        animatingHandler._handleAnimationStop();
-			        if (afterSurface.isPlaying()) {
-			            animatingHandler._handleAnimationStart();
-			        }
-			    }
-			    SurfaceUtil.migrateAnimatingHandler = migrateAnimatingHandler;
-			    /**
-			     * 対象の `Surface` にナインパッチ処理された `Surface` を描画する。
-			     *
-			     * これは、画像素材の拡大・縮小において「枠」の表現を実現するものである。
-			     * 画像の上下左右の「枠」部分の幅・高さを渡すことで、上下の「枠」を縦に引き延ばすことなく、
-			     * また左右の「枠」を横に引き延ばすことなく画像を任意サイズに拡大・縮小できる。
-			     * ゲームにおけるメッセージウィンドウやダイアログの表現に利用することを想定している。
-			     *
-			     * @param destSurface 描画先 `Surface`
-			     * @param srcSurface 描画元 `Surface`
-			     * @param borderWidth 上下左右の「拡大しない」領域の大きさ。すべて同じ値なら数値一つを渡すことができる。省略された場合、 `4`
-			     */
-			    function drawNinePatch(destSurface, srcSurface, borderWidth) {
-			        if (borderWidth === void 0) { borderWidth = 4; }
-			        var renderer = destSurface.renderer();
-			        renderer.begin();
-			        renderer.clear();
-			        renderNinePatch(renderer, destSurface.width, destSurface.height, srcSurface, borderWidth);
-			        renderer.end();
-			    }
-			    SurfaceUtil.drawNinePatch = drawNinePatch;
-			    /**
-			     * 対象の `Renderer` にナインパッチ処理された `Surface` を描画する。
-			     *
-			     * 開発者は以下のような状況でこの関数を利用すべきである。
-			     * * E を継承した独自の Entity を renderSelf() メソッドで描画する場合。この場合描画先の Surface が不明なので drawNinePatch() よりもこの関数の方が適している。
-			     * * Surface全体ではなく部分的に描画したい場合。drawNinePatch() では Surface 全体の描画にしか対応していないため。
-			     *
-			     * @param renderer 描画先 `Renderer`
-			     * @param width 描画先の横幅
-			     * @param height 描画先の縦幅
-			     * @param surface 描画元 `Surface`
-			     * @param borderWidth 上下左右の「拡大しない」領域の大きさ。すべて同じ値なら数値一つを渡すことができる。省略された場合、 `4`
-			     */
-			    function renderNinePatch(renderer, width, height, surface, borderWidth) {
-			        if (borderWidth === void 0) { borderWidth = 4; }
-			        var border;
-			        if (typeof borderWidth === "number") {
-			            border = {
-			                top: borderWidth,
-			                bottom: borderWidth,
-			                left: borderWidth,
-			                right: borderWidth
-			            };
-			        }
-			        else {
-			            border = borderWidth;
-			        }
-			        //    x0  x1                          x2
-			        // y0 +-----------------------------------+
-			        //    | 1 |             5             | 2 |
-			        // y1 |---+---------------------------+---|
-			        //    |   |                           |   |
-			        //    | 7 |             9             | 8 |
-			        //    |   |                           |   |
-			        // y2 |---+---------------------------+---|
-			        //    | 3 |             6             | 4 |
-			        //    +-----------------------------------+
-			        //
-			        // 1-4: 拡縮無し
-			        // 5-6: 水平方向へ拡縮
-			        // 7-8: 垂直方向へ拡縮
-			        // 9  : 全方向へ拡縮
-			        var sx1 = border.left;
-			        var sx2 = surface.width - border.right;
-			        var sy1 = border.top;
-			        var sy2 = surface.height - border.bottom;
-			        var dx1 = border.left;
-			        var dx2 = width - border.right;
-			        var dy1 = border.top;
-			        var dy2 = height - border.bottom;
-			        // Draw corners
-			        var srcCorners = [
-			            {
-			                x: 0,
-			                y: 0,
-			                width: border.left,
-			                height: border.top
-			            },
-			            {
-			                x: sx2,
-			                y: 0,
-			                width: border.right,
-			                height: border.top
-			            },
-			            {
-			                x: 0,
-			                y: sy2,
-			                width: border.left,
-			                height: border.bottom
-			            },
-			            {
-			                x: sx2,
-			                y: sy2,
-			                width: border.right,
-			                height: border.bottom
-			            }
-			        ];
-			        var destCorners = [
-			            { x: 0, y: 0 },
-			            { x: dx2, y: 0 },
-			            { x: 0, y: dy2 },
-			            { x: dx2, y: dy2 }
-			        ];
-			        for (var i = 0; i < srcCorners.length; ++i) {
-			            var c = srcCorners[i];
-			            renderer.save();
-			            renderer.translate(destCorners[i].x, destCorners[i].y);
-			            renderer.drawImage(surface, c.x, c.y, c.width, c.height, 0, 0);
-			            renderer.restore();
-			        }
-			        // Draw borders
-			        var srcBorders = [
-			            { x: sx1, y: 0, width: sx2 - sx1, height: border.top },
-			            { x: 0, y: sy1, width: border.left, height: sy2 - sy1 },
-			            { x: sx2, y: sy1, width: border.right, height: sy2 - sy1 },
-			            { x: sx1, y: sy2, width: sx2 - sx1, height: border.bottom }
-			        ];
-			        var destBorders = [
-			            { x: dx1, y: 0, width: dx2 - dx1, height: border.top },
-			            { x: 0, y: dy1, width: border.left, height: dy2 - dy1 },
-			            { x: dx2, y: dy1, width: border.right, height: dy2 - dy1 },
-			            { x: dx1, y: dy2, width: dx2 - dx1, height: border.bottom }
-			        ];
-			        for (var i = 0; i < srcBorders.length; ++i) {
-			            var s = srcBorders[i];
-			            var d = destBorders[i];
-			            renderer.save();
-			            renderer.translate(d.x, d.y);
-			            renderer.transform([d.width / s.width, 0, 0, d.height / s.height, 0, 0]);
-			            renderer.drawImage(surface, s.x, s.y, s.width, s.height, 0, 0);
-			            renderer.restore();
-			        }
-			        // Draw center
-			        var sw = sx2 - sx1;
-			        var sh = sy2 - sy1;
-			        var dw = dx2 - dx1;
-			        var dh = dy2 - dy1;
-			        renderer.save();
-			        renderer.translate(dx1, dy1);
-			        renderer.transform([dw / sw, 0, 0, dh / sh, 0, 0]);
-			        renderer.drawImage(surface, sx1, sy1, sw, sh, 0, 0);
-			        renderer.restore();
-			    }
-			    SurfaceUtil.renderNinePatch = renderNinePatch;
-			})(exports.SurfaceUtil || (exports.SurfaceUtil = {}));
-			
-		} (SurfaceUtil));
+		Object.defineProperty(SurfaceUtil, "__esModule", { value: true });
+		SurfaceUtil.SurfaceUtil = void 0;
+		var ExceptionFactory_1 = requireExceptionFactory$2();
+		/**
+		 * Surface に関連するユーティリティ。
+		 */
+		var SurfaceUtil$1;
+		(function (SurfaceUtil) {
+		    /**
+		     * 引数 `src` が `undefined` または `Surface` でそのまま返す。
+		     * そうでなくかつ `ImageAsset` であれば `Surface` に変換して返す。
+		     *
+		     * @param src
+		     */
+		    function asSurface(src) {
+		        if (!src) {
+		            return undefined;
+		        }
+		        else if ("type" in src && src.type === "image") {
+		            return src.asSurface();
+		        }
+		        else if ("_drawable" in src) {
+		            return src;
+		        }
+		        throw ExceptionFactory_1.ExceptionFactory.createTypeMismatchError("SurfaceUtil#asSurface", "ImageAsset|Surface", src);
+		    }
+		    SurfaceUtil.asSurface = asSurface;
+		    /**
+		     * サーフェスのアニメーティングイベントへのハンドラ登録。
+		     *
+		     * これはエンジンが利用するものであり、ゲーム開発者が呼び出す必要はない。
+		     *
+		     * @param animatingHandler アニメーティングハンドラ
+		     * @param surface サーフェス
+		     */
+		    function setupAnimatingHandler(animatingHandler, surface) {
+		        if (surface.isPlaying()) {
+		            animatingHandler._handleAnimationStart();
+		        }
+		    }
+		    SurfaceUtil.setupAnimatingHandler = setupAnimatingHandler;
+		    /**
+		     * アニメーティングハンドラを別のサーフェスへ移動する。
+		     *
+		     * これはエンジンが利用するものであり、ゲーム開発者が呼び出す必要はない。
+		     *
+		     * @param animatingHandler アニメーティングハンドラ
+		     * @param beforeSurface ハンドラ登録を解除するサーフェス
+		     * @param afterSurface ハンドラを登録するサーフェス
+		     */
+		    function migrateAnimatingHandler(animatingHandler, _beforeSurface, afterSurface) {
+		        animatingHandler._handleAnimationStop();
+		        if (afterSurface.isPlaying()) {
+		            animatingHandler._handleAnimationStart();
+		        }
+		    }
+		    SurfaceUtil.migrateAnimatingHandler = migrateAnimatingHandler;
+		    /**
+		     * 対象の `Surface` にナインパッチ処理された `Surface` を描画する。
+		     *
+		     * これは、画像素材の拡大・縮小において「枠」の表現を実現するものである。
+		     * 画像の上下左右の「枠」部分の幅・高さを渡すことで、上下の「枠」を縦に引き延ばすことなく、
+		     * また左右の「枠」を横に引き延ばすことなく画像を任意サイズに拡大・縮小できる。
+		     * ゲームにおけるメッセージウィンドウやダイアログの表現に利用することを想定している。
+		     *
+		     * @param destSurface 描画先 `Surface`
+		     * @param srcSurface 描画元 `Surface`
+		     * @param borderWidth 上下左右の「拡大しない」領域の大きさ。すべて同じ値なら数値一つを渡すことができる。省略された場合、 `4`
+		     */
+		    function drawNinePatch(destSurface, srcSurface, borderWidth) {
+		        if (borderWidth === void 0) { borderWidth = 4; }
+		        var renderer = destSurface.renderer();
+		        renderer.begin();
+		        renderer.clear();
+		        renderNinePatch(renderer, destSurface.width, destSurface.height, srcSurface, borderWidth);
+		        renderer.end();
+		    }
+		    SurfaceUtil.drawNinePatch = drawNinePatch;
+		    /**
+		     * 対象の `Renderer` にナインパッチ処理された `Surface` を描画する。
+		     *
+		     * 開発者は以下のような状況でこの関数を利用すべきである。
+		     * * E を継承した独自の Entity を renderSelf() メソッドで描画する場合。この場合描画先の Surface が不明なので drawNinePatch() よりもこの関数の方が適している。
+		     * * Surface全体ではなく部分的に描画したい場合。drawNinePatch() では Surface 全体の描画にしか対応していないため。
+		     *
+		     * @param renderer 描画先 `Renderer`
+		     * @param width 描画先の横幅
+		     * @param height 描画先の縦幅
+		     * @param surface 描画元 `Surface`
+		     * @param borderWidth 上下左右の「拡大しない」領域の大きさ。すべて同じ値なら数値一つを渡すことができる。省略された場合、 `4`
+		     */
+		    function renderNinePatch(renderer, width, height, surface, borderWidth) {
+		        if (borderWidth === void 0) { borderWidth = 4; }
+		        var border;
+		        if (typeof borderWidth === "number") {
+		            border = {
+		                top: borderWidth,
+		                bottom: borderWidth,
+		                left: borderWidth,
+		                right: borderWidth
+		            };
+		        }
+		        else {
+		            border = borderWidth;
+		        }
+		        //    x0  x1                          x2
+		        // y0 +-----------------------------------+
+		        //    | 1 |             5             | 2 |
+		        // y1 |---+---------------------------+---|
+		        //    |   |                           |   |
+		        //    | 7 |             9             | 8 |
+		        //    |   |                           |   |
+		        // y2 |---+---------------------------+---|
+		        //    | 3 |             6             | 4 |
+		        //    +-----------------------------------+
+		        //
+		        // 1-4: 拡縮無し
+		        // 5-6: 水平方向へ拡縮
+		        // 7-8: 垂直方向へ拡縮
+		        // 9  : 全方向へ拡縮
+		        var sx1 = border.left;
+		        var sx2 = surface.width - border.right;
+		        var sy1 = border.top;
+		        var sy2 = surface.height - border.bottom;
+		        var dx1 = border.left;
+		        var dx2 = width - border.right;
+		        var dy1 = border.top;
+		        var dy2 = height - border.bottom;
+		        // Draw corners
+		        var srcCorners = [
+		            {
+		                x: 0,
+		                y: 0,
+		                width: border.left,
+		                height: border.top
+		            },
+		            {
+		                x: sx2,
+		                y: 0,
+		                width: border.right,
+		                height: border.top
+		            },
+		            {
+		                x: 0,
+		                y: sy2,
+		                width: border.left,
+		                height: border.bottom
+		            },
+		            {
+		                x: sx2,
+		                y: sy2,
+		                width: border.right,
+		                height: border.bottom
+		            }
+		        ];
+		        var destCorners = [
+		            { x: 0, y: 0 },
+		            { x: dx2, y: 0 },
+		            { x: 0, y: dy2 },
+		            { x: dx2, y: dy2 }
+		        ];
+		        for (var i = 0; i < srcCorners.length; ++i) {
+		            var c = srcCorners[i];
+		            renderer.save();
+		            renderer.translate(destCorners[i].x, destCorners[i].y);
+		            renderer.drawImage(surface, c.x, c.y, c.width, c.height, 0, 0);
+		            renderer.restore();
+		        }
+		        // Draw borders
+		        var srcBorders = [
+		            { x: sx1, y: 0, width: sx2 - sx1, height: border.top },
+		            { x: 0, y: sy1, width: border.left, height: sy2 - sy1 },
+		            { x: sx2, y: sy1, width: border.right, height: sy2 - sy1 },
+		            { x: sx1, y: sy2, width: sx2 - sx1, height: border.bottom }
+		        ];
+		        var destBorders = [
+		            { x: dx1, y: 0, width: dx2 - dx1, height: border.top },
+		            { x: 0, y: dy1, width: border.left, height: dy2 - dy1 },
+		            { x: dx2, y: dy1, width: border.right, height: dy2 - dy1 },
+		            { x: dx1, y: dy2, width: dx2 - dx1, height: border.bottom }
+		        ];
+		        for (var i = 0; i < srcBorders.length; ++i) {
+		            var s = srcBorders[i];
+		            var d = destBorders[i];
+		            renderer.save();
+		            renderer.translate(d.x, d.y);
+		            renderer.transform([d.width / s.width, 0, 0, d.height / s.height, 0, 0]);
+		            renderer.drawImage(surface, s.x, s.y, s.width, s.height, 0, 0);
+		            renderer.restore();
+		        }
+		        // Draw center
+		        var sw = sx2 - sx1;
+		        var sh = sy2 - sy1;
+		        var dw = dx2 - dx1;
+		        var dh = dy2 - dy1;
+		        renderer.save();
+		        renderer.translate(dx1, dy1);
+		        renderer.transform([dw / sw, 0, 0, dh / sh, 0, 0]);
+		        renderer.drawImage(surface, sx1, sy1, sw, sh, 0, 0);
+		        renderer.restore();
+		    }
+		    SurfaceUtil.renderNinePatch = renderNinePatch;
+		})(SurfaceUtil$1 || (SurfaceUtil.SurfaceUtil = SurfaceUtil$1 = {}));
+		
 		return SurfaceUtil;
 	}
 
@@ -4349,25 +4362,28 @@
 	function requireTextAlign () {
 		if (hasRequiredTextAlign) return TextAlign;
 		hasRequiredTextAlign = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.TextAlign = void 0;
-			(function (TextAlign) {
-			    /**
-			     * 左寄せ。
-			     */
-			    TextAlign[TextAlign["Left"] = 0] = "Left";
-			    /**
-			     * 中央寄せ。
-			     */
-			    TextAlign[TextAlign["Center"] = 1] = "Center";
-			    /**
-			     * 右寄せ。
-			     */
-			    TextAlign[TextAlign["Right"] = 2] = "Right";
-			})(exports.TextAlign || (exports.TextAlign = {}));
-			
-		} (TextAlign));
+		Object.defineProperty(TextAlign, "__esModule", { value: true });
+		TextAlign.TextAlign = void 0;
+		/**
+		 * テキストの描画位置。
+		 * @deprecated 非推奨である。将来的に削除される。代わりに `TextAlignString` を利用すること。
+		 */
+		var TextAlign$1;
+		(function (TextAlign) {
+		    /**
+		     * 左寄せ。
+		     */
+		    TextAlign[TextAlign["Left"] = 0] = "Left";
+		    /**
+		     * 中央寄せ。
+		     */
+		    TextAlign[TextAlign["Center"] = 1] = "Center";
+		    /**
+		     * 右寄せ。
+		     */
+		    TextAlign[TextAlign["Right"] = 2] = "Right";
+		})(TextAlign$1 || (TextAlign.TextAlign = TextAlign$1 = {}));
+		
 		return TextAlign;
 	}
 
@@ -5900,6 +5916,7 @@
 		    };
 		    /**
 		     * @private
+		     * @ignore
 		     */
 		    AssetManager.prototype._normalizeAssetBaseDeclaration = function (assetId, conf) {
 		        if (!conf.type) {
@@ -6297,145 +6314,147 @@
 	function requireAudioUtil$1 () {
 		if (hasRequiredAudioUtil$1) return AudioUtil;
 		hasRequiredAudioUtil$1 = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.AudioUtil = void 0;
-			var Util_1 = requireUtil();
-			/**
-			 * linear のイージング関数。
-			 */
-			var linear = function (t, b, c, d) { return (c * t) / d + b; };
-			(function (AudioUtil) {
-			    /**
-			     * 音声をフェードインさせる。
-			     *
-			     * @param game 対象の `Game`。
-			     * @param context 対象の `AudioPlayContext` 。
-			     * @param duration フェードインの長さ (ms)。
-			     * @param to フェードイン後の音量。0 未満または 1 より大きい値を指定した場合の挙動は不定である。省略時は `1` 。
-			     * @param easing イージング関数。省略時は linear 。
-			     */
-			    function fadeIn(game, context, duration, to, easing) {
-			        if (to === void 0) { to = 1; }
-			        if (easing === void 0) { easing = linear; }
-			        context.changeVolume(0);
-			        context.play();
-			        var _a = transitionVolume(game, context, duration, to, easing), complete = _a.complete, cancel = _a.cancel;
-			        return {
-			            complete: function () {
-			                complete();
-			            },
-			            cancel: function (revert) {
-			                if (revert === void 0) { revert = false; }
-			                cancel(revert);
-			                if (revert) {
-			                    context.stop();
-			                }
-			            }
-			        };
-			    }
-			    AudioUtil.fadeIn = fadeIn;
-			    /**
-			     * 音声をフェードアウトさせる。
-			     *
-			     * @param game 対象の `Game`。
-			     * @param context 対象の `AudioPlayContext` 。
-			     * @param duration フェードアウトの長さ (ms)。
-			     * @param easing イージング関数。省略時は linear が指定される。
-			     */
-			    function fadeOut(game, context, duration, easing) {
-			        if (easing === void 0) { easing = linear; }
-			        var _a = transitionVolume(game, context, duration, 0, easing), complete = _a.complete, cancel = _a.cancel;
-			        return {
-			            complete: function () {
-			                complete();
-			                context.stop();
-			            },
-			            cancel: function (revert) {
-			                if (revert === void 0) { revert = false; }
-			                cancel(revert);
-			            }
-			        };
-			    }
-			    AudioUtil.fadeOut = fadeOut;
-			    /**
-			     * 二つの音声をクロスフェードさせる。
-			     *
-			     * @param game 対象の `Game`。
-			     * @param fadeInContext フェードイン対象の `AudioPlayContext` 。
-			     * @param fadeOutContext フェードアウト対象の `AudioPlayContext` 。
-			     * @param duration クロスフェードの長さ (ms)。
-			     * @param to クロスフェード後の音量。0 未満または 1 より大きい値を指定した場合の挙動は不定。省略時は `1` 。
-			     * @param easing イージング関数。フェードインとフェードアウトで共通であることに注意。省略時は linear が指定される。
-			     */
-			    function crossFade(game, fadeInContext, fadeOutContext, duration, to, easing) {
-			        if (to === void 0) { to = 1; }
-			        if (easing === void 0) { easing = linear; }
-			        var fadeInFuncs = fadeIn(game, fadeInContext, duration, to, easing);
-			        var fadeOutFuncs = fadeOut(game, fadeOutContext, duration, easing);
-			        return {
-			            complete: function () {
-			                fadeInFuncs.complete();
-			                fadeOutFuncs.complete();
-			            },
-			            cancel: function (revert) {
-			                if (revert === void 0) { revert = false; }
-			                fadeInFuncs.cancel(revert);
-			                fadeOutFuncs.cancel(revert);
-			            }
-			        };
-			    }
-			    AudioUtil.crossFade = crossFade;
-			    /**
-			     * 音量を指定のイージングで遷移させる。
-			     *
-			     * @param game 対象の `Game`。
-			     * @param context 対象の `AudioPlayContext` 。
-			     * @param duration 遷移の長さ (ms)。
-			     * @param to 遷移後の音量。0 未満または 1 より大きい値を指定した場合の挙動は不定。
-			     * @param easing イージング関数。省略時は linear が指定される。
-			     */
-			    function transitionVolume(game, context, duration, to, easing) {
-			        if (easing === void 0) { easing = linear; }
-			        var frame = 1000 / game.fps;
-			        var from = context.volume;
-			        var elapsed = 0;
-			        context.changeVolume(Util_1.Util.clamp(from, 0, 1));
-			        var handler = function () {
-			            elapsed += frame;
-			            if (elapsed <= duration) {
-			                var progress = easing(elapsed, from, to - from, duration);
-			                context.changeVolume(Util_1.Util.clamp(progress, 0, 1));
-			                return false;
-			            }
-			            else {
-			                context.changeVolume(to);
-			                return true;
-			            }
-			        };
-			        var remove = function () {
-			            if (game.onUpdate.contains(handler)) {
-			                game.onUpdate.remove(handler);
-			            }
-			        };
-			        game.onUpdate.add(handler);
-			        return {
-			            complete: function () {
-			                remove();
-			                context.changeVolume(to);
-			            },
-			            cancel: function (revert) {
-			                remove();
-			                if (revert) {
-			                    context.changeVolume(from);
-			                }
-			            }
-			        };
-			    }
-			    AudioUtil.transitionVolume = transitionVolume;
-			})(exports.AudioUtil || (exports.AudioUtil = {}));
-			
-		} (AudioUtil));
+		Object.defineProperty(AudioUtil, "__esModule", { value: true });
+		AudioUtil.AudioUtil = void 0;
+		var Util_1 = requireUtil();
+		/**
+		 * linear のイージング関数。
+		 */
+		var linear = function (t, b, c, d) { return (c * t) / d + b; };
+		/**
+		 * Audio に関連するユーティリティ。
+		 */
+		var AudioUtil$1;
+		(function (AudioUtil) {
+		    /**
+		     * 音声をフェードインさせる。
+		     *
+		     * @param game 対象の `Game`。
+		     * @param context 対象の `AudioPlayContext` 。
+		     * @param duration フェードインの長さ (ms)。
+		     * @param to フェードイン後の音量。0 未満または 1 より大きい値を指定した場合の挙動は不定である。省略時は `1` 。
+		     * @param easing イージング関数。省略時は linear 。
+		     */
+		    function fadeIn(game, context, duration, to, easing) {
+		        if (to === void 0) { to = 1; }
+		        if (easing === void 0) { easing = linear; }
+		        context.changeVolume(0);
+		        context.play();
+		        var _a = transitionVolume(game, context, duration, to, easing), complete = _a.complete, cancel = _a.cancel;
+		        return {
+		            complete: function () {
+		                complete();
+		            },
+		            cancel: function (revert) {
+		                if (revert === void 0) { revert = false; }
+		                cancel(revert);
+		                if (revert) {
+		                    context.stop();
+		                }
+		            }
+		        };
+		    }
+		    AudioUtil.fadeIn = fadeIn;
+		    /**
+		     * 音声をフェードアウトさせる。
+		     *
+		     * @param game 対象の `Game`。
+		     * @param context 対象の `AudioPlayContext` 。
+		     * @param duration フェードアウトの長さ (ms)。
+		     * @param easing イージング関数。省略時は linear が指定される。
+		     */
+		    function fadeOut(game, context, duration, easing) {
+		        if (easing === void 0) { easing = linear; }
+		        var _a = transitionVolume(game, context, duration, 0, easing), complete = _a.complete, cancel = _a.cancel;
+		        return {
+		            complete: function () {
+		                complete();
+		                context.stop();
+		            },
+		            cancel: function (revert) {
+		                if (revert === void 0) { revert = false; }
+		                cancel(revert);
+		            }
+		        };
+		    }
+		    AudioUtil.fadeOut = fadeOut;
+		    /**
+		     * 二つの音声をクロスフェードさせる。
+		     *
+		     * @param game 対象の `Game`。
+		     * @param fadeInContext フェードイン対象の `AudioPlayContext` 。
+		     * @param fadeOutContext フェードアウト対象の `AudioPlayContext` 。
+		     * @param duration クロスフェードの長さ (ms)。
+		     * @param to クロスフェード後の音量。0 未満または 1 より大きい値を指定した場合の挙動は不定。省略時は `1` 。
+		     * @param easing イージング関数。フェードインとフェードアウトで共通であることに注意。省略時は linear が指定される。
+		     */
+		    function crossFade(game, fadeInContext, fadeOutContext, duration, to, easing) {
+		        if (to === void 0) { to = 1; }
+		        if (easing === void 0) { easing = linear; }
+		        var fadeInFuncs = fadeIn(game, fadeInContext, duration, to, easing);
+		        var fadeOutFuncs = fadeOut(game, fadeOutContext, duration, easing);
+		        return {
+		            complete: function () {
+		                fadeInFuncs.complete();
+		                fadeOutFuncs.complete();
+		            },
+		            cancel: function (revert) {
+		                if (revert === void 0) { revert = false; }
+		                fadeInFuncs.cancel(revert);
+		                fadeOutFuncs.cancel(revert);
+		            }
+		        };
+		    }
+		    AudioUtil.crossFade = crossFade;
+		    /**
+		     * 音量を指定のイージングで遷移させる。
+		     *
+		     * @param game 対象の `Game`。
+		     * @param context 対象の `AudioPlayContext` 。
+		     * @param duration 遷移の長さ (ms)。
+		     * @param to 遷移後の音量。0 未満または 1 より大きい値を指定した場合の挙動は不定。
+		     * @param easing イージング関数。省略時は linear が指定される。
+		     */
+		    function transitionVolume(game, context, duration, to, easing) {
+		        if (easing === void 0) { easing = linear; }
+		        var frame = 1000 / game.fps;
+		        var from = context.volume;
+		        var elapsed = 0;
+		        context.changeVolume(Util_1.Util.clamp(from, 0, 1));
+		        var handler = function () {
+		            elapsed += frame;
+		            if (elapsed <= duration) {
+		                var progress = easing(elapsed, from, to - from, duration);
+		                context.changeVolume(Util_1.Util.clamp(progress, 0, 1));
+		                return false;
+		            }
+		            else {
+		                context.changeVolume(to);
+		                return true;
+		            }
+		        };
+		        var remove = function () {
+		            if (game.onUpdate.contains(handler)) {
+		                game.onUpdate.remove(handler);
+		            }
+		        };
+		        game.onUpdate.add(handler);
+		        return {
+		            complete: function () {
+		                remove();
+		                context.changeVolume(to);
+		            },
+		            cancel: function (revert) {
+		                remove();
+		                if (revert) {
+		                    context.changeVolume(from);
+		                }
+		            }
+		        };
+		    }
+		    AudioUtil.transitionVolume = transitionVolume;
+		})(AudioUtil$1 || (AudioUtil.AudioUtil = AudioUtil$1 = {}));
+		
 		return AudioUtil;
 	}
 
@@ -6745,180 +6764,182 @@
 	function requireCollision () {
 		if (hasRequiredCollision) return Collision;
 		hasRequiredCollision = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.Collision = void 0;
-			var Util_1 = requireUtil();
-			// 外積の絶対値
-			function absCross(v1, v2) {
-			    return v1.x * v2.y - v1.y * v2.x;
-			}
-			// 二次元ベクトルの減算
-			function sub(v1, v2) {
-			    return { x: v1.x - v2.x, y: v1.y - v2.y };
-			}
-			(function (Collision) {
-			    /**
-			     * 二つのエンティティの衝突判定を行い、その結果を返す。
-			     *
-			     * 回転・拡大されたエンティティや、親の異なるエンティティ同士も扱える汎用の衝突判定処理。
-			     * ただし計算量が多いので、大量のエンティティ間のすべての衝突を確認するような状況では利用を避けることが望ましい。
-			     * 親が同じで回転・拡大を行わないエンティティ同士の場合は、より軽量な Collision.intersectAreas() を利用すること。
-			     * 親が同じで中心座標同士の距離だけで判定してよい場合は、より軽量な Collision.withinAreas() を利用すること。
-			     *
-			     * 対象のエンティティの座標や大きさなどを変更した場合、
-			     * この関数の呼び出し前にそのエンティティの modified() を呼び出しておく必要がある。
-			     *
-			     * @param e1 衝突判定するエンティティ
-			     * @param e2 衝突判定するエンティティ
-			     * @param area1 e1 の当たり判定領域。省略された場合、`{ x: 0, y: 0, width: e1.width, hegiht: e1.height }`
-			     * @param area2 e2 の当たり判定領域。省略された場合、`{ x: 0, y: 0, width: e2.width, hegiht: e2.height }`
-			     */
-			    function intersectEntities(e1, e2, area1, area2) {
-			        var lca = e1._findLowestCommonAncestorWith(e2);
-			        if (!lca)
-			            return false;
-			        var r1 = area1
-			            ? { left: area1.x, top: area1.y, right: area1.x + area1.width, bottom: area1.y + area1.height }
-			            : { left: 0, top: 0, right: e1.width, bottom: e1.height };
-			        var r2 = area2
-			            ? { left: area2.x, top: area2.y, right: area2.x + area2.width, bottom: area2.y + area2.height }
-			            : { left: 0, top: 0, right: e2.width, bottom: e2.height };
-			        var mat1 = e1._calculateMatrixTo(lca);
-			        var mat2 = e2._calculateMatrixTo(lca);
-			        // 座標系を合わせる: 共通祖先の座標系に合わせたそれぞれの四隅の点を求める。
-			        var lt1 = mat1.multiplyPoint({ x: r1.left, y: r1.top });
-			        var rt1 = mat1.multiplyPoint({ x: r1.right, y: r1.top });
-			        var lb1 = mat1.multiplyPoint({ x: r1.left, y: r1.bottom });
-			        var rb1 = mat1.multiplyPoint({ x: r1.right, y: r1.bottom });
-			        var lt2 = mat2.multiplyPoint({ x: r2.left, y: r2.top });
-			        var rt2 = mat2.multiplyPoint({ x: r2.right, y: r2.top });
-			        var lb2 = mat2.multiplyPoint({ x: r2.left, y: r2.bottom });
-			        var rb2 = mat2.multiplyPoint({ x: r2.right, y: r2.bottom });
-			        // AABB で枝狩りする。(高速化だけでなく後続の条件を単純化するのにも必要である点に注意)
-			        var minX1 = Math.min(lt1.x, rt1.x, lb1.x, rb1.x);
-			        var maxX1 = Math.max(lt1.x, rt1.x, lb1.x, rb1.x);
-			        var minX2 = Math.min(lt2.x, rt2.x, lb2.x, rb2.x);
-			        var maxX2 = Math.max(lt2.x, rt2.x, lb2.x, rb2.x);
-			        if (maxX1 < minX2 || maxX2 < minX1)
-			            return false;
-			        var minY1 = Math.min(lt1.y, rt1.y, lb1.y, rb1.y);
-			        var maxY1 = Math.max(lt1.y, rt1.y, lb1.y, rb1.y);
-			        var minY2 = Math.min(lt2.y, rt2.y, lb2.y, rb2.y);
-			        var maxY2 = Math.max(lt2.y, rt2.y, lb2.y, rb2.y);
-			        if (maxY1 < minY2 || maxY2 < minY1)
-			            return false;
-			        // 二つの四角形それぞれのいずれかの辺同士が交差するなら衝突している。
-			        if (Collision.intersectLineSegments(lt1, rt1, lt2, rt2) ||
-			            Collision.intersectLineSegments(lt1, rt1, rt2, rb2) ||
-			            Collision.intersectLineSegments(lt1, rt1, rb2, lb2) ||
-			            Collision.intersectLineSegments(lt1, rt1, lb2, lt2) ||
-			            Collision.intersectLineSegments(rt1, rb1, lt2, rt2) ||
-			            Collision.intersectLineSegments(rt1, rb1, rt2, rb2) ||
-			            Collision.intersectLineSegments(rt1, rb1, rb2, lb2) ||
-			            Collision.intersectLineSegments(rt1, rb1, lb2, lt2) ||
-			            Collision.intersectLineSegments(rb1, lb1, lt2, rt2) ||
-			            Collision.intersectLineSegments(rb1, lb1, rt2, rb2) ||
-			            Collision.intersectLineSegments(rb1, lb1, rb2, lb2) ||
-			            Collision.intersectLineSegments(rb1, lb1, lb2, lt2) ||
-			            Collision.intersectLineSegments(lb1, lt1, lt2, rt2) ||
-			            Collision.intersectLineSegments(lb1, lt1, rt2, rb2) ||
-			            Collision.intersectLineSegments(lb1, lt1, rb2, lb2) ||
-			            Collision.intersectLineSegments(lb1, lt1, lb2, lt2)) {
-			            return true;
-			        }
-			        // そうでない場合、e1 が e2 を包含しているなら衝突している。
-			        // ここで辺は交差していないので、e1 が e2 の頂点一つ (lt2) を包含しているなら、全体を包含している。
-			        // cf. https://ksta.skr.jp/topic/diaryb09.html#040528 "各辺の内側判定による内外判定"
-			        var s1 = absCross(sub(lt1, rt1), sub(lt2, rt1));
-			        if (s1 * absCross(sub(lb1, lt1), sub(lt2, lt1)) >= 0 &&
-			            s1 * absCross(sub(rb1, lb1), sub(lt2, lb1)) >= 0 &&
-			            s1 * absCross(sub(rt1, rb1), sub(lt2, rb1)) >= 0) {
-			            return true;
-			        }
-			        // そうでない場合、e2 が e1 を包含しているなら衝突している。
-			        var s2 = absCross(sub(lt2, rt2), sub(lt1, rt2));
-			        return (s2 * absCross(sub(lb2, lt2), sub(lt1, lt2)) >= 0 &&
-			            s2 * absCross(sub(rb2, lb2), sub(lt1, lb2)) >= 0 &&
-			            s2 * absCross(sub(rt2, rb2), sub(lt1, rb2)) >= 0);
-			    }
-			    Collision.intersectEntities = intersectEntities;
-			    /**
-			     * 線分同士の衝突判定 (交差判定) を行い、その結果を返す。
-			     *
-			     * @param {CommonOffset} p1 線分の端点の一つ
-			     * @param {CommonOffset} p2 線分の端点の一つ
-			     * @param {CommonOffset} q1 もう一つの線分の端点の一つ
-			     * @param {CommonOffset} q2 もう一つの線分の端点の一つ
-			     */
-			    function intersectLineSegments(p1, p2, q1, q2) {
-			        // cf. https://ksta.skr.jp/topic/diaryb09.html#040518
-			        var p = sub(p2, p1);
-			        var q = sub(q2, q1);
-			        return (absCross(sub(q1, p1), p) * absCross(sub(q2, p1), p) <= 0 && absCross(sub(p1, q1), q) * absCross(sub(p2, q1), q) <= 0 // 符号が違うことを積の符号で判定している
-			        );
-			    }
-			    Collision.intersectLineSegments = intersectLineSegments;
-			    /**
-			     * 矩形交差による衝突判定を行い、その結果を返す。
-			     * 戻り値は、二つの矩形t1, t2が交差しているとき真、でなければ偽。
-			     *
-			     * @param {number} x1 t1のX座標
-			     * @param {number} y1 t1のY座標
-			     * @param {number} width1 t1の幅
-			     * @param {number} height1 t1の高さ
-			     * @param {number} x2 t2のX座標
-			     * @param {number} y2 t2のY座標
-			     * @param {number} width2 t2の幅
-			     * @param {number} height2 t2の高さ
-			     */
-			    function intersect(x1, y1, width1, height1, x2, y2, width2, height2) {
-			        return x1 <= x2 + width2 && x2 <= x1 + width1 && y1 <= y2 + height2 && y2 <= y1 + height1;
-			    }
-			    Collision.intersect = intersect;
-			    /**
-			     * 矩形交差による衝突判定を行い、その結果を返す。
-			     * 戻り値は、矩形t1, t2が交差しているとき真、でなければ偽。
-			     *
-			     * 特に、回転・拡大を利用していない、親が同じエンティティ同士の衝突判定に利用することができる。
-			     * 条件を満たさない場合は `withinAreas()` や、より重いが正確な `intersectEntities()` の利用を検討すること。
-			     *
-			     * @param {CommonArea} t1 矩形1
-			     * @param {CommonArea} t2 矩形2
-			     */
-			    function intersectAreas(t1, t2) {
-			        return Collision.intersect(t1.x, t1.y, t1.width, t1.height, t2.x, t2.y, t2.width, t2.height);
-			    }
-			    Collision.intersectAreas = intersectAreas;
-			    /**
-			     * 2点間の距離による衝突判定を行い、その結果を返す。
-			     * 戻り値は、2点間の距離が閾値以内であるとき真、でなければ偽。
-			     * @param {number} t1x 一点の X 座標
-			     * @param {number} t1y 一点の Y 座標
-			     * @param {number} t2x もう一点の X 座標
-			     * @param {number} t2y もう一点の Y 座標
-			     * @param {number} [distance=1] 衝突判定閾値 [pixel]
-			     */
-			    function within(t1x, t1y, t2x, t2y, distance) {
-			        if (distance === void 0) { distance = 1; }
-			        return distance >= Util_1.Util.distance(t1x, t1y, t2x, t2y);
-			    }
-			    Collision.within = within;
-			    /**
-			     * 2つの矩形の中心座標間距離による衝突判定を行い、その結果を返す。
-			     * 戻り値は、2点間の距離が閾値以内であるとき真、でなければ偽。
-			     * @param {CommonArea} t1 矩形1
-			     * @param {CommonArea} t2 矩形2
-			     * @param {number} [distance=1] 衝突判定閾値 [pixel]
-			     */
-			    function withinAreas(t1, t2, distance) {
-			        if (distance === void 0) { distance = 1; }
-			        return distance >= Util_1.Util.distanceBetweenAreas(t1, t2);
-			    }
-			    Collision.withinAreas = withinAreas;
-			})(exports.Collision || (exports.Collision = {}));
-			
-		} (Collision));
+		Object.defineProperty(Collision, "__esModule", { value: true });
+		Collision.Collision = void 0;
+		var Util_1 = requireUtil();
+		// 外積の絶対値
+		function absCross(v1, v2) {
+		    return v1.x * v2.y - v1.y * v2.x;
+		}
+		// 二次元ベクトルの減算
+		function sub(v1, v2) {
+		    return { x: v1.x - v2.x, y: v1.y - v2.y };
+		}
+		/**
+		 * オブジェクトなどの衝突判定機能を提供する。
+		 */
+		var Collision$1;
+		(function (Collision) {
+		    /**
+		     * 二つのエンティティの衝突判定を行い、その結果を返す。
+		     *
+		     * 回転・拡大されたエンティティや、親の異なるエンティティ同士も扱える汎用の衝突判定処理。
+		     * ただし計算量が多いので、大量のエンティティ間のすべての衝突を確認するような状況では利用を避けることが望ましい。
+		     * 親が同じで回転・拡大を行わないエンティティ同士の場合は、より軽量な Collision.intersectAreas() を利用すること。
+		     * 親が同じで中心座標同士の距離だけで判定してよい場合は、より軽量な Collision.withinAreas() を利用すること。
+		     *
+		     * 対象のエンティティの座標や大きさなどを変更した場合、
+		     * この関数の呼び出し前にそのエンティティの modified() を呼び出しておく必要がある。
+		     *
+		     * @param e1 衝突判定するエンティティ
+		     * @param e2 衝突判定するエンティティ
+		     * @param area1 e1 の当たり判定領域。省略された場合、`{ x: 0, y: 0, width: e1.width, hegiht: e1.height }`
+		     * @param area2 e2 の当たり判定領域。省略された場合、`{ x: 0, y: 0, width: e2.width, hegiht: e2.height }`
+		     */
+		    function intersectEntities(e1, e2, area1, area2) {
+		        var lca = e1._findLowestCommonAncestorWith(e2);
+		        if (!lca)
+		            return false;
+		        var r1 = area1
+		            ? { left: area1.x, top: area1.y, right: area1.x + area1.width, bottom: area1.y + area1.height }
+		            : { left: 0, top: 0, right: e1.width, bottom: e1.height };
+		        var r2 = area2
+		            ? { left: area2.x, top: area2.y, right: area2.x + area2.width, bottom: area2.y + area2.height }
+		            : { left: 0, top: 0, right: e2.width, bottom: e2.height };
+		        var mat1 = e1._calculateMatrixTo(lca);
+		        var mat2 = e2._calculateMatrixTo(lca);
+		        // 座標系を合わせる: 共通祖先の座標系に合わせたそれぞれの四隅の点を求める。
+		        var lt1 = mat1.multiplyPoint({ x: r1.left, y: r1.top });
+		        var rt1 = mat1.multiplyPoint({ x: r1.right, y: r1.top });
+		        var lb1 = mat1.multiplyPoint({ x: r1.left, y: r1.bottom });
+		        var rb1 = mat1.multiplyPoint({ x: r1.right, y: r1.bottom });
+		        var lt2 = mat2.multiplyPoint({ x: r2.left, y: r2.top });
+		        var rt2 = mat2.multiplyPoint({ x: r2.right, y: r2.top });
+		        var lb2 = mat2.multiplyPoint({ x: r2.left, y: r2.bottom });
+		        var rb2 = mat2.multiplyPoint({ x: r2.right, y: r2.bottom });
+		        // AABB で枝狩りする。(高速化だけでなく後続の条件を単純化するのにも必要である点に注意)
+		        var minX1 = Math.min(lt1.x, rt1.x, lb1.x, rb1.x);
+		        var maxX1 = Math.max(lt1.x, rt1.x, lb1.x, rb1.x);
+		        var minX2 = Math.min(lt2.x, rt2.x, lb2.x, rb2.x);
+		        var maxX2 = Math.max(lt2.x, rt2.x, lb2.x, rb2.x);
+		        if (maxX1 < minX2 || maxX2 < minX1)
+		            return false;
+		        var minY1 = Math.min(lt1.y, rt1.y, lb1.y, rb1.y);
+		        var maxY1 = Math.max(lt1.y, rt1.y, lb1.y, rb1.y);
+		        var minY2 = Math.min(lt2.y, rt2.y, lb2.y, rb2.y);
+		        var maxY2 = Math.max(lt2.y, rt2.y, lb2.y, rb2.y);
+		        if (maxY1 < minY2 || maxY2 < minY1)
+		            return false;
+		        // 二つの四角形それぞれのいずれかの辺同士が交差するなら衝突している。
+		        if (Collision.intersectLineSegments(lt1, rt1, lt2, rt2) ||
+		            Collision.intersectLineSegments(lt1, rt1, rt2, rb2) ||
+		            Collision.intersectLineSegments(lt1, rt1, rb2, lb2) ||
+		            Collision.intersectLineSegments(lt1, rt1, lb2, lt2) ||
+		            Collision.intersectLineSegments(rt1, rb1, lt2, rt2) ||
+		            Collision.intersectLineSegments(rt1, rb1, rt2, rb2) ||
+		            Collision.intersectLineSegments(rt1, rb1, rb2, lb2) ||
+		            Collision.intersectLineSegments(rt1, rb1, lb2, lt2) ||
+		            Collision.intersectLineSegments(rb1, lb1, lt2, rt2) ||
+		            Collision.intersectLineSegments(rb1, lb1, rt2, rb2) ||
+		            Collision.intersectLineSegments(rb1, lb1, rb2, lb2) ||
+		            Collision.intersectLineSegments(rb1, lb1, lb2, lt2) ||
+		            Collision.intersectLineSegments(lb1, lt1, lt2, rt2) ||
+		            Collision.intersectLineSegments(lb1, lt1, rt2, rb2) ||
+		            Collision.intersectLineSegments(lb1, lt1, rb2, lb2) ||
+		            Collision.intersectLineSegments(lb1, lt1, lb2, lt2)) {
+		            return true;
+		        }
+		        // そうでない場合、e1 が e2 を包含しているなら衝突している。
+		        // ここで辺は交差していないので、e1 が e2 の頂点一つ (lt2) を包含しているなら、全体を包含している。
+		        // cf. https://ksta.skr.jp/topic/diaryb09.html#040528 "各辺の内側判定による内外判定"
+		        var s1 = absCross(sub(lt1, rt1), sub(lt2, rt1));
+		        if (s1 * absCross(sub(lb1, lt1), sub(lt2, lt1)) >= 0 &&
+		            s1 * absCross(sub(rb1, lb1), sub(lt2, lb1)) >= 0 &&
+		            s1 * absCross(sub(rt1, rb1), sub(lt2, rb1)) >= 0) {
+		            return true;
+		        }
+		        // そうでない場合、e2 が e1 を包含しているなら衝突している。
+		        var s2 = absCross(sub(lt2, rt2), sub(lt1, rt2));
+		        return (s2 * absCross(sub(lb2, lt2), sub(lt1, lt2)) >= 0 &&
+		            s2 * absCross(sub(rb2, lb2), sub(lt1, lb2)) >= 0 &&
+		            s2 * absCross(sub(rt2, rb2), sub(lt1, rb2)) >= 0);
+		    }
+		    Collision.intersectEntities = intersectEntities;
+		    /**
+		     * 線分同士の衝突判定 (交差判定) を行い、その結果を返す。
+		     *
+		     * @param {CommonOffset} p1 線分の端点の一つ
+		     * @param {CommonOffset} p2 線分の端点の一つ
+		     * @param {CommonOffset} q1 もう一つの線分の端点の一つ
+		     * @param {CommonOffset} q2 もう一つの線分の端点の一つ
+		     */
+		    function intersectLineSegments(p1, p2, q1, q2) {
+		        // cf. https://ksta.skr.jp/topic/diaryb09.html#040518
+		        var p = sub(p2, p1);
+		        var q = sub(q2, q1);
+		        return (absCross(sub(q1, p1), p) * absCross(sub(q2, p1), p) <= 0 && absCross(sub(p1, q1), q) * absCross(sub(p2, q1), q) <= 0 // 符号が違うことを積の符号で判定している
+		        );
+		    }
+		    Collision.intersectLineSegments = intersectLineSegments;
+		    /**
+		     * 矩形交差による衝突判定を行い、その結果を返す。
+		     * 戻り値は、二つの矩形t1, t2が交差しているとき真、でなければ偽。
+		     *
+		     * @param {number} x1 t1のX座標
+		     * @param {number} y1 t1のY座標
+		     * @param {number} width1 t1の幅
+		     * @param {number} height1 t1の高さ
+		     * @param {number} x2 t2のX座標
+		     * @param {number} y2 t2のY座標
+		     * @param {number} width2 t2の幅
+		     * @param {number} height2 t2の高さ
+		     */
+		    function intersect(x1, y1, width1, height1, x2, y2, width2, height2) {
+		        return x1 <= x2 + width2 && x2 <= x1 + width1 && y1 <= y2 + height2 && y2 <= y1 + height1;
+		    }
+		    Collision.intersect = intersect;
+		    /**
+		     * 矩形交差による衝突判定を行い、その結果を返す。
+		     * 戻り値は、矩形t1, t2が交差しているとき真、でなければ偽。
+		     *
+		     * 特に、回転・拡大を利用していない、親が同じエンティティ同士の衝突判定に利用することができる。
+		     * 条件を満たさない場合は `withinAreas()` や、より重いが正確な `intersectEntities()` の利用を検討すること。
+		     *
+		     * @param {CommonArea} t1 矩形1
+		     * @param {CommonArea} t2 矩形2
+		     */
+		    function intersectAreas(t1, t2) {
+		        return Collision.intersect(t1.x, t1.y, t1.width, t1.height, t2.x, t2.y, t2.width, t2.height);
+		    }
+		    Collision.intersectAreas = intersectAreas;
+		    /**
+		     * 2点間の距離による衝突判定を行い、その結果を返す。
+		     * 戻り値は、2点間の距離が閾値以内であるとき真、でなければ偽。
+		     * @param {number} t1x 一点の X 座標
+		     * @param {number} t1y 一点の Y 座標
+		     * @param {number} t2x もう一点の X 座標
+		     * @param {number} t2y もう一点の Y 座標
+		     * @param {number} [distance=1] 衝突判定閾値 [pixel]
+		     */
+		    function within(t1x, t1y, t2x, t2y, distance) {
+		        if (distance === void 0) { distance = 1; }
+		        return distance >= Util_1.Util.distance(t1x, t1y, t2x, t2y);
+		    }
+		    Collision.within = within;
+		    /**
+		     * 2つの矩形の中心座標間距離による衝突判定を行い、その結果を返す。
+		     * 戻り値は、2点間の距離が閾値以内であるとき真、でなければ偽。
+		     * @param {CommonArea} t1 矩形1
+		     * @param {CommonArea} t2 矩形2
+		     * @param {number} [distance=1] 衝突判定閾値 [pixel]
+		     */
+		    function withinAreas(t1, t2, distance) {
+		        if (distance === void 0) { distance = 1; }
+		        return distance >= Util_1.Util.distanceBetweenAreas(t1, t2);
+		    }
+		    Collision.withinAreas = withinAreas;
+		})(Collision$1 || (Collision.Collision = Collision$1 = {}));
+		
 		return Collision;
 	}
 

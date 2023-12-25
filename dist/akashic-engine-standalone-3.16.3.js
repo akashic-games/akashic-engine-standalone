@@ -12386,14 +12386,9 @@
 		Surface$1.Surface = void 0;
 		var Surface = /** @class */ (function () {
 		    function Surface(width, height, drawable) {
-		        this.width = width;
-		        this.height = height;
-		        this._drawable = drawable;
-		        if (width % 1 !== 0 || height % 1 !== 0) {
-		            throw new Error("Surface#constructor: width and height must be integers");
-		        }
-		        this.width = width;
-		        this.height = height;
+		        // 非整数の動作は保証していないが、環境依存でエラーになるトラブルを軽減するため切り上げ。
+		        this.width = Math.ceil(width);
+		        this.height = Math.ceil(height);
 		        this._drawable = drawable;
 		    }
 		    Surface.prototype.destroy = function () {

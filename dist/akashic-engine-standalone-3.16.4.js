@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.16.3 */
+/*! akashic-engine-standalone@3.16.4 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -280,11 +280,11 @@
 
 	var require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
 
-	var lib$5 = {};
+	var lib$4 = {};
 
 	var index_common = {};
 
-	var lib$4 = {};
+	var lib$3 = {};
 
 	var AssetConfiguration = {};
 
@@ -319,360 +319,6 @@
 		return OperationPluginInfo;
 	}
 
-	var hasRequiredLib$5;
-
-	function requireLib$5 () {
-		if (hasRequiredLib$5) return lib$4;
-		hasRequiredLib$5 = 1;
-		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-			    if (k2 === undefined) k2 = k;
-			    var desc = Object.getOwnPropertyDescriptor(m, k);
-			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-			      desc = { enumerable: true, get: function() { return m[k]; } };
-			    }
-			    Object.defineProperty(o, k2, desc);
-			}) : (function(o, m, k, k2) {
-			    if (k2 === undefined) k2 = k;
-			    o[k2] = m[k];
-			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
-			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-			};
-			Object.defineProperty(exports, "__esModule", { value: true });
-			__exportStar(requireAssetConfiguration(), exports);
-			__exportStar(requireGameConfiguration(), exports);
-			__exportStar(requireOperationPluginInfo(), exports); 
-		} (lib$4));
-		return lib$4;
-	}
-
-	var lib$3 = {};
-
-	var TriggerLike$1 = {};
-
-	var hasRequiredTriggerLike$1;
-
-	function requireTriggerLike$1 () {
-		if (hasRequiredTriggerLike$1) return TriggerLike$1;
-		hasRequiredTriggerLike$1 = 1;
-		Object.defineProperty(TriggerLike$1, "__esModule", { value: true });
-		return TriggerLike$1;
-	}
-
-	var ChainTriggerLike$1 = {};
-
-	var hasRequiredChainTriggerLike$1;
-
-	function requireChainTriggerLike$1 () {
-		if (hasRequiredChainTriggerLike$1) return ChainTriggerLike$1;
-		hasRequiredChainTriggerLike$1 = 1;
-		Object.defineProperty(ChainTriggerLike$1, "__esModule", { value: true });
-		return ChainTriggerLike$1;
-	}
-
-	var Trigger$1 = {};
-
-	var isPromise$1 = {};
-
-	var hasRequiredIsPromise$1;
-
-	function requireIsPromise$1 () {
-		if (hasRequiredIsPromise$1) return isPromise$1;
-		hasRequiredIsPromise$1 = 1;
-		Object.defineProperty(isPromise$1, "__esModule", { value: true });
-		isPromise$1.isPromise = void 0;
-		function isPromise(target) {
-		    return (target != null &&
-		        (typeof target === "object" || typeof target === "function") &&
-		        typeof target.then === "function");
-		}
-		isPromise$1.isPromise = isPromise;
-		return isPromise$1;
-	}
-
-	var hasRequiredTrigger$1;
-
-	function requireTrigger$1 () {
-		if (hasRequiredTrigger$1) return Trigger$1;
-		hasRequiredTrigger$1 = 1;
-		Object.defineProperty(Trigger$1, "__esModule", { value: true });
-		Trigger$1.Trigger = void 0;
-		var isPromise_1 = requireIsPromise$1();
-		/**
-		 * イベント通知機構クラス。
-		 */
-		var Trigger = /** @class */ (function () {
-		    function Trigger() {
-		        this._handlers = [];
-		        this.length = 0;
-		    }
-		    Trigger.prototype.add = function (paramsOrFunc, owner) {
-		        if (typeof paramsOrFunc === "function") {
-		            this._handlers.push({
-		                func: paramsOrFunc,
-		                owner: owner,
-		                once: false,
-		                name: undefined
-		            });
-		        }
-		        else {
-		            var params = paramsOrFunc;
-		            if (typeof params.index === "number") {
-		                this._handlers.splice(params.index, 0, {
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: false,
-		                    name: params.name
-		                });
-		            }
-		            else {
-		                this._handlers.push({
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: false,
-		                    name: params.name
-		                });
-		            }
-		        }
-		        this.length = this._handlers.length;
-		    };
-		    Trigger.prototype.addOnce = function (paramsOrFunc, owner) {
-		        if (typeof paramsOrFunc === "function") {
-		            this._handlers.push({
-		                func: paramsOrFunc,
-		                owner: owner,
-		                once: true,
-		                name: undefined
-		            });
-		        }
-		        else {
-		            var params = paramsOrFunc;
-		            if (typeof params.index === "number") {
-		                this._handlers.splice(params.index, 0, {
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: true,
-		                    name: params.name
-		                });
-		            }
-		            else {
-		                this._handlers.push({
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: true,
-		                    name: params.name
-		                });
-		            }
-		        }
-		        this.length = this._handlers.length;
-		    };
-		    /**
-		     * このTriggerにハンドラを追加する。
-		     * @deprecated 互換性のために残されている。代わりに `add()` を利用すべきである。実装の変化のため、 `func` が `boolean` を返した時の動作はサポートされていない。
-		     */
-		    Trigger.prototype.handle = function (owner, func, name) {
-		        this.add(func ? { owner: owner, func: func, name: name } : { func: owner });
-		    };
-		    /**
-		     * このTriggerを発火する。
-		     *
-		     * 登録された全ハンドラの関数を、引数 `arg` を与えて呼び出す。
-		     * 呼び出し後、次のいずれかの条件を満たす全ハンドラの登録は解除される。
-		     * * ハンドラが `addOnce()` で登録されていた場合
-		     * * ハンドラが `add()` で登録される際に `once: true` オプションが与えられていた場合
-		     * * ハンドラが Promise 以外の truthy な値を返した場合
-		     *
-		     * @param arg ハンドラに与えられる引数
-		     */
-		    Trigger.prototype.fire = function (arg) {
-		        if (!this._handlers || !this._handlers.length)
-		            return;
-		        var handlers = this._handlers.concat();
-		        for (var i = 0; i < handlers.length; i++) {
-		            var handler = handlers[i];
-		            var ret = handler.func.call(handler.owner, arg);
-		            var returnedTruthy = !(0, isPromise_1.isPromise)(ret) && !!ret;
-		            if (returnedTruthy || handler.once) {
-		                if (!this._handlers)
-		                    continue;
-		                var index = this._handlers.indexOf(handler);
-		                if (index !== -1)
-		                    this._handlers.splice(index, 1);
-		            }
-		        }
-		        if (this._handlers != null)
-		            this.length = this._handlers.length;
-		    };
-		    Trigger.prototype.contains = function (paramsOrFunc, owner) {
-		        var condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner: owner } : paramsOrFunc;
-		        for (var i = 0; i < this._handlers.length; i++) {
-		            if (this._comparePartial(condition, this._handlers[i])) {
-		                return true;
-		            }
-		        }
-		        return false;
-		    };
-		    Trigger.prototype.remove = function (paramsOrFunc, owner) {
-		        var condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner: owner } : paramsOrFunc;
-		        for (var i = 0; i < this._handlers.length; i++) {
-		            var handler = this._handlers[i];
-		            if (condition.func === handler.func && condition.owner === handler.owner && condition.name === handler.name) {
-		                this._handlers.splice(i, 1);
-		                --this.length;
-		                return;
-		            }
-		        }
-		    };
-		    /**
-		     * 指定した条件に部分一致するイベントハンドラを削除する。
-		     *
-		     * 本メソッドは引数に与えた条件に一致したイベントハンドラを全て削除する。
-		     * 引数の条件を一部省略した場合、その値の内容が登録時と異なっていても対象のイベントハンドラは削除される。
-		     * 引数に与えた条件と完全に一致したイベントハンドラのみを削除したい場合は `this.remove()` を用いる。
-		     * 引数を省略した場合は全てのイベントハンドラを削除する。
-		     *
-		     * @param params 削除するイベントハンドラの条件
-		     */
-		    Trigger.prototype.removeAll = function (params) {
-		        var handlers = [];
-		        if (params) {
-		            for (var i = 0; i < this._handlers.length; i++) {
-		                var handler = this._handlers[i];
-		                if (!this._comparePartial(params, handler)) {
-		                    handlers.push(handler);
-		                }
-		            }
-		        }
-		        this._handlers = handlers;
-		        this.length = this._handlers.length;
-		    };
-		    /**
-		     * このTriggerを破棄する。
-		     */
-		    Trigger.prototype.destroy = function () {
-		        this._handlers = null;
-		        this.length = null;
-		    };
-		    /**
-		     * このTriggerが破棄されているかを返す。
-		     */
-		    Trigger.prototype.destroyed = function () {
-		        return this._handlers === null;
-		    };
-		    /**
-		     * @private
-		     */
-		    Trigger.prototype._comparePartial = function (target, compare) {
-		        if (target.func !== undefined && target.func !== compare.func)
-		            return false;
-		        if (target.owner !== undefined && target.owner !== compare.owner)
-		            return false;
-		        if (target.name !== undefined && target.name !== compare.name)
-		            return false;
-		        return true;
-		    };
-		    return Trigger;
-		}());
-		Trigger$1.Trigger = Trigger;
-		return Trigger$1;
-	}
-
-	var ChainTrigger$1 = {};
-
-	var hasRequiredChainTrigger$1;
-
-	function requireChainTrigger$1 () {
-		if (hasRequiredChainTrigger$1) return ChainTrigger$1;
-		hasRequiredChainTrigger$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
-		    var extendStatics = function (d, b) {
-		        extendStatics = Object.setPrototypeOf ||
-		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-		        return extendStatics(d, b);
-		    };
-		    return function (d, b) {
-		        if (typeof b !== "function" && b !== null)
-		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-		        extendStatics(d, b);
-		        function __() { this.constructor = d; }
-		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-		    };
-		})();
-		Object.defineProperty(ChainTrigger$1, "__esModule", { value: true });
-		ChainTrigger$1.ChainTrigger = void 0;
-		var Trigger_1 = requireTrigger$1();
-		/**
-		 * 他のTriggerLikeに反応して発火するイベント通知機構。
-		 */
-		var ChainTrigger = /** @class */ (function (_super) {
-		    __extends(ChainTrigger, _super);
-		    /**
-		     * `ChainTrigger` のインスタンスを生成する。
-		     *
-		     * このインスタンスは、 `chain` がfireされたときに `filter` を実行し、真を返した場合に自身をfireする。
-		     * @param chain このインスタンスがfireするきっかけとなる TriggerLike
-		     * @param filter `chain` がfireされたときに実行される関数。省略された場合、または本関数の戻り値が真の場合、このインスタンスをfireする。
-		     * @param filterOwner `filter` 呼び出し時に使われる `this` の値。
-		     */
-		    function ChainTrigger(chain, filter, filterOwner) {
-		        var _this = _super.call(this) || this;
-		        _this.chain = chain;
-		        _this.filter = filter != null ? filter : null;
-		        _this.filterOwner = filterOwner;
-		        _this._isActivated = false;
-		        return _this;
-		    }
-		    ChainTrigger.prototype.add = function (paramsOrHandler, owner) {
-		        _super.prototype.add.call(this, paramsOrHandler, owner);
-		        if (!this._isActivated) {
-		            this.chain.add(this._onChainTriggerFired, this);
-		            this._isActivated = true;
-		        }
-		    };
-		    ChainTrigger.prototype.addOnce = function (paramsOrHandler, owner) {
-		        _super.prototype.addOnce.call(this, paramsOrHandler, owner);
-		        if (!this._isActivated) {
-		            this.chain.add(this._onChainTriggerFired, this);
-		            this._isActivated = true;
-		        }
-		    };
-		    ChainTrigger.prototype.remove = function (paramsOrFunc, owner) {
-		        _super.prototype.remove.call(this, paramsOrFunc, owner);
-		        if (this.length === 0 && this._isActivated) {
-		            this.chain.remove(this._onChainTriggerFired, this);
-		            this._isActivated = false;
-		        }
-		    };
-		    ChainTrigger.prototype.removeAll = function (params) {
-		        _super.prototype.removeAll.call(this, params);
-		        if (this.length === 0 && this._isActivated) {
-		            this.chain.remove(this._onChainTriggerFired, this);
-		            this._isActivated = false;
-		        }
-		    };
-		    ChainTrigger.prototype.destroy = function () {
-		        _super.prototype.destroy.call(this);
-		        this.chain.remove(this._onChainTriggerFired, this);
-		        this.filter = null;
-		        this.filterOwner = null;
-		        this._isActivated = false;
-		    };
-		    /**
-		     * @private
-		     */
-		    ChainTrigger.prototype._onChainTriggerFired = function (args) {
-		        if (!this.filter || this.filter.call(this.filterOwner, args)) {
-		            this.fire(args);
-		        }
-		    };
-		    return ChainTrigger;
-		}(Trigger_1.Trigger));
-		ChainTrigger$1.ChainTrigger = ChainTrigger;
-		return ChainTrigger$1;
-	}
-
 	var hasRequiredLib$4;
 
 	function requireLib$4 () {
@@ -694,12 +340,285 @@
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
-			__exportStar(requireTriggerLike$1(), exports);
-			__exportStar(requireChainTriggerLike$1(), exports);
-			__exportStar(requireTrigger$1(), exports);
-			__exportStar(requireChainTrigger$1(), exports); 
+			__exportStar(requireAssetConfiguration(), exports);
+			__exportStar(requireGameConfiguration(), exports);
+			__exportStar(requireOperationPluginInfo(), exports); 
 		} (lib$3));
 		return lib$3;
+	}
+
+	var cjs$1 = {};
+
+	var hasRequiredCjs$1;
+
+	function requireCjs$1 () {
+		if (hasRequiredCjs$1) return cjs$1;
+		hasRequiredCjs$1 = 1;
+
+		function isPromise(target) {
+		    return (target != null &&
+		        (typeof target === "object" || typeof target === "function") &&
+		        typeof target.then === "function");
+		}
+
+		/**
+		 * イベント通知機構クラス。
+		 */
+		class Trigger {
+		    constructor() {
+		        this._handlers = [];
+		        this.length = 0;
+		    }
+		    add(paramsOrFunc, owner) {
+		        if (typeof paramsOrFunc === "function") {
+		            this._addHandler({
+		                func: paramsOrFunc,
+		                owner,
+		                once: false,
+		                name: undefined,
+		                filter: undefined,
+		            });
+		        }
+		        else {
+		            const params = paramsOrFunc;
+		            const index = typeof params.index === "number" ? params.index : undefined;
+		            this._addHandler({
+		                func: params.func,
+		                owner: params.owner,
+		                once: false,
+		                name: params.name,
+		                filter: params.filter,
+		            }, index);
+		        }
+		        this.length = this._handlers.length;
+		    }
+		    addOnce(paramsOrFunc, owner) {
+		        if (typeof paramsOrFunc === "function") {
+		            this._addHandler({
+		                func: paramsOrFunc,
+		                owner,
+		                once: true,
+		                name: undefined,
+		                filter: undefined,
+		            });
+		        }
+		        else {
+		            const params = paramsOrFunc;
+		            const index = typeof params.index === "number" ? params.index : undefined;
+		            this._addHandler({
+		                func: params.func,
+		                owner: params.owner,
+		                once: true,
+		                name: params.name,
+		                filter: params.filter
+		            }, index);
+		        }
+		        this.length = this._handlers.length;
+		    }
+		    /**
+		     * このTriggerにハンドラを追加する。
+		     * @deprecated 互換性のために残されている。代わりに `add()` を利用すべきである。
+		     */
+		    handle(owner, func, name) {
+		        this.add(func ? { owner, func, name } : { func: owner });
+		    }
+		    /**
+		     * このTriggerを発火する。
+		     *
+		     * 登録された全ハンドラの関数を、引数 `arg` を与えて呼び出す。
+		     * 呼び出し後、次のいずれかの条件を満たす全ハンドラの登録は解除される。
+		     * * ハンドラが `addOnce()` で登録されていた場合
+		     * * ハンドラが `add()` で登録される際に `once: true` オプションが与えられていた場合
+		     * * ハンドラが Promise 以外の truthy な値を返した場合
+		     *
+		     * @param arg ハンドラに与えられる引数
+		     */
+		    fire(arg) {
+		        if (!this._handlers || !this._handlers.length)
+		            return;
+		        const handlers = this._handlers.concat();
+		        for (let i = 0; i < handlers.length; i++) {
+		            const handler = handlers[i];
+		            if (handler.filter && !handler.filter(handler))
+		                continue;
+		            const ret = handler.func.call(handler.owner, arg);
+		            const returnedTruthy = !isPromise(ret) && !!ret;
+		            if (returnedTruthy || handler.once) {
+		                if (!this._handlers)
+		                    continue;
+		                const index = this._handlers.indexOf(handler);
+		                if (index !== -1)
+		                    this._handlers.splice(index, 1);
+		            }
+		        }
+		        if (this._handlers != null)
+		            this.length = this._handlers.length;
+		    }
+		    contains(paramsOrFunc, owner) {
+		        const condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner } : paramsOrFunc;
+		        for (let i = 0; i < this._handlers.length; i++) {
+		            if (this._comparePartial(condition, this._handlers[i])) {
+		                return true;
+		            }
+		        }
+		        return false;
+		    }
+		    remove(paramsOrFunc, owner) {
+		        const condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner } : paramsOrFunc;
+		        for (let i = 0; i < this._handlers.length; i++) {
+		            const handler = this._handlers[i];
+		            if (condition.func === handler.func &&
+		                condition.owner === handler.owner &&
+		                condition.name === handler.name &&
+		                condition.filter === handler.filter) {
+		                this._handlers.splice(i, 1);
+		                --this.length;
+		                return;
+		            }
+		        }
+		    }
+		    /**
+		     * 指定した条件に部分一致するイベントハンドラを削除する。
+		     *
+		     * 本メソッドは引数に与えた条件に一致したイベントハンドラを全て削除する。
+		     * 引数の条件を一部省略した場合、その値の内容が登録時と異なっていても対象のイベントハンドラは削除される。
+		     * 引数に与えた条件と完全に一致したイベントハンドラのみを削除したい場合は `this.remove()` を用いる。
+		     * 引数を省略した場合は全てのイベントハンドラを削除する。
+		     *
+		     * @param params 削除するイベントハンドラの条件
+		     */
+		    removeAll(params) {
+		        const handlers = [];
+		        if (params) {
+		            for (let i = 0; i < this._handlers.length; i++) {
+		                const handler = this._handlers[i];
+		                if (!this._comparePartial(params, handler)) {
+		                    handlers.push(handler);
+		                }
+		            }
+		        }
+		        this._handlers = handlers;
+		        this.length = this._handlers.length;
+		    }
+		    /**
+		     * このTriggerを破棄する。
+		     */
+		    destroy() {
+		        this._handlers = null;
+		        this.length = null;
+		    }
+		    /**
+		     * このTriggerが破棄されているかを返す。
+		     */
+		    destroyed() {
+		        return this._handlers === null;
+		    }
+		    /**
+		     * @private
+		     */
+		    _addHandler(params, index) {
+		        if (index == null) {
+		            this._handlers.push({
+		                func: params.func,
+		                owner: params.owner,
+		                once: params.once,
+		                name: params.name,
+		                filter: params.filter,
+		            });
+		        }
+		        else {
+		            this._handlers.splice(index, 0, {
+		                func: params.func,
+		                owner: params.owner,
+		                once: params.once,
+		                name: params.name,
+		                filter: params.filter,
+		            });
+		        }
+		    }
+		    /**
+		     * @private
+		     */
+		    _comparePartial(target, compare) {
+		        if (target.func !== undefined && target.func !== compare.func)
+		            return false;
+		        if (target.owner !== undefined && target.owner !== compare.owner)
+		            return false;
+		        if (target.name !== undefined && target.name !== compare.name)
+		            return false;
+		        if (target.filter !== undefined && target.filter !== compare.filter)
+		            return false;
+		        return true;
+		    }
+		}
+
+		/**
+		 * 他のTriggerLikeに反応して発火するイベント通知機構。
+		 */
+		class ChainTrigger extends Trigger {
+		    /**
+		     * `ChainTrigger` のインスタンスを生成する。
+		     *
+		     * このインスタンスは、 `chain` がfireされたときに `filter` を実行し、真を返した場合に自身をfireする。
+		     * @param chain このインスタンスがfireするきっかけとなる TriggerLike
+		     * @param filter `chain` がfireされたときに実行される関数。省略された場合、または本関数の戻り値が真の場合、このインスタンスをfireする。
+		     * @param filterOwner `filter` 呼び出し時に使われる `this` の値。
+		     */
+		    constructor(chain, filter, filterOwner) {
+		        super();
+		        this.chain = chain;
+		        this.filter = filter != null ? filter : null;
+		        this.filterOwner = filterOwner;
+		        this._isActivated = false;
+		    }
+		    add(paramsOrHandler, owner) {
+		        super.add(paramsOrHandler, owner);
+		        if (!this._isActivated) {
+		            this.chain.add(this._onChainTriggerFired, this);
+		            this._isActivated = true;
+		        }
+		    }
+		    addOnce(paramsOrHandler, owner) {
+		        super.addOnce(paramsOrHandler, owner);
+		        if (!this._isActivated) {
+		            this.chain.add(this._onChainTriggerFired, this);
+		            this._isActivated = true;
+		        }
+		    }
+		    remove(paramsOrFunc, owner) {
+		        super.remove(paramsOrFunc, owner);
+		        if (this.length === 0 && this._isActivated) {
+		            this.chain.remove(this._onChainTriggerFired, this);
+		            this._isActivated = false;
+		        }
+		    }
+		    removeAll(params) {
+		        super.removeAll(params);
+		        if (this.length === 0 && this._isActivated) {
+		            this.chain.remove(this._onChainTriggerFired, this);
+		            this._isActivated = false;
+		        }
+		    }
+		    destroy() {
+		        super.destroy();
+		        this.chain.remove(this._onChainTriggerFired, this);
+		        this.filter = null;
+		        this.filterOwner = null;
+		        this._isActivated = false;
+		    }
+		    /**
+		     * @private
+		     */
+		    _onChainTriggerFired(args) {
+		        if (!this.filter || this.filter.call(this.filterOwner, args)) {
+		            this.fire(args);
+		        }
+		    }
+		}
+
+		cjs$1.ChainTrigger = ChainTrigger;
+		cjs$1.Trigger = Trigger;
+		return cjs$1;
 	}
 
 	var lib$2 = {};
@@ -1328,7 +1247,7 @@
 		hasRequiredAudioPlayContext = 1;
 		Object.defineProperty(AudioPlayContext, "__esModule", { value: true });
 		AudioPlayContext.AudioPlayContext = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var AudioPlayContext$1 = /** @class */ (function () {
 		    function AudioPlayContext(param) {
 		        var _a;
@@ -2908,7 +2827,7 @@
 		})();
 		Object.defineProperty(E, "__esModule", { value: true });
 		E.E = E.PointMoveEvent = E.PointUpEvent = E.PointDownEvent = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var Event_1 = requireEvent();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Matrix_1 = requireMatrix();
@@ -4218,7 +4137,7 @@
 		})();
 		Object.defineProperty(FrameSprite, "__esModule", { value: true });
 		FrameSprite.FrameSprite = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var Sprite_1 = requireSprite();
 		/**
 		 * フレームとタイマーによるアニメーション機構を持つ `Sprite` 。
@@ -5282,7 +5201,7 @@
 		hasRequiredEmptyBinaryAsset = 1;
 		Object.defineProperty(EmptyBinaryAsset, "__esModule", { value: true });
 		EmptyBinaryAsset.EmptyBinaryAsset = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var EmptyBinaryAsset$1 = /** @class */ (function () {
 		    function EmptyBinaryAsset(id, path) {
 		        this.type = "binary";
@@ -5329,7 +5248,7 @@
 		hasRequiredEmptyVectorImageAsset = 1;
 		Object.defineProperty(EmptyVectorImageAsset, "__esModule", { value: true });
 		EmptyVectorImageAsset.EmptyVectorImageAsset = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var EmptyVectorImageAsset$1 = /** @class */ (function () {
 		    function EmptyVectorImageAsset(id, path, width, height, hint) {
 		        this.type = "vector-image";
@@ -5418,7 +5337,7 @@
 		hasRequiredPartialImageAsset = 1;
 		Object.defineProperty(PartialImageAsset, "__esModule", { value: true });
 		PartialImageAsset.PartialImageAsset = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		/**
 		 * 部分画像アセット。
 		 *
@@ -7037,7 +6956,7 @@
 		hasRequiredTimer = 1;
 		Object.defineProperty(Timer, "__esModule", { value: true });
 		Timer.Timer = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		/**
 		 * 一定時間で繰り返される処理を表すタイマー。
 		 *
@@ -7277,7 +7196,7 @@
 		hasRequiredScene = 1;
 		Object.defineProperty(Scene, "__esModule", { value: true });
 		Scene.Scene = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var AssetAccessor_1 = requireAssetAccessor();
 		var AssetHolder_1 = requireAssetHolder();
 		var Camera2D_1 = requireCamera2D();
@@ -7769,7 +7688,7 @@
 		})();
 		Object.defineProperty(LoadingScene, "__esModule", { value: true });
 		LoadingScene.LoadingScene = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Scene_1 = requireScene();
 		/**
@@ -9321,55 +9240,21 @@
 		                resolvedPath = this._assetManager._liveAssetPathTable[targetScriptAsset.path];
 		            }
 		        }
-		        // 1. If X is a core module,
-		        // (何もしない。コアモジュールには対応していない。ゲーム開発者は自分でコアモジュールへの依存を解決する必要がある)
-		        if (/^\.\/|^\.\.\/|^\//.test(path)) {
-		            // 2. If X begins with './' or '/' or '../'
-		            if (currentModule) {
-		                if (!currentModule._virtualDirname)
-		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require: require from modules without virtualPath is not supported");
-		                resolvedPath = PathUtil_1.PathUtil.resolvePath(currentModule._virtualDirname, path);
-		            }
-		            else {
-		                if (!/^\.\//.test(path))
-		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require: entry point path must start with './'");
-		                resolvedPath = path.substring(2);
-		            }
-		            if (this._scriptCaches.hasOwnProperty(resolvedPath)) {
-		                return this._scriptCaches[resolvedPath]._cachedValue();
-		            }
-		            else if (this._scriptCaches.hasOwnProperty(resolvedPath + ".js")) {
-		                return this._scriptCaches[resolvedPath + ".js"]._cachedValue();
-		            }
-		            // 2.a. LOAD_AS_FILE(Y + X)
-		            if (!targetScriptAsset)
-		                targetScriptAsset = this._findAssetByPathAsFile(resolvedPath, liveAssetVirtualPathTable);
-		            // 2.b. LOAD_AS_DIRECTORY(Y + X)
-		            if (!targetScriptAsset)
-		                targetScriptAsset = this._findAssetByPathAsDirectory(resolvedPath, liveAssetVirtualPathTable);
+		        if (!resolvedPath) {
+		            resolvedPath = this._resolvePath(path, currentModule);
+		            // 戻り値は先頭に "/" が付くので削除している。( moduleMainScripts を参照して返される値には先頭に "/" は付かない)
+		            if (/^\//.test(resolvedPath))
+		                resolvedPath = resolvedPath.slice(1);
+		        }
+		        if (this._scriptCaches.hasOwnProperty(resolvedPath)) {
+		            return this._scriptCaches[resolvedPath]._cachedValue();
+		        }
+		        // akashic-engine独自仕様: 対象の `path` が `moduleMainScripts` に指定されていたらそちらを参照する
+		        if (moduleMainScripts[path]) {
+		            targetScriptAsset = liveAssetVirtualPathTable[resolvedPath];
 		        }
 		        else {
-		            // 3. LOAD_NODE_MODULES(X, dirname(Y))
-		            // `path` は node module の名前であると仮定して探す
-		            // akashic-engine独自仕様: 対象の `path` が `moduleMainScripts` に指定されていたらそちらを参照する
-		            if (moduleMainScripts[path]) {
-		                resolvedPath = moduleMainScripts[path];
-		                targetScriptAsset = liveAssetVirtualPathTable[resolvedPath];
-		            }
-		            if (!targetScriptAsset) {
-		                var dirs = currentModule ? currentModule.paths : [];
-		                dirs.push("node_modules");
-		                for (var i = 0; i < dirs.length; ++i) {
-		                    var dir = dirs[i];
-		                    resolvedPath = PathUtil_1.PathUtil.resolvePath(dir, path);
-		                    targetScriptAsset = this._findAssetByPathAsFile(resolvedPath, liveAssetVirtualPathTable);
-		                    if (targetScriptAsset)
-		                        break;
-		                    targetScriptAsset = this._findAssetByPathAsDirectory(resolvedPath, liveAssetVirtualPathTable);
-		                    if (targetScriptAsset)
-		                        break;
-		                }
-		            }
+		            targetScriptAsset = this._findAssetByPathAsFile(resolvedPath, liveAssetVirtualPathTable);
 		        }
 		        if (targetScriptAsset) {
 		            // @ts-ignore
@@ -9427,7 +9312,10 @@
 		                resolvedPath = PathUtil_1.PathUtil.resolvePath(currentModule._virtualDirname, path);
 		            }
 		            else {
-		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require.resolve: couldn't resolve the moudle without currentModule");
+		                if (!/^\.\//.test(path)) {
+		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require.resolve: entry point path must start with './'");
+		                }
+		                resolvedPath = path.substring(2);
 		            }
 		            // 2.a. LOAD_AS_FILE(Y + X)
 		            var targetPath = this._resolveAbsolutePathAsFile(resolvedPath, liveAssetVirtualPathTable);
@@ -9481,35 +9369,6 @@
 		        return undefined;
 		    };
 		    /**
-		     * 与えられたパス文字列がディレクトリパスであると仮定して、対応するアセットを探す。
-		     * 見つかった場合そのアセットを、そうでない場合 `undefined` を返す。
-		     * 通常、ゲーム開発者がファイルパスを扱うことはなく、このメソッドを呼び出す必要はない。
-		     * ディレクトリ内に package.json が存在する場合、package.json 自体もアセットとして
-		     * `liveAssetPathTable` から参照可能でなければならないことに注意。
-		     *
-		     * @ignore
-		     * @param resolvedPath パス文字列
-		     * @param liveAssetPathTable パス文字列のプロパティに対応するアセットを格納したオブジェクト
-		     */
-		    ModuleManager.prototype._findAssetByPathAsDirectory = function (resolvedPath, liveAssetPathTable) {
-		        var path;
-		        path = resolvedPath + "/package.json";
-		        var pkgJsonAsset = liveAssetPathTable[path];
-		        // liveAssetPathTable[path] != null だけではpathと同名のprototypeプロパティがある場合trueになってしまうので hasOwnProperty() を利用
-		        if (liveAssetPathTable.hasOwnProperty(path) && pkgJsonAsset.type === "text") {
-		            var pkg = JSON.parse(pkgJsonAsset.data);
-		            if (pkg && typeof pkg.main === "string") {
-		                var asset = this._findAssetByPathAsFile(PathUtil_1.PathUtil.resolvePath(resolvedPath, pkg.main), liveAssetPathTable);
-		                if (asset)
-		                    return asset;
-		            }
-		        }
-		        path = resolvedPath + "/index.js";
-		        if (liveAssetPathTable.hasOwnProperty(path))
-		            return liveAssetPathTable[path];
-		        return undefined;
-		    };
-		    /**
 		     * 与えられたパス文字列がファイルパスであると仮定して、対応するアセットの絶対パスを解決する。
 		     * アセットが存在した場合はそのパスを、そうでない場合 `null` を返す。
 		     * 通常、ゲーム開発者がファイルパスを扱うことはなく、このメソッドを呼び出す必要はない。
@@ -9545,7 +9404,7 @@
 		            if (pkg && typeof pkg.main === "string") {
 		                var targetPath = this._resolveAbsolutePathAsFile(PathUtil_1.PathUtil.resolvePath(resolvedPath, pkg.main), liveAssetPathTable);
 		                if (targetPath) {
-		                    return "/" + targetPath;
+		                    return targetPath;
 		                }
 		            }
 		        }
@@ -9654,7 +9513,7 @@
 		};
 		Object.defineProperty(OperationPluginManager, "__esModule", { value: true });
 		OperationPluginManager.OperationPluginManager = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		/**
 		 * 操作プラグインからの通知をハンドルするクラス。
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはなく、ゲーム開発者が利用する必要もない。
@@ -10333,7 +10192,7 @@
 		hasRequiredGame = 1;
 		Object.defineProperty(Game, "__esModule", { value: true });
 		Game.Game = void 0;
-		var trigger_1 = requireLib$4();
+		var trigger_1 = requireCjs$1();
 		var AssetManager_1 = requireAssetManager();
 		var AudioSystemManager_1 = requireAudioSystemManager();
 		var DefaultLoadingScene_1 = requireDefaultLoadingScene();
@@ -11582,8 +11441,8 @@
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
 			exports.PathUtil = exports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;
-			__exportStar(requireLib$5(), exports);
 			__exportStar(requireLib$4(), exports);
+			__exportStar(requireCjs$1(), exports);
 			// pdi-types 由来の型を g 直下から reexport する。
 			// ただし一部の型名は、akashic-engine で同名のクラス実装を与えているため、
 			// そのままでは両方 export しようとして衝突する。
@@ -11695,7 +11554,7 @@
 	var hasRequiredLib$2;
 
 	function requireLib$2 () {
-		if (hasRequiredLib$2) return lib$5;
+		if (hasRequiredLib$2) return lib$4;
 		hasRequiredLib$2 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -11716,8 +11575,8 @@
 			__exportStar(requireIndex_common(), exports);
 			__exportStar(requireGameHandlerSet$1(), exports); // NOTE: コンテンツから参照する必要はない
 			
-		} (lib$5));
-		return lib$5;
+		} (lib$4));
+		return lib$4;
 	}
 
 	var akashicEngine;
@@ -12386,14 +12245,9 @@
 		Surface$1.Surface = void 0;
 		var Surface = /** @class */ (function () {
 		    function Surface(width, height, drawable) {
-		        this.width = width;
-		        this.height = height;
-		        this._drawable = drawable;
-		        if (width % 1 !== 0 || height % 1 !== 0) {
-		            throw new Error("Surface#constructor: width and height must be integers");
-		        }
-		        this.width = width;
-		        this.height = height;
+		        // 非整数の動作は保証していないが、環境依存でエラーになるトラブルを軽減するため切り上げ。
+		        this.width = Math.ceil(width);
+		        this.height = Math.ceil(height);
 		        this._drawable = drawable;
 		    }
 		    Surface.prototype.destroy = function () {

@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.16.5 */
+/*! akashic-engine-standalone@3.16.6 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -9274,6 +9274,21 @@
 		        this._scriptCaches = {};
 		    }
 		    /**
+		     * エンジン内部で利用する _require() を wrap した関数
+		     *
+		     * 引数の仕様については `_require()` の仕様を参照のこと。
+		     * _require() の戻り値で __esModule が真の場合に戻り値の .default を返す。
+		     * 現状 Akashic Engine では ESM を扱えていない。そのため、対象の __esModule を参照し .default を返すことで、
+		     * TypeScript/Babel 向けの簡易対応とし exports.default を扱えるようにしている。
+		     * 通常、ゲーム開発者がこのメソッドを利用する必要はない。
+		     *
+		     * @ignore
+		     */
+		    ModuleManager.prototype._internalRequire = function (path, currentModule) {
+		        var module = this._require(path, currentModule);
+		        return module.__esModule ? module.default : module;
+		    };
+		    /**
 		     * node.js の require() ライクな読み込み処理を行い、その結果を返す。
 		     *
 		     * node.jsのrequireに限りなく近いモデルでrequireする。
@@ -11374,7 +11389,7 @@
 		            var pluginInfo = operationPluginsField_1[_i];
 		            if (!pluginInfo.script)
 		                continue;
-		            var pluginClass = this._moduleManager._require(pluginInfo.script);
+		            var pluginClass = this._moduleManager._internalRequire(pluginInfo.script);
 		            var plugin = this.operationPluginManager.register(pluginClass, pluginInfo.code, pluginInfo.option);
 		            if (!pluginInfo.manualStart && plugin) {
 		                plugin.start();
@@ -11384,7 +11399,7 @@
 		        var preloadAssetIds = this._assetManager.preloadScriptAssetIds();
 		        for (var _a = 0, preloadAssetIds_1 = preloadAssetIds; _a < preloadAssetIds_1.length; _a++) {
 		            var preloadAssetId = preloadAssetIds_1[_a];
-		            var fun = this._moduleManager._require(preloadAssetId);
+		            var fun = this._moduleManager._internalRequire(preloadAssetId);
 		            if (!fun || typeof fun !== "function")
 		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#_handleLoad: ".concat(preloadAssetId, " has no-exported function."));
 		            fun();
@@ -11393,7 +11408,7 @@
 		            this._mainFunc(this._runtimeValueBase, this._mainParameter || {});
 		        }
 		        else if (this._main) {
-		            var mainFun = this._moduleManager._require(this._main);
+		            var mainFun = this._moduleManager._internalRequire(this._main);
 		            if (!mainFun || typeof mainFun !== "function")
 		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#_handleLoad: Entry point ".concat(this._main, " not found."));
 		            mainFun(this._mainParameter);

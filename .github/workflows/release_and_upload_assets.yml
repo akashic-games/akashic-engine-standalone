@@ -45,7 +45,7 @@ jobs:
           asset_name: bundle.zip
           asset_content_type: application/zip
       - name: Upload Release Asset (JS files)
-        uses: csexton/release-asset-action@v2
+        uses: csexton/release-asset-action@v3
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

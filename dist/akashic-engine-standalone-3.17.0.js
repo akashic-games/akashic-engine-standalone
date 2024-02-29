@@ -280,11 +280,11 @@
 
 	var require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
 
-	var lib$4 = {};
+	var lib$3 = {};
 
 	var index_common = {};
 
-	var lib$3 = {};
+	var lib$2 = {};
 
 	var AssetConfiguration = {};
 
@@ -319,11 +319,11 @@
 		return OperationPluginInfo;
 	}
 
-	var hasRequiredLib$4;
+	var hasRequiredLib$3;
 
-	function requireLib$4 () {
-		if (hasRequiredLib$4) return lib$3;
-		hasRequiredLib$4 = 1;
+	function requireLib$3 () {
+		if (hasRequiredLib$3) return lib$2;
+		hasRequiredLib$3 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -343,17 +343,17 @@
 			__exportStar(requireAssetConfiguration(), exports);
 			__exportStar(requireGameConfiguration(), exports);
 			__exportStar(requireOperationPluginInfo(), exports); 
-		} (lib$3));
-		return lib$3;
+		} (lib$2));
+		return lib$2;
 	}
 
-	var cjs$1 = {};
+	var cjs = {};
 
-	var hasRequiredCjs$1;
+	var hasRequiredCjs;
 
-	function requireCjs$1 () {
-		if (hasRequiredCjs$1) return cjs$1;
-		hasRequiredCjs$1 = 1;
+	function requireCjs () {
+		if (hasRequiredCjs) return cjs;
+		hasRequiredCjs = 1;
 
 		function isPromise(target) {
 		    return (target != null &&
@@ -616,12 +616,12 @@
 		    }
 		}
 
-		cjs$1.ChainTrigger = ChainTrigger;
-		cjs$1.Trigger = Trigger;
-		return cjs$1;
+		cjs.ChainTrigger = ChainTrigger;
+		cjs.Trigger = Trigger;
+		return cjs;
 	}
 
-	var lib$2 = {};
+	var lib$1 = {};
 
 	var commons = {};
 
@@ -652,60 +652,73 @@
 	function requireCompositeOperation () {
 		if (hasRequiredCompositeOperation) return CompositeOperation;
 		hasRequiredCompositeOperation = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.CompositeOperation = void 0;
-			(function (CompositeOperation) {
-			    /**
-			     * 先に描画された領域の上に描画する。
-			     */
-			    CompositeOperation[CompositeOperation["SourceOver"] = 0] = "SourceOver";
-			    /**
-			     * 先に描画された領域と重なった部分のみを描画する。
-			     */
-			    CompositeOperation[CompositeOperation["SourceAtop"] = 1] = "SourceAtop";
-			    /**
-			     * 先に描画された領域と重なった部分の色を加算して描画する。
-			     */
-			    CompositeOperation[CompositeOperation["Lighter"] = 2] = "Lighter";
-			    /**
-			     * 先に描画された領域を全て無視して描画する。
-			     */
-			    CompositeOperation[CompositeOperation["Copy"] = 3] = "Copy";
-			    /**
-			     * 先に描画された領域と重なった部分に描画を行い、それ以外の部分を透明にする。
-			     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
-			     */
-			    CompositeOperation[CompositeOperation["ExperimentalSourceIn"] = 4] = "ExperimentalSourceIn";
-			    /**
-			     * 先に描画された領域と重なっていない部分に描画を行い、それ以外の部分を透明にする。
-			     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
-			     */
-			    CompositeOperation[CompositeOperation["ExperimentalSourceOut"] = 5] = "ExperimentalSourceOut";
-			    /**
-			     * 描画する領域だけを表示し、先に描画された領域と重なった部分は描画先を表示する。
-			     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
-			     */
-			    CompositeOperation[CompositeOperation["ExperimentalDestinationAtop"] = 6] = "ExperimentalDestinationAtop";
-			    /**
-			     * 先に描画された領域と重なっていない部分を透明にし、重なった部分は描画先を表示する。
-			     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
-			     */
-			    CompositeOperation[CompositeOperation["ExperimentalDestinationIn"] = 7] = "ExperimentalDestinationIn";
-			    /**
-			     * 描画する領域を透明にする。
-			     */
-			    CompositeOperation[CompositeOperation["DestinationOut"] = 8] = "DestinationOut";
-			    /**
-			     * 先に描画された領域の下に描画する。
-			     */
-			    CompositeOperation[CompositeOperation["DestinationOver"] = 9] = "DestinationOver";
-			    /**
-			     * 先に描画された領域と重なった部分のみ透明にする。
-			     */
-			    CompositeOperation[CompositeOperation["Xor"] = 10] = "Xor";
-			})(exports.CompositeOperation || (exports.CompositeOperation = {})); 
-		} (CompositeOperation));
+		Object.defineProperty(CompositeOperation, "__esModule", { value: true });
+		CompositeOperation.CompositeOperation = void 0;
+		/**
+		 * 描画時の合成方法。
+		 * @deprecated 非推奨である。将来的に削除される。代わりに `CompositeOperationString` を利用すること。
+		 */
+		var CompositeOperation$1;
+		(function (CompositeOperation) {
+		    /**
+		     * 先に描画された領域の上に描画する。
+		     */
+		    CompositeOperation[CompositeOperation["SourceOver"] = 0] = "SourceOver";
+		    /**
+		     * 先に描画された領域と重なった部分のみを描画する。
+		     */
+		    CompositeOperation[CompositeOperation["SourceAtop"] = 1] = "SourceAtop";
+		    /**
+		     * 先に描画された領域と重なった部分の色を加算して描画する。
+		     */
+		    CompositeOperation[CompositeOperation["Lighter"] = 2] = "Lighter";
+		    /**
+		     * 先に描画された領域を全て無視して描画する。
+		     */
+		    CompositeOperation[CompositeOperation["Copy"] = 3] = "Copy";
+		    /**
+		     * 先に描画された領域と重なった部分に描画を行い、それ以外の部分を透明にする。
+		     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
+		     */
+		    CompositeOperation[CompositeOperation["ExperimentalSourceIn"] = 4] = "ExperimentalSourceIn";
+		    /**
+		     * 先に描画された領域と重なっていない部分に描画を行い、それ以外の部分を透明にする。
+		     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
+		     */
+		    CompositeOperation[CompositeOperation["ExperimentalSourceOut"] = 5] = "ExperimentalSourceOut";
+		    /**
+		     * 描画する領域だけを表示し、先に描画された領域と重なった部分は描画先を表示する。
+		     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
+		     */
+		    CompositeOperation[CompositeOperation["ExperimentalDestinationAtop"] = 6] = "ExperimentalDestinationAtop";
+		    /**
+		     * 先に描画された領域と重なっていない部分を透明にし、重なった部分は描画先を表示する。
+		     * 環境により、描画結果が大きく異なる可能性があるため、試験的導入である。
+		     */
+		    CompositeOperation[CompositeOperation["ExperimentalDestinationIn"] = 7] = "ExperimentalDestinationIn";
+		    /**
+		     * 描画する領域を透明にする。
+		     */
+		    CompositeOperation[CompositeOperation["DestinationOut"] = 8] = "DestinationOut";
+		    /**
+		     * 先に描画された領域の下に描画する。
+		     */
+		    CompositeOperation[CompositeOperation["DestinationOver"] = 9] = "DestinationOver";
+		    /**
+		     * 先に描画された領域と重なった部分のみ透明にする。
+		     */
+		    CompositeOperation[CompositeOperation["Xor"] = 10] = "Xor";
+		    /**
+		     * 先に描画された色とこれから描画する色との差分の絶対値を描画する。
+		     * ただし、一部環境ではサポートしない。
+		     */
+		    CompositeOperation[CompositeOperation["Difference"] = 11] = "Difference";
+		    /**
+		     * 先に描画された領域の明度と色相を維持し、重なっている部分の彩度を採用する。
+		     * ただし、一部環境ではサポートしない。
+		    */
+		    CompositeOperation[CompositeOperation["Saturation"] = 12] = "Saturation";
+		})(CompositeOperation$1 || (CompositeOperation.CompositeOperation = CompositeOperation$1 = {}));
 		return CompositeOperation;
 	}
 
@@ -969,32 +982,39 @@
 	function requireAssetLoadErrorType () {
 		if (hasRequiredAssetLoadErrorType) return AssetLoadErrorType;
 		hasRequiredAssetLoadErrorType = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.AssetLoadErrorType = void 0;
-			(function (AssetLoadErrorType) {
-			    /**
-			     * 明示されていない(以下のいずれかかもしれないし、そうでないかもしれない)。
-			     */
-			    AssetLoadErrorType[AssetLoadErrorType["Unspecified"] = 0] = "Unspecified";
-			    /**
-			     * エンジンの再試行回数上限設定値を超えた。
-			     */
-			    AssetLoadErrorType[AssetLoadErrorType["RetryLimitExceeded"] = 1] = "RetryLimitExceeded";
-			    /**
-			     * ネットワークエラー。タイムアウトなど。
-			     */
-			    AssetLoadErrorType[AssetLoadErrorType["NetworkError"] = 2] = "NetworkError";
-			    /**
-			     * リクエストに問題があるエラー。HTTP 4XX など。
-			     */
-			    AssetLoadErrorType[AssetLoadErrorType["ClientError"] = 3] = "ClientError";
-			    /**
-			     * サーバ側のエラー。HTTP 5XX など。
-			     */
-			    AssetLoadErrorType[AssetLoadErrorType["ServerError"] = 4] = "ServerError";
-			})(exports.AssetLoadErrorType || (exports.AssetLoadErrorType = {})); 
-		} (AssetLoadErrorType));
+		Object.defineProperty(AssetLoadErrorType, "__esModule", { value: true });
+		AssetLoadErrorType.AssetLoadErrorType = void 0;
+		/**
+		 * アセット読み込み失敗時のエラーの種別。
+		 *
+		 * この値はあくまでもエラーメッセージ出力のための補助情報であり、
+		 * 網羅性・厳密性を追求したものではないことに注意。
+		 *
+		 * @deprecated 非推奨である。将来的に削除される。現在この型が必要な処理は存在しない。
+		 */
+		var AssetLoadErrorType$1;
+		(function (AssetLoadErrorType) {
+		    /**
+		     * 明示されていない(以下のいずれかかもしれないし、そうでないかもしれない)。
+		     */
+		    AssetLoadErrorType[AssetLoadErrorType["Unspecified"] = 0] = "Unspecified";
+		    /**
+		     * エンジンの再試行回数上限設定値を超えた。
+		     */
+		    AssetLoadErrorType[AssetLoadErrorType["RetryLimitExceeded"] = 1] = "RetryLimitExceeded";
+		    /**
+		     * ネットワークエラー。タイムアウトなど。
+		     */
+		    AssetLoadErrorType[AssetLoadErrorType["NetworkError"] = 2] = "NetworkError";
+		    /**
+		     * リクエストに問題があるエラー。HTTP 4XX など。
+		     */
+		    AssetLoadErrorType[AssetLoadErrorType["ClientError"] = 3] = "ClientError";
+		    /**
+		     * サーバ側のエラー。HTTP 5XX など。
+		     */
+		    AssetLoadErrorType[AssetLoadErrorType["ServerError"] = 4] = "ServerError";
+		})(AssetLoadErrorType$1 || (AssetLoadErrorType.AssetLoadErrorType = AssetLoadErrorType$1 = {}));
 		return AssetLoadErrorType;
 	}
 
@@ -1016,20 +1036,23 @@
 	function requireFontWeight () {
 		if (hasRequiredFontWeight) return FontWeight;
 		hasRequiredFontWeight = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.FontWeight = void 0;
-			(function (FontWeight) {
-			    /**
-			     * 通常のフォントウェイト。
-			     */
-			    FontWeight[FontWeight["Normal"] = 0] = "Normal";
-			    /**
-			     * 太字のフォントウェイト。
-			     */
-			    FontWeight[FontWeight["Bold"] = 1] = "Bold";
-			})(exports.FontWeight || (exports.FontWeight = {})); 
-		} (FontWeight));
+		Object.defineProperty(FontWeight, "__esModule", { value: true });
+		FontWeight.FontWeight = void 0;
+		/**
+		 * フォントのウェイト。
+		 * @deprecated 非推奨である。将来的に削除される。代わりに `FontWeightString` を利用すること。
+		 */
+		var FontWeight$1;
+		(function (FontWeight) {
+		    /**
+		     * 通常のフォントウェイト。
+		     */
+		    FontWeight[FontWeight["Normal"] = 0] = "Normal";
+		    /**
+		     * 太字のフォントウェイト。
+		     */
+		    FontWeight[FontWeight["Bold"] = 1] = "Bold";
+		})(FontWeight$1 || (FontWeight.FontWeight = FontWeight$1 = {}));
 		return FontWeight;
 	}
 
@@ -1040,24 +1063,27 @@
 	function requireFontFamily () {
 		if (hasRequiredFontFamily) return FontFamily;
 		hasRequiredFontFamily = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.FontFamily = void 0;
-			(function (FontFamily) {
-			    /**
-			     * サンセリフ体。ＭＳ Ｐゴシック等
-			     */
-			    FontFamily[FontFamily["SansSerif"] = 0] = "SansSerif";
-			    /**
-			     * セリフ体。ＭＳ 明朝等
-			     */
-			    FontFamily[FontFamily["Serif"] = 1] = "Serif";
-			    /**
-			     * 等幅。ＭＳ ゴシック等
-			     */
-			    FontFamily[FontFamily["Monospace"] = 2] = "Monospace";
-			})(exports.FontFamily || (exports.FontFamily = {})); 
-		} (FontFamily));
+		Object.defineProperty(FontFamily, "__esModule", { value: true });
+		FontFamily.FontFamily = void 0;
+		/**
+		 * 文字列描画のフォントファミリ。
+		 * @deprecated 非推奨である。将来的に削除される。代わりに文字列 `"sans-serif"`, `"serif"`, `"monospace"` を利用すること。
+		 */
+		var FontFamily$1;
+		(function (FontFamily) {
+		    /**
+		     * サンセリフ体。ＭＳ Ｐゴシック等
+		     */
+		    FontFamily[FontFamily["SansSerif"] = 0] = "SansSerif";
+		    /**
+		     * セリフ体。ＭＳ 明朝等
+		     */
+		    FontFamily[FontFamily["Serif"] = 1] = "Serif";
+		    /**
+		     * 等幅。ＭＳ ゴシック等
+		     */
+		    FontFamily[FontFamily["Monospace"] = 2] = "Monospace";
+		})(FontFamily$1 || (FontFamily.FontFamily = FontFamily$1 = {}));
 		return FontFamily;
 	}
 
@@ -1171,11 +1197,11 @@
 		return ResourceFactory$3;
 	}
 
-	var hasRequiredLib$3;
+	var hasRequiredLib$2;
 
-	function requireLib$3 () {
-		if (hasRequiredLib$3) return lib$2;
-		hasRequiredLib$3 = 1;
+	function requireLib$2 () {
+		if (hasRequiredLib$2) return lib$1;
+		hasRequiredLib$2 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -1232,8 +1258,8 @@
 			__exportStar(requirePlatformPointEvent(), exports);
 			__exportStar(requireRendererRequirement(), exports);
 			__exportStar(requireResourceFactory$3(), exports); 
-		} (lib$2));
-		return lib$2;
+		} (lib$1));
+		return lib$1;
 	}
 
 	var AudioSystem = {};
@@ -1247,7 +1273,7 @@
 		hasRequiredAudioPlayContext = 1;
 		Object.defineProperty(AudioPlayContext, "__esModule", { value: true });
 		AudioPlayContext.AudioPlayContext = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var AudioPlayContext$1 = /** @class */ (function () {
 		    function AudioPlayContext(param) {
 		        var _a;
@@ -2709,7 +2735,7 @@
 		hasRequiredUtil = 1;
 		Object.defineProperty(Util, "__esModule", { value: true });
 		Util.Util = void 0;
-		var pdi_types_1 = requireLib$3();
+		var pdi_types_1 = requireLib$2();
 		/**
 		 * ユーティリティ。
 		 */
@@ -2807,6 +2833,8 @@
 		        _a[pdi_types_1.CompositeOperation.DestinationOut] = "destination-out",
 		        _a[pdi_types_1.CompositeOperation.DestinationOver] = "destination-over",
 		        _a[pdi_types_1.CompositeOperation.Xor] = "xor",
+		        _a[pdi_types_1.CompositeOperation.Difference] = "difference",
+		        _a[pdi_types_1.CompositeOperation.Saturation] = "saturation",
 		        _a);
 		})(Util$1 || (Util.Util = Util$1 = {}));
 		
@@ -2835,7 +2863,7 @@
 		})();
 		Object.defineProperty(E, "__esModule", { value: true });
 		E.E = E.PointMoveEvent = E.PointUpEvent = E.PointDownEvent = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var Event_1 = requireEvent();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Matrix_1 = requireMatrix();
@@ -4145,7 +4173,7 @@
 		})();
 		Object.defineProperty(FrameSprite, "__esModule", { value: true });
 		FrameSprite.FrameSprite = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var Sprite_1 = requireSprite();
 		/**
 		 * フレームとタイマーによるアニメーション機構を持つ `Sprite` 。
@@ -5243,7 +5271,7 @@
 		hasRequiredEmptyBinaryAsset = 1;
 		Object.defineProperty(EmptyBinaryAsset, "__esModule", { value: true });
 		EmptyBinaryAsset.EmptyBinaryAsset = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var EmptyBinaryAsset$1 = /** @class */ (function () {
 		    function EmptyBinaryAsset(id, path) {
 		        this.type = "binary";
@@ -5290,7 +5318,7 @@
 		hasRequiredEmptyVectorImageAsset = 1;
 		Object.defineProperty(EmptyVectorImageAsset, "__esModule", { value: true });
 		EmptyVectorImageAsset.EmptyVectorImageAsset = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var EmptyVectorImageAsset$1 = /** @class */ (function () {
 		    function EmptyVectorImageAsset(id, path, width, height, hint) {
 		        this.type = "vector-image";
@@ -5379,7 +5407,7 @@
 		hasRequiredPartialImageAsset = 1;
 		Object.defineProperty(PartialImageAsset, "__esModule", { value: true });
 		PartialImageAsset.PartialImageAsset = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		/**
 		 * 部分画像アセット。
 		 *
@@ -6998,7 +7026,7 @@
 		hasRequiredTimer = 1;
 		Object.defineProperty(Timer, "__esModule", { value: true });
 		Timer.Timer = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		/**
 		 * 一定時間で繰り返される処理を表すタイマー。
 		 *
@@ -7238,7 +7266,7 @@
 		hasRequiredScene = 1;
 		Object.defineProperty(Scene, "__esModule", { value: true });
 		Scene.Scene = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var AssetAccessor_1 = requireAssetAccessor();
 		var AssetHolder_1 = requireAssetHolder();
 		var Camera2D_1 = requireCamera2D();
@@ -7750,7 +7778,7 @@
 		})();
 		Object.defineProperty(LoadingScene, "__esModule", { value: true });
 		LoadingScene.LoadingScene = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Scene_1 = requireScene();
 		/**
@@ -8629,7 +8657,7 @@
 		})();
 		Object.defineProperty(DynamicFont, "__esModule", { value: true });
 		DynamicFont.DynamicFont = void 0;
-		var pdi_types_1 = requireLib$3();
+		var pdi_types_1 = requireLib$2();
 		var BitmapFont_1 = requireBitmapFont();
 		var Font_1 = requireFont();
 		var SurfaceAtlasSet_1 = requireSurfaceAtlasSet();
@@ -9590,7 +9618,7 @@
 		};
 		Object.defineProperty(OperationPluginManager, "__esModule", { value: true });
 		OperationPluginManager.OperationPluginManager = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		/**
 		 * 操作プラグインからの通知をハンドルするクラス。
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはなく、ゲーム開発者が利用する必要もない。
@@ -10269,7 +10297,7 @@
 		hasRequiredGame = 1;
 		Object.defineProperty(Game, "__esModule", { value: true });
 		Game.Game = void 0;
-		var trigger_1 = requireCjs$1();
+		var trigger_1 = requireCjs();
 		var AssetManager_1 = requireAssetManager();
 		var AudioSystemManager_1 = requireAudioSystemManager();
 		var DefaultLoadingScene_1 = requireDefaultLoadingScene();
@@ -11518,13 +11546,13 @@
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
 			exports.PathUtil = exports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;
-			__exportStar(requireLib$4(), exports);
-			__exportStar(requireCjs$1(), exports);
+			__exportStar(requireLib$3(), exports);
+			__exportStar(requireCjs(), exports);
 			// pdi-types 由来の型を g 直下から reexport する。
 			// ただし一部の型名は、akashic-engine で同名のクラス実装を与えているため、
 			// そのままでは両方 export しようとして衝突する。
 			// ここで明示的に片方を export して衝突を解決している。
-			__exportStar(requireLib$3(), exports);
+			__exportStar(requireLib$2(), exports);
 			var AudioSystem_1 = requireAudioSystem();
 			Object.defineProperty(exports, "AudioSystem", { enumerable: true, get: function () { return AudioSystem_1.AudioSystem; } });
 			var Module_1 = requireModule();
@@ -11628,11 +11656,11 @@
 		return GameHandlerSet$1;
 	}
 
-	var hasRequiredLib$2;
+	var hasRequiredLib$1;
 
-	function requireLib$2 () {
-		if (hasRequiredLib$2) return lib$4;
-		hasRequiredLib$2 = 1;
+	function requireLib$1 () {
+		if (hasRequiredLib$1) return lib$3;
+		hasRequiredLib$1 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -11652,8 +11680,8 @@
 			__exportStar(requireIndex_common(), exports);
 			__exportStar(requireGameHandlerSet$1(), exports); // NOTE: コンテンツから参照する必要はない
 			
-		} (lib$4));
-		return lib$4;
+		} (lib$3));
+		return lib$3;
 	}
 
 	var akashicEngine;
@@ -11662,7 +11690,7 @@
 	function requireAkashicEngine () {
 		if (hasRequiredAkashicEngine) return akashicEngine;
 		hasRequiredAkashicEngine = 1;
-		akashicEngine = requireLib$2();
+		akashicEngine = requireLib$1();
 		return akashicEngine;
 	}
 
@@ -11920,264 +11948,6 @@
 	}
 
 	var Asset$2 = {};
-
-	var cjs = {};
-
-	var hasRequiredCjs;
-
-	function requireCjs () {
-		if (hasRequiredCjs) return cjs;
-		hasRequiredCjs = 1;
-
-		function isPromise(target) {
-		    return (target != null &&
-		        (typeof target === "object" || typeof target === "function") &&
-		        typeof target.then === "function");
-		}
-
-		/**
-		 * イベント通知機構クラス。
-		 */
-		class Trigger {
-		    constructor() {
-		        this._handlers = [];
-		        this.length = 0;
-		    }
-		    add(paramsOrFunc, owner) {
-		        if (typeof paramsOrFunc === "function") {
-		            this._handlers.push({
-		                func: paramsOrFunc,
-		                owner,
-		                once: false,
-		                name: undefined
-		            });
-		        }
-		        else {
-		            const params = paramsOrFunc;
-		            if (typeof params.index === "number") {
-		                this._handlers.splice(params.index, 0, {
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: false,
-		                    name: params.name
-		                });
-		            }
-		            else {
-		                this._handlers.push({
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: false,
-		                    name: params.name
-		                });
-		            }
-		        }
-		        this.length = this._handlers.length;
-		    }
-		    addOnce(paramsOrFunc, owner) {
-		        if (typeof paramsOrFunc === "function") {
-		            this._handlers.push({
-		                func: paramsOrFunc,
-		                owner,
-		                once: true,
-		                name: undefined
-		            });
-		        }
-		        else {
-		            const params = paramsOrFunc;
-		            if (typeof params.index === "number") {
-		                this._handlers.splice(params.index, 0, {
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: true,
-		                    name: params.name
-		                });
-		            }
-		            else {
-		                this._handlers.push({
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: true,
-		                    name: params.name
-		                });
-		            }
-		        }
-		        this.length = this._handlers.length;
-		    }
-		    /**
-		     * このTriggerにハンドラを追加する。
-		     * @deprecated 互換性のために残されている。代わりに `add()` を利用すべきである。実装の変化のため、 `func` が `boolean` を返した時の動作はサポートされていない。
-		     */
-		    handle(owner, func, name) {
-		        this.add(func ? { owner, func, name } : { func: owner });
-		    }
-		    /**
-		     * このTriggerを発火する。
-		     *
-		     * 登録された全ハンドラの関数を、引数 `arg` を与えて呼び出す。
-		     * 呼び出し後、次のいずれかの条件を満たす全ハンドラの登録は解除される。
-		     * * ハンドラが `addOnce()` で登録されていた場合
-		     * * ハンドラが `add()` で登録される際に `once: true` オプションが与えられていた場合
-		     * * ハンドラが Promise 以外の truthy な値を返した場合
-		     *
-		     * @param arg ハンドラに与えられる引数
-		     */
-		    fire(arg) {
-		        if (!this._handlers || !this._handlers.length)
-		            return;
-		        const handlers = this._handlers.concat();
-		        for (let i = 0; i < handlers.length; i++) {
-		            const handler = handlers[i];
-		            const ret = handler.func.call(handler.owner, arg);
-		            const returnedTruthy = !isPromise(ret) && !!ret;
-		            if (returnedTruthy || handler.once) {
-		                if (!this._handlers)
-		                    continue;
-		                const index = this._handlers.indexOf(handler);
-		                if (index !== -1)
-		                    this._handlers.splice(index, 1);
-		            }
-		        }
-		        if (this._handlers != null)
-		            this.length = this._handlers.length;
-		    }
-		    contains(paramsOrFunc, owner) {
-		        const condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner } : paramsOrFunc;
-		        for (let i = 0; i < this._handlers.length; i++) {
-		            if (this._comparePartial(condition, this._handlers[i])) {
-		                return true;
-		            }
-		        }
-		        return false;
-		    }
-		    remove(paramsOrFunc, owner) {
-		        const condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner } : paramsOrFunc;
-		        for (let i = 0; i < this._handlers.length; i++) {
-		            const handler = this._handlers[i];
-		            if (condition.func === handler.func && condition.owner === handler.owner && condition.name === handler.name) {
-		                this._handlers.splice(i, 1);
-		                --this.length;
-		                return;
-		            }
-		        }
-		    }
-		    /**
-		     * 指定した条件に部分一致するイベントハンドラを削除する。
-		     *
-		     * 本メソッドは引数に与えた条件に一致したイベントハンドラを全て削除する。
-		     * 引数の条件を一部省略した場合、その値の内容が登録時と異なっていても対象のイベントハンドラは削除される。
-		     * 引数に与えた条件と完全に一致したイベントハンドラのみを削除したい場合は `this.remove()` を用いる。
-		     * 引数を省略した場合は全てのイベントハンドラを削除する。
-		     *
-		     * @param params 削除するイベントハンドラの条件
-		     */
-		    removeAll(params) {
-		        const handlers = [];
-		        if (params) {
-		            for (let i = 0; i < this._handlers.length; i++) {
-		                const handler = this._handlers[i];
-		                if (!this._comparePartial(params, handler)) {
-		                    handlers.push(handler);
-		                }
-		            }
-		        }
-		        this._handlers = handlers;
-		        this.length = this._handlers.length;
-		    }
-		    /**
-		     * このTriggerを破棄する。
-		     */
-		    destroy() {
-		        this._handlers = null;
-		        this.length = null;
-		    }
-		    /**
-		     * このTriggerが破棄されているかを返す。
-		     */
-		    destroyed() {
-		        return this._handlers === null;
-		    }
-		    /**
-		     * @private
-		     */
-		    _comparePartial(target, compare) {
-		        if (target.func !== undefined && target.func !== compare.func)
-		            return false;
-		        if (target.owner !== undefined && target.owner !== compare.owner)
-		            return false;
-		        if (target.name !== undefined && target.name !== compare.name)
-		            return false;
-		        return true;
-		    }
-		}
-
-		/**
-		 * 他のTriggerLikeに反応して発火するイベント通知機構。
-		 */
-		class ChainTrigger extends Trigger {
-		    /**
-		     * `ChainTrigger` のインスタンスを生成する。
-		     *
-		     * このインスタンスは、 `chain` がfireされたときに `filter` を実行し、真を返した場合に自身をfireする。
-		     * @param chain このインスタンスがfireするきっかけとなる TriggerLike
-		     * @param filter `chain` がfireされたときに実行される関数。省略された場合、または本関数の戻り値が真の場合、このインスタンスをfireする。
-		     * @param filterOwner `filter` 呼び出し時に使われる `this` の値。
-		     */
-		    constructor(chain, filter, filterOwner) {
-		        super();
-		        this.chain = chain;
-		        this.filter = filter != null ? filter : null;
-		        this.filterOwner = filterOwner;
-		        this._isActivated = false;
-		    }
-		    add(paramsOrHandler, owner) {
-		        super.add(paramsOrHandler, owner);
-		        if (!this._isActivated) {
-		            this.chain.add(this._onChainTriggerFired, this);
-		            this._isActivated = true;
-		        }
-		    }
-		    addOnce(paramsOrHandler, owner) {
-		        super.addOnce(paramsOrHandler, owner);
-		        if (!this._isActivated) {
-		            this.chain.add(this._onChainTriggerFired, this);
-		            this._isActivated = true;
-		        }
-		    }
-		    remove(paramsOrFunc, owner) {
-		        super.remove(paramsOrFunc, owner);
-		        if (this.length === 0 && this._isActivated) {
-		            this.chain.remove(this._onChainTriggerFired, this);
-		            this._isActivated = false;
-		        }
-		    }
-		    removeAll(params) {
-		        super.removeAll(params);
-		        if (this.length === 0 && this._isActivated) {
-		            this.chain.remove(this._onChainTriggerFired, this);
-		            this._isActivated = false;
-		        }
-		    }
-		    destroy() {
-		        super.destroy();
-		        this.chain.remove(this._onChainTriggerFired, this);
-		        this.filter = null;
-		        this.filterOwner = null;
-		        this._isActivated = false;
-		    }
-		    /**
-		     * @private
-		     */
-		    _onChainTriggerFired(args) {
-		        if (!this.filter || this.filter.call(this.filterOwner, args)) {
-		            this.fire(args);
-		        }
-		    }
-		}
-
-		cjs.ChainTrigger = ChainTrigger;
-		cjs.Trigger = Trigger;
-		return cjs;
-	}
 
 	var hasRequiredAsset$2;
 
@@ -12682,7 +12452,9 @@
 		    "experimental-destination-in": "destination-in",
 		    "destination-out": "destination-out",
 		    "destination-over": "destination-over",
-		    "xor": "xor"
+		    "xor": "xor",
+		    "difference": "difference",
+		    "saturation": "saturation"
 		};
 		var Context2DRenderer$1 = /** @class */ (function () {
 		    function Context2DRenderer(surface) {
@@ -13242,364 +13014,9 @@
 		return XHRScriptAsset;
 	}
 
-	var lib$1 = {};
-
-	var Asset$1 = {};
-
 	var lib = {};
 
-	var TriggerLike = {};
-
-	var hasRequiredTriggerLike;
-
-	function requireTriggerLike () {
-		if (hasRequiredTriggerLike) return TriggerLike;
-		hasRequiredTriggerLike = 1;
-		Object.defineProperty(TriggerLike, "__esModule", { value: true });
-		return TriggerLike;
-	}
-
-	var ChainTriggerLike = {};
-
-	var hasRequiredChainTriggerLike;
-
-	function requireChainTriggerLike () {
-		if (hasRequiredChainTriggerLike) return ChainTriggerLike;
-		hasRequiredChainTriggerLike = 1;
-		Object.defineProperty(ChainTriggerLike, "__esModule", { value: true });
-		return ChainTriggerLike;
-	}
-
-	var Trigger = {};
-
-	var isPromise = {};
-
-	var hasRequiredIsPromise;
-
-	function requireIsPromise () {
-		if (hasRequiredIsPromise) return isPromise;
-		hasRequiredIsPromise = 1;
-		Object.defineProperty(isPromise, "__esModule", { value: true });
-		isPromise.isPromise = void 0;
-		function isPromise$1(target) {
-		    return (target != null &&
-		        (typeof target === "object" || typeof target === "function") &&
-		        typeof target.then === "function");
-		}
-		isPromise.isPromise = isPromise$1;
-		return isPromise;
-	}
-
-	var hasRequiredTrigger;
-
-	function requireTrigger () {
-		if (hasRequiredTrigger) return Trigger;
-		hasRequiredTrigger = 1;
-		Object.defineProperty(Trigger, "__esModule", { value: true });
-		Trigger.Trigger = void 0;
-		var isPromise_1 = requireIsPromise();
-		/**
-		 * イベント通知機構クラス。
-		 */
-		var Trigger$1 = /** @class */ (function () {
-		    function Trigger() {
-		        this._handlers = [];
-		        this.length = 0;
-		    }
-		    Trigger.prototype.add = function (paramsOrFunc, owner) {
-		        if (typeof paramsOrFunc === "function") {
-		            this._handlers.push({
-		                func: paramsOrFunc,
-		                owner: owner,
-		                once: false,
-		                name: undefined
-		            });
-		        }
-		        else {
-		            var params = paramsOrFunc;
-		            if (typeof params.index === "number") {
-		                this._handlers.splice(params.index, 0, {
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: false,
-		                    name: params.name
-		                });
-		            }
-		            else {
-		                this._handlers.push({
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: false,
-		                    name: params.name
-		                });
-		            }
-		        }
-		        this.length = this._handlers.length;
-		    };
-		    Trigger.prototype.addOnce = function (paramsOrFunc, owner) {
-		        if (typeof paramsOrFunc === "function") {
-		            this._handlers.push({
-		                func: paramsOrFunc,
-		                owner: owner,
-		                once: true,
-		                name: undefined
-		            });
-		        }
-		        else {
-		            var params = paramsOrFunc;
-		            if (typeof params.index === "number") {
-		                this._handlers.splice(params.index, 0, {
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: true,
-		                    name: params.name
-		                });
-		            }
-		            else {
-		                this._handlers.push({
-		                    func: params.func,
-		                    owner: params.owner,
-		                    once: true,
-		                    name: params.name
-		                });
-		            }
-		        }
-		        this.length = this._handlers.length;
-		    };
-		    /**
-		     * このTriggerにハンドラを追加する。
-		     * @deprecated 互換性のために残されている。代わりに `add()` を利用すべきである。実装の変化のため、 `func` が `boolean` を返した時の動作はサポートされていない。
-		     */
-		    Trigger.prototype.handle = function (owner, func, name) {
-		        this.add(func ? { owner: owner, func: func, name: name } : { func: owner });
-		    };
-		    /**
-		     * このTriggerを発火する。
-		     *
-		     * 登録された全ハンドラの関数を、引数 `arg` を与えて呼び出す。
-		     * 呼び出し後、次のいずれかの条件を満たす全ハンドラの登録は解除される。
-		     * * ハンドラが `addOnce()` で登録されていた場合
-		     * * ハンドラが `add()` で登録される際に `once: true` オプションが与えられていた場合
-		     * * ハンドラが Promise 以外の truthy な値を返した場合
-		     *
-		     * @param arg ハンドラに与えられる引数
-		     */
-		    Trigger.prototype.fire = function (arg) {
-		        if (!this._handlers || !this._handlers.length)
-		            return;
-		        var handlers = this._handlers.concat();
-		        for (var i = 0; i < handlers.length; i++) {
-		            var handler = handlers[i];
-		            var ret = handler.func.call(handler.owner, arg);
-		            var returnedTruthy = !(0, isPromise_1.isPromise)(ret) && !!ret;
-		            if (returnedTruthy || handler.once) {
-		                if (!this._handlers)
-		                    continue;
-		                var index = this._handlers.indexOf(handler);
-		                if (index !== -1)
-		                    this._handlers.splice(index, 1);
-		            }
-		        }
-		        if (this._handlers != null)
-		            this.length = this._handlers.length;
-		    };
-		    Trigger.prototype.contains = function (paramsOrFunc, owner) {
-		        var condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner: owner } : paramsOrFunc;
-		        for (var i = 0; i < this._handlers.length; i++) {
-		            if (this._comparePartial(condition, this._handlers[i])) {
-		                return true;
-		            }
-		        }
-		        return false;
-		    };
-		    Trigger.prototype.remove = function (paramsOrFunc, owner) {
-		        var condition = typeof paramsOrFunc === "function" ? { func: paramsOrFunc, owner: owner } : paramsOrFunc;
-		        for (var i = 0; i < this._handlers.length; i++) {
-		            var handler = this._handlers[i];
-		            if (condition.func === handler.func && condition.owner === handler.owner && condition.name === handler.name) {
-		                this._handlers.splice(i, 1);
-		                --this.length;
-		                return;
-		            }
-		        }
-		    };
-		    /**
-		     * 指定した条件に部分一致するイベントハンドラを削除する。
-		     *
-		     * 本メソッドは引数に与えた条件に一致したイベントハンドラを全て削除する。
-		     * 引数の条件を一部省略した場合、その値の内容が登録時と異なっていても対象のイベントハンドラは削除される。
-		     * 引数に与えた条件と完全に一致したイベントハンドラのみを削除したい場合は `this.remove()` を用いる。
-		     * 引数を省略した場合は全てのイベントハンドラを削除する。
-		     *
-		     * @param params 削除するイベントハンドラの条件
-		     */
-		    Trigger.prototype.removeAll = function (params) {
-		        var handlers = [];
-		        if (params) {
-		            for (var i = 0; i < this._handlers.length; i++) {
-		                var handler = this._handlers[i];
-		                if (!this._comparePartial(params, handler)) {
-		                    handlers.push(handler);
-		                }
-		            }
-		        }
-		        this._handlers = handlers;
-		        this.length = this._handlers.length;
-		    };
-		    /**
-		     * このTriggerを破棄する。
-		     */
-		    Trigger.prototype.destroy = function () {
-		        this._handlers = null;
-		        this.length = null;
-		    };
-		    /**
-		     * このTriggerが破棄されているかを返す。
-		     */
-		    Trigger.prototype.destroyed = function () {
-		        return this._handlers === null;
-		    };
-		    /**
-		     * @private
-		     */
-		    Trigger.prototype._comparePartial = function (target, compare) {
-		        if (target.func !== undefined && target.func !== compare.func)
-		            return false;
-		        if (target.owner !== undefined && target.owner !== compare.owner)
-		            return false;
-		        if (target.name !== undefined && target.name !== compare.name)
-		            return false;
-		        return true;
-		    };
-		    return Trigger;
-		}());
-		Trigger.Trigger = Trigger$1;
-		return Trigger;
-	}
-
-	var ChainTrigger = {};
-
-	var hasRequiredChainTrigger;
-
-	function requireChainTrigger () {
-		if (hasRequiredChainTrigger) return ChainTrigger;
-		hasRequiredChainTrigger = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
-		    var extendStatics = function (d, b) {
-		        extendStatics = Object.setPrototypeOf ||
-		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-		        return extendStatics(d, b);
-		    };
-		    return function (d, b) {
-		        if (typeof b !== "function" && b !== null)
-		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-		        extendStatics(d, b);
-		        function __() { this.constructor = d; }
-		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-		    };
-		})();
-		Object.defineProperty(ChainTrigger, "__esModule", { value: true });
-		ChainTrigger.ChainTrigger = void 0;
-		var Trigger_1 = requireTrigger();
-		/**
-		 * 他のTriggerLikeに反応して発火するイベント通知機構。
-		 */
-		var ChainTrigger$1 = /** @class */ (function (_super) {
-		    __extends(ChainTrigger, _super);
-		    /**
-		     * `ChainTrigger` のインスタンスを生成する。
-		     *
-		     * このインスタンスは、 `chain` がfireされたときに `filter` を実行し、真を返した場合に自身をfireする。
-		     * @param chain このインスタンスがfireするきっかけとなる TriggerLike
-		     * @param filter `chain` がfireされたときに実行される関数。省略された場合、または本関数の戻り値が真の場合、このインスタンスをfireする。
-		     * @param filterOwner `filter` 呼び出し時に使われる `this` の値。
-		     */
-		    function ChainTrigger(chain, filter, filterOwner) {
-		        var _this = _super.call(this) || this;
-		        _this.chain = chain;
-		        _this.filter = filter != null ? filter : null;
-		        _this.filterOwner = filterOwner;
-		        _this._isActivated = false;
-		        return _this;
-		    }
-		    ChainTrigger.prototype.add = function (paramsOrHandler, owner) {
-		        _super.prototype.add.call(this, paramsOrHandler, owner);
-		        if (!this._isActivated) {
-		            this.chain.add(this._onChainTriggerFired, this);
-		            this._isActivated = true;
-		        }
-		    };
-		    ChainTrigger.prototype.addOnce = function (paramsOrHandler, owner) {
-		        _super.prototype.addOnce.call(this, paramsOrHandler, owner);
-		        if (!this._isActivated) {
-		            this.chain.add(this._onChainTriggerFired, this);
-		            this._isActivated = true;
-		        }
-		    };
-		    ChainTrigger.prototype.remove = function (paramsOrFunc, owner) {
-		        _super.prototype.remove.call(this, paramsOrFunc, owner);
-		        if (this.length === 0 && this._isActivated) {
-		            this.chain.remove(this._onChainTriggerFired, this);
-		            this._isActivated = false;
-		        }
-		    };
-		    ChainTrigger.prototype.removeAll = function (params) {
-		        _super.prototype.removeAll.call(this, params);
-		        if (this.length === 0 && this._isActivated) {
-		            this.chain.remove(this._onChainTriggerFired, this);
-		            this._isActivated = false;
-		        }
-		    };
-		    ChainTrigger.prototype.destroy = function () {
-		        _super.prototype.destroy.call(this);
-		        this.chain.remove(this._onChainTriggerFired, this);
-		        this.filter = null;
-		        this.filterOwner = null;
-		        this._isActivated = false;
-		    };
-		    /**
-		     * @private
-		     */
-		    ChainTrigger.prototype._onChainTriggerFired = function (args) {
-		        if (!this.filter || this.filter.call(this.filterOwner, args)) {
-		            this.fire(args);
-		        }
-		    };
-		    return ChainTrigger;
-		}(Trigger_1.Trigger));
-		ChainTrigger.ChainTrigger = ChainTrigger$1;
-		return ChainTrigger;
-	}
-
-	var hasRequiredLib$1;
-
-	function requireLib$1 () {
-		if (hasRequiredLib$1) return lib;
-		hasRequiredLib$1 = 1;
-		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-			    if (k2 === undefined) k2 = k;
-			    var desc = Object.getOwnPropertyDescriptor(m, k);
-			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-			      desc = { enumerable: true, get: function() { return m[k]; } };
-			    }
-			    Object.defineProperty(o, k2, desc);
-			}) : (function(o, m, k, k2) {
-			    if (k2 === undefined) k2 = k;
-			    o[k2] = m[k];
-			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
-			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-			};
-			Object.defineProperty(exports, "__esModule", { value: true });
-			__exportStar(requireTriggerLike(), exports);
-			__exportStar(requireChainTriggerLike(), exports);
-			__exportStar(requireTrigger(), exports);
-			__exportStar(requireChainTrigger(), exports); 
-		} (lib));
-		return lib;
-	}
+	var Asset$1 = {};
 
 	var hasRequiredAsset$1;
 
@@ -13608,7 +13025,7 @@
 		hasRequiredAsset$1 = 1;
 		Object.defineProperty(Asset$1, "__esModule", { value: true });
 		Asset$1.Asset = void 0;
-		var trigger_1 = requireLib$1();
+		var trigger_1 = requireCjs();
 		/**
 		 * 各種リソースを表すクラス。
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはない。
@@ -13745,7 +13162,7 @@
 		hasRequiredAudioPlayer$1 = 1;
 		Object.defineProperty(AudioPlayer$1, "__esModule", { value: true });
 		AudioPlayer$1.AudioPlayer = void 0;
-		var trigger_1 = requireLib$1();
+		var trigger_1 = requireCjs();
 		/**
 		 * サウンド再生を行うクラス。
 		 *
@@ -14467,7 +13884,7 @@
 		hasRequiredVideoPlayer = 1;
 		Object.defineProperty(VideoPlayer, "__esModule", { value: true });
 		VideoPlayer.VideoPlayer = void 0;
-		var trigger_1 = requireLib$1();
+		var trigger_1 = requireCjs();
 		/**
 		 * ビデオ再生を行うクラス。
 		 *
@@ -14532,7 +13949,7 @@
 	var hasRequiredLib;
 
 	function requireLib () {
-		if (hasRequiredLib) return lib$1;
+		if (hasRequiredLib) return lib;
 		hasRequiredLib = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -14567,8 +13984,8 @@
 			__exportStar(requireVectorImageAsset(), exports);
 			__exportStar(requireVideoAsset$1(), exports);
 			__exportStar(requireVideoPlayer(), exports); 
-		} (lib$1));
-		return lib$1;
+		} (lib));
+		return lib;
 	}
 
 	var hasRequiredScriptAsset;
@@ -17368,7 +16785,10 @@
 		            "destination-over": [this._context.ONE_MINUS_DST_ALPHA, this._context.ONE],
 		            "lighter": [this._context.ONE, this._context.ONE],
 		            "copy": [this._context.ONE, this._context.ZERO],
-		            "xor": [this._context.ONE_MINUS_DST_ALPHA, this._context.ONE_MINUS_SRC_ALPHA]
+		            "xor": [this._context.ONE_MINUS_DST_ALPHA, this._context.ONE_MINUS_SRC_ALPHA],
+		            // difference と saturation は WebGL での描画に対応していないため、source-over と同等の値にする
+		            "difference": [this._context.ONE, this._context.ONE_MINUS_SRC_ALPHA],
+		            "saturation": [this._context.ONE, this._context.ONE_MINUS_SRC_ALPHA],
 		        };
 		        var compositeOperation = this._compositeOps[this._currentCompositeOperation];
 		        this._context.blendFunc(compositeOperation[0], compositeOperation[1]);
@@ -18213,7 +17633,7 @@
 		        }
 		        var audio = asset.cloneElement();
 		        if (audio) {
-		            if (asset.offset === undefined) {
+		            if (!asset.offset) {
 		                // offsetが指定されていない場合、durationを無視して全体再生する
 		                audio.loop = asset.loop;
 		            }
@@ -18241,6 +17661,7 @@
 		            (0, HTMLAudioAutoplayHelper_1.setupChromeMEIWorkaround)(audio);
 		            audio.volume = this._calculateVolume();
 		            audio.play().catch(function (_err) { });
+		            // FIXME: 部分ループ再生の場合、音声再生1周目終了時に内部情報を削除してしまうため、この後にstop()を呼び出しても音声が止まらない問題がある
 		            audio.addEventListener("ended", this._endedEventHandler, false);
 		            audio.addEventListener("play", this._onPlayEventHandler, false);
 		            this._isWaitingPlayEvent = true;

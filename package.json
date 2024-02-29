@@ -1,6 +1,6 @@
 {
   "name": "@akashic/akashic-engine-standalone",
-  "version": "3.16.6",
+  "version": "3.17.0",
   "description": "A repository to release standalone Akashic Engine script",
   "main": "lib/index.js",
   "scripts": {
@@ -68,12 +68,13 @@
     ]
   },
   "dependencies": {
-    "@akashic/akashic-engine": "3.16.6",
+    "@akashic/akashic-engine": "3.17.0",
     "@akashic/amflow": "3.3.0",
-    "@akashic/pdi-browser": "2.8.5",
+    "@akashic/pdi-browser": "2.9.0",
     "@akashic/pdi-common-impl": "1.4.0",
-    "@akashic/pdi-types": "1.12.0",
+    "@akashic/pdi-types": "1.13.0",
     "@akashic/playlog": "3.3.0",
+    "@akashic/trigger": "^2.1.0",
     "url-join": "^5.0.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.17.0 */
+/*! akashic-engine-standalone@3.17.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -5100,6 +5100,15 @@
 		    AssetAccessor.prototype.getBinaryDataById = function (assetId) {
 		        return this.getBinaryById(assetId).data;
 		    };
+		    /**
+		     * アセットIDからアセットのパスを返す。
+		     * 当該のアセットが読み込まれていない場合、 null を返す。
+		     *
+		     * @param assetId 取得するアセットのID
+		     */
+		    AssetAccessor.prototype.pathOf = function (assetId) {
+		        return this._assetManager.resolveAccessorPath(assetId);
+		    };
 		    return AssetAccessor;
 		}());
 		AssetAccessor.AssetAccessor = AssetAccessor$1;
@@ -5879,6 +5888,21 @@
 		                ret.push(asset);
 		        }
 		        return ret;
+		    };
+		    /**
+		     * アセットIDから読み込み済みのアクセッサパス返す。
+		     * 当該のアセットが読み込まれていない場合、 null を返す。
+		     *
+		     * @param assetId 取得するアセットのID
+		     */
+		    AssetManager.prototype.resolveAccessorPath = function (assetId) {
+		        var asset = this._assets[assetId];
+		        if (!asset)
+		            return null;
+		        var virtualPath = this._liveAssetPathTable[asset.path];
+		        if (!virtualPath)
+		            return null;
+		        return "/" + virtualPath;
 		    };
 		    /**
 		     * @ignore
@@ -7267,7 +7291,6 @@
 		Object.defineProperty(Scene, "__esModule", { value: true });
 		Scene.Scene = void 0;
 		var trigger_1 = requireCjs();
-		var AssetAccessor_1 = requireAssetAccessor();
 		var AssetHolder_1 = requireAssetHolder();
 		var Camera2D_1 = requireCamera2D();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
@@ -7299,7 +7322,7 @@
 		        this._onReady = new trigger_1.Trigger();
 		        this._ready = this._onReady;
 		        this.assets = {};
-		        this.asset = new AssetAccessor_1.AssetAccessor(game._assetManager);
+		        this.asset = game.asset;
 		        this.vars = {};
 		        this._loaded = false;
 		        this._prefetchRequested = false;
@@ -10298,6 +10321,7 @@
 		Object.defineProperty(Game, "__esModule", { value: true });
 		Game.Game = void 0;
 		var trigger_1 = requireCjs();
+		var AssetAccessor_1 = requireAssetAccessor();
 		var AssetManager_1 = requireAssetManager();
 		var AudioSystemManager_1 = requireAudioSystemManager();
 		var DefaultLoadingScene_1 = requireDefaultLoadingScene();
@@ -10426,6 +10450,7 @@
 		        }
 		        this._assetManager = new AssetManager_1.AssetManager(this, gameConfiguration.assets, gameConfiguration.audio, gameConfiguration.moduleMainScripts);
 		        this._moduleManager = undefined;
+		        this.asset = new AssetAccessor_1.AssetAccessor(this._assetManager);
 		        this.operationPluginManager = new OperationPluginManager_1.OperationPluginManager(this, param.operationPluginViewInfo || null);
 		        this._onOperationPluginOperated = new trigger_1.Trigger();
 		        this._operationPluginOperated = this._onOperationPluginOperated;
@@ -11169,6 +11194,7 @@
 		        this._mainParameter = undefined;
 		        this._assetManager.destroy();
 		        this._assetManager = undefined;
+		        this.asset = undefined;
 		        this._eventConverter = undefined;
 		        this._pointEventResolver = undefined;
 		        this.operationPluginManager = undefined;

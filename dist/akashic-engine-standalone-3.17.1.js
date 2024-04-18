@@ -14483,6 +14483,12 @@
 		        this._yScale = yScale;
 		    };
 		    InputEventHandler.prototype.pointDown = function (identifier, pagePosition, button) {
+		        // chrome で view の境界部分をクリックした際にポイント座標が view の外の座標となることがあるため、view 外の座標の場合は除外する
+		        if (pagePosition.offsetX < 0
+		            || pagePosition.offsetY < 0
+		            || pagePosition.offsetX > this.inputView.offsetWidth
+		            || pagePosition.offsetY > this.inputView.offsetHeight)
+		            return;
 		        this.pointTrigger.fire({
 		            type: 0 /* PlatformPointType.Down */,
 		            identifier: identifier,

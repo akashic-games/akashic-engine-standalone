@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.17.1 */
+/*! akashic-engine-standalone@3.18.0 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -5619,7 +5619,7 @@
 		     * @param audioSystemConfMap このアセットマネージャに与えるオーディオシステムの宣言。
 		     * @param moduleMainScripts このアセットマネージャに与える require() 解決用のエントリポイント。
 		     */
-		    function AssetManager(gameParams, conf, audioSystemConfMap, moduleMainScripts) {
+		    function AssetManager(gameParams, conf, audioSystemConfMap, moduleMainScripts, moduleMainPaths) {
 		        this._resourceFactory = gameParams.resourceFactory;
 		        this._audioSystemManager = gameParams.audio;
 		        this._defaultAudioSystemId = gameParams.defaultAudioSystemId;
@@ -5630,6 +5630,7 @@
 		        this._liveAssetVirtualPathTable = {};
 		        this._liveAssetPathTable = {};
 		        this._moduleMainScripts = moduleMainScripts ? moduleMainScripts : {};
+		        this._moduleMainPaths = moduleMainPaths !== null && moduleMainPaths !== void 0 ? moduleMainPaths : null;
 		        this._refCounts = {};
 		        this._loadings = {};
 		        this._generatedAssetCount = 0;
@@ -9361,6 +9362,7 @@
 		        var resolvedPath;
 		        var liveAssetVirtualPathTable = this._assetManager._liveAssetVirtualPathTable;
 		        var moduleMainScripts = this._assetManager._moduleMainScripts;
+		        var moduleMainPaths = this._assetManager._moduleMainPaths;
 		        // 0. アセットIDらしい場合はまず当該アセットを探す
 		        if (path.indexOf("/") === -1) {
 		            if (this._assetManager._assets.hasOwnProperty(path)) {
@@ -9378,7 +9380,8 @@
 		            return this._scriptCaches[resolvedPath]._cachedValue();
 		        }
 		        // akashic-engine独自仕様: 対象の `path` が `moduleMainScripts` に指定されていたらそちらを参照する
-		        if (moduleMainScripts[path]) {
+		        // moduleMainScripts は将来的に非推奨となるため、moduleMainPaths が存在しない場合だけ参照する
+		        if (!moduleMainPaths && moduleMainScripts[path]) {
 		            targetScriptAsset = liveAssetVirtualPathTable[resolvedPath];
 		        }
 		        else {
@@ -9428,6 +9431,7 @@
 		        var resolvedPath = null;
 		        var liveAssetVirtualPathTable = this._assetManager._liveAssetVirtualPathTable;
 		        var moduleMainScripts = this._assetManager._moduleMainScripts;
+		        var moduleMainPaths = this._assetManager._moduleMainPaths;
 		        // require(X) from module at path Y
 		        // 1. If X is a core module,
 		        // (何もしない。コアモジュールには対応していない。ゲーム開発者は自分でコアモジュールへの依存を解決する必要がある)
@@ -9459,7 +9463,8 @@
 		        else {
 		            // 3. LOAD_NODE_MODULES(X, dirname(Y))
 		            // akashic-engine独自仕様: 対象の `path` が `moduleMainScripts` に指定されていたらそちらを返す
-		            if (moduleMainScripts[path]) {
+		            // moduleMainScripts は将来的に非推奨となるため、moduleMainPaths が存在しない場合だけ参照する
+		            if (!moduleMainPaths && moduleMainScripts[path]) {
 		                return moduleMainScripts[path];
 		            }
 		            // 3.a LOAD_NODE_MODULES(X, START)
@@ -9526,6 +9531,10 @@
 		    ModuleManager.prototype._resolveAbsolutePathAsDirectory = function (resolvedPath, liveAssetPathTable) {
 		        var path = resolvedPath + "/package.json";
 		        var asset = liveAssetPathTable[path];
+		        var moduleMainPaths = this._assetManager._moduleMainPaths;
+		        if (moduleMainPaths && moduleMainPaths[path]) {
+		            return moduleMainPaths[path];
+		        }
 		        // liveAssetPathTable[path] != null だけではpathと同名のprototypeプロパティがある場合trueになってしまうので hasOwnProperty() を利用
 		        if (liveAssetPathTable.hasOwnProperty(path) && asset.type === "text") {
 		            var pkg = JSON.parse(asset.data);
@@ -10448,7 +10457,7 @@
 		        if (Array.isArray(gameConfiguration.assets)) {
 		            throw new Error("Game#constructor: array type of configuration.assets is not yet supported");
 		        }
-		        this._assetManager = new AssetManager_1.AssetManager(this, gameConfiguration.assets, gameConfiguration.audio, gameConfiguration.moduleMainScripts);
+		        this._assetManager = new AssetManager_1.AssetManager(this, gameConfiguration.assets, gameConfiguration.audio, gameConfiguration.moduleMainScripts, gameConfiguration.moduleMainPaths);
 		        this._moduleManager = undefined;
 		        this.asset = new AssetAccessor_1.AssetAccessor(this._assetManager);
 		        this.operationPluginManager = new OperationPluginManager_1.OperationPluginManager(this, param.operationPluginViewInfo || null);

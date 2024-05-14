@@ -17668,8 +17668,16 @@
 		        return _this;
 		    }
 		    HTMLAudioPlayer.prototype.play = function (asset) {
-		        var _a;
+		        var _a, _b;
 		        if (this.currentAudio) {
+		            if (asset.id === this.currentAudio.id) {
+		                // 同じ audio を 連続で再生するとエラーとなる。これは audio.play() が非同期で開始されるためである。
+		                // 現在再生中とこれから再生しようとする audio が同じ場合は現在の audio を先頭から再生し、これから再生しようとする audio は何もしないようにする。
+		                _super.prototype.stop.call(this);
+		                this._audioInstance.currentTime = ((_a = asset.offset) !== null && _a !== void 0 ? _a : 0) / 1000;
+		                _super.prototype.play.call(this, asset);
+		                return;
+		            }
 		            this.stop();
 		        }
 		        var audio = asset.cloneElement();
@@ -17679,7 +17687,7 @@
 		                audio.loop = asset.loop;
 		            }
 		            else {
-		                var offsetSec_1 = ((_a = asset.offset) !== null && _a !== void 0 ? _a : 0) / 1000;
+		                var offsetSec_1 = ((_b = asset.offset) !== null && _b !== void 0 ? _b : 0) / 1000;
 		                var durationEndSec_1 = asset.duration / 1000 + offsetSec_1;
 		                audio.currentTime = offsetSec_1;
 		                audio.ontimeupdate = function () {

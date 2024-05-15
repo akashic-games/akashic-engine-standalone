@@ -1175,6 +1175,17 @@
 		return PlatformPointEvent;
 	}
 
+	var RendererCandidate = {};
+
+	var hasRequiredRendererCandidate;
+
+	function requireRendererCandidate () {
+		if (hasRequiredRendererCandidate) return RendererCandidate;
+		hasRequiredRendererCandidate = 1;
+		Object.defineProperty(RendererCandidate, "__esModule", { value: true });
+		return RendererCandidate;
+	}
+
 	var RendererRequirement = {};
 
 	var hasRequiredRendererRequirement;
@@ -1256,6 +1267,7 @@
 			__exportStar(requirePlatform$1(), exports);
 			__exportStar(requirePlatformEventHandler(), exports);
 			__exportStar(requirePlatformPointEvent(), exports);
+			__exportStar(requireRendererCandidate(), exports);
 			__exportStar(requireRendererRequirement(), exports);
 			__exportStar(requireResourceFactory$3(), exports); 
 		} (lib$1));

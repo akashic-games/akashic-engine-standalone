@@ -15354,11 +15354,31 @@
 		    }
 		    RenderingHelper.clamp = clamp;
 		    function usedWebGL(rendererCandidates) {
-		        var used = false;
-		        if (rendererCandidates && (0 < rendererCandidates.length)) {
-		            used = (rendererCandidates[0] === "webgl");
+		        var _a;
+		        if (!rendererCandidates || rendererCandidates.length === 0) {
+		            return false;
 		        }
-		        return used;
+		        var candidate = rendererCandidates[0];
+		        if (typeof candidate === "string") {
+		            if (candidate === "webgl") {
+		                return {
+		                    type: "webgl",
+		                    options: {
+		                        enableDepthBuffer: false
+		                    }
+		                };
+		            }
+		        }
+		        else if (candidate.type === "webgl") {
+		            var webglRendererCandidate = candidate;
+		            return {
+		                type: "webgl",
+		                options: {
+		                    enableDepthBuffer: !!((_a = webglRendererCandidate.options) === null || _a === void 0 ? void 0 : _a.enableDepthBuffer)
+		                }
+		            };
+		        }
+		        return false;
 		    }
 		    RenderingHelper.usedWebGL = usedWebGL;
 		})(RenderingHelper$1 || (RenderingHelper.RenderingHelper = RenderingHelper$1 = {}));
@@ -16512,7 +16532,7 @@
 		var WebGLShaderProgram_1 = requireWebGLShaderProgram();
 		var WebGLTextureAtlas_1 = requireWebGLTextureAtlas();
 		var WebGLSharedObject$1 = /** @class */ (function () {
-		    function WebGLSharedObject(width, height) {
+		    function WebGLSharedObject(params) {
 		        this._renderTarget = undefined;
 		        this._defaultShaderProgram = undefined;
 		        this._textureAtlas = undefined;
@@ -16530,11 +16550,15 @@
 		        this._currentShaderProgram = undefined;
 		        this._compositeOps = undefined;
 		        this._deleteRequestedTargets = undefined;
+		        var width = params.width;
+		        var height = params.height;
+		        var enableDepthBuffer = !!params.enableDepthBuffer;
 		        var surface = new WebGLPrimarySurface_1.WebGLPrimarySurface(this, width, height);
-		        var context = surface.canvas.getContext("webgl", { depth: false, preserveDrawingBuffer: true });
+		        var context = surface.canvas.getContext("webgl", { depth: enableDepthBuffer, preserveDrawingBuffer: true });
 		        if (!context) {
 		            throw new Error("WebGLSharedObject#constructor: could not initialize WebGLRenderingContext");
 		        }
+		        this._enableDepthBuffer = enableDepthBuffer;
 		        this._surface = surface;
 		        this._context = context;
 		        this._init();
@@ -16575,6 +16599,12 @@
 		        this._currentShaderProgram.updateUniforms();
 		    };
 		    WebGLSharedObject.prototype.clear = function () {
+		        if (this._enableDepthBuffer) {
+		            this._context.depthMask(true); // NOTE: 既存の描画に影響を与えないよう、クリア時のみ有効にする
+		            this._context.clear(this._context.COLOR_BUFFER_BIT | this._context.DEPTH_BUFFER_BIT);
+		            this._context.depthMask(false);
+		            return;
+		        }
 		        this._context.clear(this._context.COLOR_BUFFER_BIT);
 		    };
 		    WebGLSharedObject.prototype.draw = function (state, surfaceTexture, offsetX, offsetY, width, height, canvasOffsetX, canvasOffsetY, color) {
@@ -16947,9 +16977,10 @@
 		        this._disposer = new CanvasDisposer_1.CanvasDisposer();
 		    }
 		    SurfaceFactory.prototype.createPrimarySurface = function (width, height, rendererCandidates) {
-		        if (RenderingHelper_1.RenderingHelper.usedWebGL(rendererCandidates)) {
+		        var usedWebGL = RenderingHelper_1.RenderingHelper.usedWebGL(rendererCandidates);
+		        if (usedWebGL) {
 		            if (!this._shared) {
-		                this._shared = new WebGLSharedObject_1.WebGLSharedObject(width, height);
+		                this._shared = new WebGLSharedObject_1.WebGLSharedObject({ width: width, height: height, enableDepthBuffer: usedWebGL.options.enableDepthBuffer });
 		            }
 		            return this._shared.getPrimarySurface();
 		        }

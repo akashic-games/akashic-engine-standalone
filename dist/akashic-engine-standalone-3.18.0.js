@@ -17700,6 +17700,7 @@
 		        _this._audioInstance = null;
 		        _this._isWaitingPlayEvent = false;
 		        _this._isStopRequested = false;
+		        _this._assetLoop = false;
 		        _this._manager = manager;
 		        _this._endedEventHandler = function () {
 		            _this._onAudioEnded();
@@ -17724,6 +17725,7 @@
 		            this.stop();
 		        }
 		        var audio = asset.cloneElement();
+		        this._assetLoop = asset.loop;
 		        if (audio) {
 		            if (!asset.offset) {
 		                // offsetが指定されていない場合、durationを無視して全体再生する
@@ -17801,8 +17803,10 @@
 		        }
 		    };
 		    HTMLAudioPlayer.prototype._onAudioEnded = function () {
-		        this._clearEndedEventHandler();
-		        _super.prototype.stop.call(this);
+		        if (!this._assetLoop) {
+		            this._clearEndedEventHandler();
+		            _super.prototype.stop.call(this);
+		        }
 		    };
 		    HTMLAudioPlayer.prototype._clearEndedEventHandler = function () {
 		        if (this._audioInstance)

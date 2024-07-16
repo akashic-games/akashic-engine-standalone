@@ -14893,6 +14893,8 @@
 		        this.surface = undefined;
 		        this.inputHandlerLayer = undefined;
 		        this.rootView = undefined;
+		        // Canvas 要素のサイズ変更に追従するための Observer
+		        this.observer = undefined;
 		        /**
 		         * ゲームコンテンツのCanvas拡大・縮小時に内部のコンテキスト領域のリサイズを行うかどうか。初期値はfalse。
 		         * Note: この機能は実験的なものです。特定の環境や実行状態によっては正常な描画が期待できない場合もあります。
@@ -14954,6 +14956,7 @@
 		        this.inputHandlerLayer.setViewTabIndex(tabIndex);
 		    };
 		    ContainerController.prototype._loadView = function () {
+		        var _this = this;
 		        var _a = this._rendererReq, width = _a.primarySurfaceWidth, height = _a.primarySurfaceHeight;
 		        // DocumentFragmentはinsertした時点で開放されているため毎回作る
 		        // https://dom.spec.whatwg.org/#concept-node-insert
@@ -14969,11 +14972,20 @@
 		            if (this.surface && !this.surface.destroyed()) {
 		                this.inputHandlerLayer.view.removeChild(this.surface.canvas);
 		                this.surface.destroy();
+		                // メモリリーク防止のため、過去の Canvas に対する Observer を削除しておく
+		                this.observer.disconnect();
 		            }
 		        }
 		        // 入力受け付けレイヤー > 描画レイヤー
 		        this.surface = this.resourceFactory.createPrimarySurface(width, height);
-		        this.inputHandlerLayer.view.appendChild(this.surface.getHTMLElement());
+		        var surfaceElement = this.surface.getHTMLElement();
+		        // Canvasの親要素のwidthとheightは範囲外判定で使用するため、Canvasに追従できるようにする必要がある
+		        this.observer = new MutationObserver(function () {
+		            _this.inputHandlerLayer.view.style.width = surfaceElement.offsetWidth + "px";
+		            _this.inputHandlerLayer.view.style.height = surfaceElement.offsetHeight + "px";
+		        });
+		        this.observer.observe(surfaceElement, { attributeFilter: ["width", "height", "style"] });
+		        this.inputHandlerLayer.view.appendChild(surfaceElement);
 		        // containerController -> input -> canvas
 		        this.container.appendChild(this.inputHandlerLayer.view);
 		    };
@@ -17700,6 +17712,7 @@
 		        _this._audioInstance = null;
 		        _this._isWaitingPlayEvent = false;
 		        _this._isStopRequested = false;
+		        _this._assetLoop = false;
 		        _this._manager = manager;
 		        _this._endedEventHandler = function () {
 		            _this._onAudioEnded();
@@ -17724,6 +17737,7 @@
 		            this.stop();
 		        }
 		        var audio = asset.cloneElement();
+		        this._assetLoop = asset.loop;
 		        if (audio) {
 		            if (!asset.offset) {
 		                // offsetが指定されていない場合、durationを無視して全体再生する
@@ -17801,8 +17815,10 @@
 		        }
 		    };
 		    HTMLAudioPlayer.prototype._onAudioEnded = function () {
-		        this._clearEndedEventHandler();
-		        _super.prototype.stop.call(this);
+		        if (!this._assetLoop) {
+		            this._clearEndedEventHandler();
+		            _super.prototype.stop.call(this);
+		        }
 		    };
 		    HTMLAudioPlayer.prototype._clearEndedEventHandler = function () {
 		        if (this._audioInstance)

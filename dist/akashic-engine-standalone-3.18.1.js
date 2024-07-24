@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.18.0 */
+/*! akashic-engine-standalone@3.18.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -9374,7 +9374,6 @@
 		        var resolvedPath;
 		        var liveAssetVirtualPathTable = this._assetManager._liveAssetVirtualPathTable;
 		        var moduleMainScripts = this._assetManager._moduleMainScripts;
-		        var moduleMainPaths = this._assetManager._moduleMainPaths;
 		        // 0. アセットIDらしい場合はまず当該アセットを探す
 		        if (path.indexOf("/") === -1) {
 		            if (this._assetManager._assets.hasOwnProperty(path)) {
@@ -9392,8 +9391,8 @@
 		            return this._scriptCaches[resolvedPath]._cachedValue();
 		        }
 		        // akashic-engine独自仕様: 対象の `path` が `moduleMainScripts` に指定されていたらそちらを参照する
-		        // moduleMainScripts は将来的に非推奨となるため、moduleMainPaths が存在しない場合だけ参照する
-		        if (!moduleMainPaths && moduleMainScripts[path]) {
+		        // moduleMainScripts は将来的に非推奨となるが、後方互換性のため moduleMainScripts が存在すれば moduleMainScripts を優先する
+		        if (moduleMainScripts[path]) {
 		            targetScriptAsset = liveAssetVirtualPathTable[resolvedPath];
 		        }
 		        else {
@@ -9443,7 +9442,6 @@
 		        var resolvedPath = null;
 		        var liveAssetVirtualPathTable = this._assetManager._liveAssetVirtualPathTable;
 		        var moduleMainScripts = this._assetManager._moduleMainScripts;
-		        var moduleMainPaths = this._assetManager._moduleMainPaths;
 		        // require(X) from module at path Y
 		        // 1. If X is a core module,
 		        // (何もしない。コアモジュールには対応していない。ゲーム開発者は自分でコアモジュールへの依存を解決する必要がある)
@@ -9475,8 +9473,8 @@
 		        else {
 		            // 3. LOAD_NODE_MODULES(X, dirname(Y))
 		            // akashic-engine独自仕様: 対象の `path` が `moduleMainScripts` に指定されていたらそちらを返す
-		            // moduleMainScripts は将来的に非推奨となるため、moduleMainPaths が存在しない場合だけ参照する
-		            if (!moduleMainPaths && moduleMainScripts[path]) {
+		            // moduleMainScripts は将来的に非推奨となるが、後方互換性のため moduleMainScripts が存在すれば moduleMainScripts を優先する
+		            if (moduleMainScripts[path]) {
 		                return moduleMainScripts[path];
 		            }
 		            // 3.a LOAD_NODE_MODULES(X, START)

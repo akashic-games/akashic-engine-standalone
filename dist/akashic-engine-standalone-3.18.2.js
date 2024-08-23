@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.18.1 */
+/*! akashic-engine-standalone@3.18.2 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -9674,7 +9674,7 @@
 		    }
 		    OperationHandler.prototype.onOperation = function (op) {
 		        var iop;
-		        if (op instanceof Array) {
+		        if (Array.isArray(op)) {
 		            iop = { _code: this._code, data: op };
 		        }
 		        else {

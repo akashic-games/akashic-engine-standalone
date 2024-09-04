@@ -280,11 +280,11 @@
 
 	var require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
 
-	var lib$3 = {};
+	var lib$4 = {};
 
 	var index_common = {};
 
-	var lib$2 = {};
+	var lib$3 = {};
 
 	var AssetConfiguration = {};
 
@@ -319,11 +319,11 @@
 		return OperationPluginInfo;
 	}
 
-	var hasRequiredLib$3;
+	var hasRequiredLib$4;
 
-	function requireLib$3 () {
-		if (hasRequiredLib$3) return lib$2;
-		hasRequiredLib$3 = 1;
+	function requireLib$4 () {
+		if (hasRequiredLib$4) return lib$3;
+		hasRequiredLib$4 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
@@ -343,28 +343,66 @@
 			__exportStar(requireAssetConfiguration(), exports);
 			__exportStar(requireGameConfiguration(), exports);
 			__exportStar(requireOperationPluginInfo(), exports); 
-		} (lib$2));
-		return lib$2;
+		} (lib$3));
+		return lib$3;
 	}
 
-	var cjs = {};
+	var lib$2 = {};
 
-	var hasRequiredCjs;
+	var TriggerLike = {};
 
-	function requireCjs () {
-		if (hasRequiredCjs) return cjs;
-		hasRequiredCjs = 1;
+	var hasRequiredTriggerLike;
 
-		function isPromise(target) {
+	function requireTriggerLike () {
+		if (hasRequiredTriggerLike) return TriggerLike;
+		hasRequiredTriggerLike = 1;
+		Object.defineProperty(TriggerLike, "__esModule", { value: true });
+		return TriggerLike;
+	}
+
+	var ChainTriggerLike = {};
+
+	var hasRequiredChainTriggerLike;
+
+	function requireChainTriggerLike () {
+		if (hasRequiredChainTriggerLike) return ChainTriggerLike;
+		hasRequiredChainTriggerLike = 1;
+		Object.defineProperty(ChainTriggerLike, "__esModule", { value: true });
+		return ChainTriggerLike;
+	}
+
+	var Trigger = {};
+
+	var isPromise = {};
+
+	var hasRequiredIsPromise;
+
+	function requireIsPromise () {
+		if (hasRequiredIsPromise) return isPromise;
+		hasRequiredIsPromise = 1;
+		Object.defineProperty(isPromise, "__esModule", { value: true });
+		isPromise.isPromise = void 0;
+		function isPromise$1(target) {
 		    return (target != null &&
 		        (typeof target === "object" || typeof target === "function") &&
 		        typeof target.then === "function");
 		}
+		isPromise.isPromise = isPromise$1;
+		return isPromise;
+	}
 
+	var hasRequiredTrigger;
+
+	function requireTrigger () {
+		if (hasRequiredTrigger) return Trigger;
+		hasRequiredTrigger = 1;
+		Object.defineProperty(Trigger, "__esModule", { value: true });
+		Trigger.Trigger = void 0;
+		const isPromise_js_1 = requireIsPromise();
 		/**
 		 * イベント通知機構クラス。
 		 */
-		class Trigger {
+		let Trigger$1 = class Trigger {
 		    constructor() {
 		        this._handlers = [];
 		        this.length = 0;
@@ -442,7 +480,7 @@
 		            if (handler.filter && !handler.filter(handler))
 		                continue;
 		            const ret = handler.func.call(handler.owner, arg);
-		            const returnedTruthy = !isPromise(ret) && !!ret;
+		            const returnedTruthy = !(0, isPromise_js_1.isPromise)(ret) && !!ret;
 		            if (returnedTruthy || handler.once) {
 		                if (!this._handlers)
 		                    continue;
@@ -550,12 +588,25 @@
 		            return false;
 		        return true;
 		    }
-		}
+		};
+		Trigger.Trigger = Trigger$1;
+		return Trigger;
+	}
 
+	var ChainTrigger = {};
+
+	var hasRequiredChainTrigger;
+
+	function requireChainTrigger () {
+		if (hasRequiredChainTrigger) return ChainTrigger;
+		hasRequiredChainTrigger = 1;
+		Object.defineProperty(ChainTrigger, "__esModule", { value: true });
+		ChainTrigger.ChainTrigger = void 0;
+		const Trigger_js_1 = requireTrigger();
 		/**
 		 * 他のTriggerLikeに反応して発火するイベント通知機構。
 		 */
-		class ChainTrigger extends Trigger {
+		let ChainTrigger$1 = class ChainTrigger extends Trigger_js_1.Trigger {
 		    /**
 		     * `ChainTrigger` のインスタンスを生成する。
 		     *
@@ -614,11 +665,38 @@
 		            this.fire(args);
 		        }
 		    }
-		}
+		};
+		ChainTrigger.ChainTrigger = ChainTrigger$1;
+		return ChainTrigger;
+	}
 
-		cjs.ChainTrigger = ChainTrigger;
-		cjs.Trigger = Trigger;
-		return cjs;
+	var hasRequiredLib$3;
+
+	function requireLib$3 () {
+		if (hasRequiredLib$3) return lib$2;
+		hasRequiredLib$3 = 1;
+		(function (exports) {
+			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			    if (k2 === undefined) k2 = k;
+			    var desc = Object.getOwnPropertyDescriptor(m, k);
+			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+			      desc = { enumerable: true, get: function() { return m[k]; } };
+			    }
+			    Object.defineProperty(o, k2, desc);
+			}) : (function(o, m, k, k2) {
+			    if (k2 === undefined) k2 = k;
+			    o[k2] = m[k];
+			}));
+			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+			};
+			Object.defineProperty(exports, "__esModule", { value: true });
+			__exportStar(requireTriggerLike(), exports);
+			__exportStar(requireChainTriggerLike(), exports);
+			__exportStar(requireTrigger(), exports);
+			__exportStar(requireChainTrigger(), exports); 
+		} (lib$2));
+		return lib$2;
 	}
 
 	var lib$1 = {};
@@ -1285,7 +1363,7 @@
 		hasRequiredAudioPlayContext = 1;
 		Object.defineProperty(AudioPlayContext, "__esModule", { value: true });
 		AudioPlayContext.AudioPlayContext = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var AudioPlayContext$1 = /** @class */ (function () {
 		    function AudioPlayContext(param) {
 		        var _a;
@@ -2875,7 +2953,7 @@
 		})();
 		Object.defineProperty(E, "__esModule", { value: true });
 		E.E = E.PointMoveEvent = E.PointUpEvent = E.PointDownEvent = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var Event_1 = requireEvent();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Matrix_1 = requireMatrix();
@@ -4185,7 +4263,7 @@
 		})();
 		Object.defineProperty(FrameSprite, "__esModule", { value: true });
 		FrameSprite.FrameSprite = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var Sprite_1 = requireSprite();
 		/**
 		 * フレームとタイマーによるアニメーション機構を持つ `Sprite` 。
@@ -5292,7 +5370,7 @@
 		hasRequiredEmptyBinaryAsset = 1;
 		Object.defineProperty(EmptyBinaryAsset, "__esModule", { value: true });
 		EmptyBinaryAsset.EmptyBinaryAsset = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var EmptyBinaryAsset$1 = /** @class */ (function () {
 		    function EmptyBinaryAsset(id, path) {
 		        this.type = "binary";
@@ -5339,7 +5417,7 @@
 		hasRequiredEmptyVectorImageAsset = 1;
 		Object.defineProperty(EmptyVectorImageAsset, "__esModule", { value: true });
 		EmptyVectorImageAsset.EmptyVectorImageAsset = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var EmptyVectorImageAsset$1 = /** @class */ (function () {
 		    function EmptyVectorImageAsset(id, path, width, height, hint) {
 		        this.type = "vector-image";
@@ -5428,7 +5506,7 @@
 		hasRequiredPartialImageAsset = 1;
 		Object.defineProperty(PartialImageAsset, "__esModule", { value: true });
 		PartialImageAsset.PartialImageAsset = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * 部分画像アセット。
 		 *
@@ -7063,7 +7141,7 @@
 		hasRequiredTimer = 1;
 		Object.defineProperty(Timer, "__esModule", { value: true });
 		Timer.Timer = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * 一定時間で繰り返される処理を表すタイマー。
 		 *
@@ -7303,7 +7381,7 @@
 		hasRequiredScene = 1;
 		Object.defineProperty(Scene, "__esModule", { value: true });
 		Scene.Scene = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var AssetHolder_1 = requireAssetHolder();
 		var Camera2D_1 = requireCamera2D();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
@@ -7814,7 +7892,7 @@
 		})();
 		Object.defineProperty(LoadingScene, "__esModule", { value: true });
 		LoadingScene.LoadingScene = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var Scene_1 = requireScene();
 		/**
@@ -9660,7 +9738,7 @@
 		};
 		Object.defineProperty(OperationPluginManager, "__esModule", { value: true });
 		OperationPluginManager.OperationPluginManager = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * 操作プラグインからの通知をハンドルするクラス。
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはなく、ゲーム開発者が利用する必要もない。
@@ -10339,7 +10417,7 @@
 		hasRequiredGame = 1;
 		Object.defineProperty(Game, "__esModule", { value: true });
 		Game.Game = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var AssetAccessor_1 = requireAssetAccessor();
 		var AssetManager_1 = requireAssetManager();
 		var AudioSystemManager_1 = requireAudioSystemManager();
@@ -11591,8 +11669,8 @@
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
 			exports.PathUtil = exports.VideoSystem = exports.ShaderProgram = exports.Module = exports.AudioSystem = void 0;
+			__exportStar(requireLib$4(), exports);
 			__exportStar(requireLib$3(), exports);
-			__exportStar(requireCjs(), exports);
 			// pdi-types 由来の型を g 直下から reexport する。
 			// ただし一部の型名は、akashic-engine で同名のクラス実装を与えているため、
 			// そのままでは両方 export しようとして衝突する。
@@ -11704,7 +11782,7 @@
 	var hasRequiredLib$1;
 
 	function requireLib$1 () {
-		if (hasRequiredLib$1) return lib$3;
+		if (hasRequiredLib$1) return lib$4;
 		hasRequiredLib$1 = 1;
 		(function (exports) {
 			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -11725,8 +11803,8 @@
 			__exportStar(requireIndex_common(), exports);
 			__exportStar(requireGameHandlerSet$1(), exports); // NOTE: コンテンツから参照する必要はない
 			
-		} (lib$3));
-		return lib$3;
+		} (lib$4));
+		return lib$4;
 	}
 
 	var akashicEngine;
@@ -12001,7 +12079,7 @@
 		hasRequiredAsset$2 = 1;
 		Object.defineProperty(Asset$2, "__esModule", { value: true });
 		Asset$2.Asset = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var Asset = /** @class */ (function () {
 		    function Asset(id, path) {
 		        this.onDestroyed = new trigger_1.Trigger();
@@ -13070,7 +13148,7 @@
 		hasRequiredAsset$1 = 1;
 		Object.defineProperty(Asset$1, "__esModule", { value: true });
 		Asset$1.Asset = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * 各種リソースを表すクラス。
 		 * 本クラスのインスタンスをゲーム開発者が直接生成することはない。
@@ -13207,7 +13285,7 @@
 		hasRequiredAudioPlayer$1 = 1;
 		Object.defineProperty(AudioPlayer$1, "__esModule", { value: true });
 		AudioPlayer$1.AudioPlayer = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * サウンド再生を行うクラス。
 		 *
@@ -13929,7 +14007,7 @@
 		hasRequiredVideoPlayer = 1;
 		Object.defineProperty(VideoPlayer, "__esModule", { value: true });
 		VideoPlayer.VideoPlayer = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * ビデオ再生を行うクラス。
 		 *
@@ -14219,7 +14297,7 @@
 		hasRequiredHTMLVideoPlayer = 1;
 		Object.defineProperty(HTMLVideoPlayer, "__esModule", { value: true });
 		HTMLVideoPlayer.HTMLVideoPlayer = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var HTMLVideoPlayer$1 = /** @class */ (function () {
 		    function HTMLVideoPlayer(loop) {
 		        this._loop = !!loop;
@@ -14474,7 +14552,7 @@
 		hasRequiredInputEventHandler = 1;
 		Object.defineProperty(InputEventHandler, "__esModule", { value: true });
 		InputEventHandler.preventEventDefault = InputEventHandler.InputEventHandler = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		/**
 		 * 入力ハンドラ。
 		 *
@@ -14797,7 +14875,7 @@
 		hasRequiredInputHandlerLayer = 1;
 		Object.defineProperty(InputHandlerLayer, "__esModule", { value: true });
 		InputHandlerLayer.InputHandlerLayer = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var MouseTouchEventHandler_1 = requireMouseTouchEventHandler();
 		var PointerEventHandler_1 = requirePointerEventHandler();
 		/**
@@ -14872,7 +14950,7 @@
 		hasRequiredContainerController = 1;
 		Object.defineProperty(ContainerController, "__esModule", { value: true });
 		ContainerController.ContainerController = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var InputHandlerLayer_1 = requireInputHandlerLayer();
 		/*
 		 HTML要素のContainerを管理するクラス。
@@ -17552,7 +17630,7 @@
 		hasRequiredAudioPlayer = 1;
 		Object.defineProperty(AudioPlayer, "__esModule", { value: true });
 		AudioPlayer.AudioPlayer = void 0;
-		var trigger_1 = requireCjs();
+		var trigger_1 = requireLib$3();
 		var AudioPlayer$1 = /** @class */ (function () {
 		    function AudioPlayer(system) {
 		        this.onPlay = new trigger_1.Trigger();

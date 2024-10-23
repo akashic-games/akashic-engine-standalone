@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.18.2 */
+/*! akashic-engine-standalone@3.18.3 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -712,15 +712,15 @@
 		return commons;
 	}
 
-	var errors = {};
+	var errors$1 = {};
 
-	var hasRequiredErrors;
+	var hasRequiredErrors$1;
 
-	function requireErrors () {
-		if (hasRequiredErrors) return errors;
-		hasRequiredErrors = 1;
-		Object.defineProperty(errors, "__esModule", { value: true });
-		return errors;
+	function requireErrors$1 () {
+		if (hasRequiredErrors$1) return errors$1;
+		hasRequiredErrors$1 = 1;
+		Object.defineProperty(errors$1, "__esModule", { value: true });
+		return errors$1;
 	}
 
 	var CompositeOperation = {};
@@ -1308,7 +1308,7 @@
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
 			__exportStar(requireCommons(), exports);
-			__exportStar(requireErrors(), exports);
+			__exportStar(requireErrors$1(), exports);
 			__exportStar(requireCompositeOperation(), exports);
 			__exportStar(requireCompositeOperationString(), exports);
 			__exportStar(requireImageData(), exports);
@@ -3269,8 +3269,8 @@
 		     * 戻り値は、このエンティティの子孫の描画をスキップすべきであれば偽、でなければ真である。
 		     * (この値は、子孫の描画方法をカスタマイズする一部のサブクラスにおいて、通常の描画パスをスキップするために用いられる)
 		     *
-		     * @param renderer 描画先に対するRenderer
-		     * @param camera 対象のカメラ
+		     * @param _renderer 描画先に対するRenderer
+		     * @param _camera 対象のカメラ
 		     */
 		    E.prototype.renderSelf = function (_renderer, _camera) {
 		        // nothing to do
@@ -3350,6 +3350,8 @@
 		     * 子孫を持っている場合、子孫も破棄される。
 		     */
 		    E.prototype.destroy = function () {
+		        if (this.destroyed())
+		            return;
 		        if (this.parent)
 		            this.remove();
 		        if (this.children) {
@@ -3399,7 +3401,7 @@
 		     * 本メソッドは、このオブジェクトの `Object2D` 由来のプロパティ (`x`, `y`, `angle` など) を変更した場合にも呼びだす必要がある。
 		     * 本メソッドは、描画キャッシュの無効化処理を含まない。描画キャッシュを持つエンティティは、このメソッドとは別に `invalidate()` を提供している。
 		     * 描画キャッシュの無効化も必要な場合は、このメソッドではなくそちらを呼び出す必要がある。
-		     * @param isBubbling 通常ゲーム開発者が指定する必要はない。この変更通知が、(このエンティティ自身のみならず)子孫の変更の通知を含む場合、真を渡さなければならない。省略された場合、偽。
+		     * @param _isBubbling 通常ゲーム開発者が指定する必要はない。この変更通知が、(このエンティティ自身のみならず)子孫の変更の通知を含む場合、真を渡さなければならない。省略された場合、偽。
 		     */
 		    E.prototype.modified = function (_isBubbling) {
 		        // _matrixの用途は描画に限らない(e.g. E#findPointSourceByPoint)ので、Modifiedフラグと無関係にクリアする必要がある
@@ -3431,7 +3433,7 @@
 		     *
 		     * 戻り値は、子孫の探索をスキップすべきであれば偽、でなければ真である。
 		     *
-		     * @param point このエンティティ（`this`）の位置を基準とした相対座標
+		     * @param _point このエンティティ（`this`）の位置を基準とした相対座標
 		     */
 		    E.prototype.shouldFindChildrenByPoint = function (_point) {
 		        // nothing to do
@@ -3931,7 +3933,7 @@
 		     * これはエンジンが利用するものであり、ゲーム開発者が呼び出す必要はない。
 		     *
 		     * @param animatingHandler アニメーティングハンドラ
-		     * @param beforeSurface ハンドラ登録を解除するサーフェス
+		     * @param _beforeSurface ハンドラ登録を解除するサーフェス
 		     * @param afterSurface ハンドラを登録するサーフェス
 		     */
 		    function migrateAnimatingHandler(animatingHandler, _beforeSurface, afterSurface) {
@@ -4301,7 +4303,7 @@
 		     * `Sprite` から `FrameSprite` を作成する。
 		     * @param sprite 画像として使う`Sprite`
 		     * @param width 作成されるエンティティの高さ。省略された場合、 `sprite.width`
-		     * @param hegith 作成されるエンティティの高さ。省略された場合、 `sprite.height`
+		     * @param height 作成されるエンティティの高さ。省略された場合、 `sprite.height`
 		     */
 		    FrameSprite.createBySprite = function (sprite, width, height) {
 		        var frameSprite = new FrameSprite({
@@ -4918,6 +4920,21 @@
 		return Pane;
 	}
 
+	var errors = {};
+
+	var hasRequiredErrors;
+
+	function requireErrors () {
+		if (hasRequiredErrors) return errors;
+		hasRequiredErrors = 1;
+		/**
+		 * akashic-engine 独自のエラー型定義。
+		 */
+		Object.defineProperty(errors, "__esModule", { value: true });
+		
+		return errors;
+	}
+
 	var AssetAccessor = {};
 
 	var hasRequiredAssetAccessor;
@@ -4940,7 +4957,7 @@
 		    /**
 		     * `AssetAccessor` のインスタンスを生成する。
 		     *
-		     * @param ラップする `AssetManager`
+		     * @param assetManager ラップする `AssetManager`
 		     */
 		    function AssetAccessor(assetManager) {
 		        this._assetManager = assetManager;
@@ -7460,7 +7477,7 @@
 		     *
 		     * このメソッドは、このシーンに紐づいている `E` の `modified()` を呼び出すことで暗黙に呼び出される。
 		     * 通常、ゲーム開発者がこのメソッドを呼び出す必要はない。
-		     * @param isBubbling この関数をこのシーンの子の `modified()` から呼び出す場合、真を渡さなくてはならない。省略された場合、偽。
+		     * @param _isBubbling この関数をこのシーンの子の `modified()` から呼び出す場合、真を渡さなくてはならない。省略された場合、偽。
 		     */
 		    Scene.prototype.modified = function (_isBubbling) {
 		        this.game.modified();
@@ -8881,7 +8898,7 @@
 		     * 実装上の制限から、このメソッドを呼び出す場合、maxAtlasNum が 1 または undefined/null(1として扱われる) である必要がある。
 		     * そうでない場合、失敗する可能性がある。
 		     *
-		     * @param missingGlyph `BitmapFont#map` に存在しないコードポイントの代わりに表示するべき文字。最初の一文字が用いられる。
+		     * @param missingGlyphChar `BitmapFont#map` に存在しないコードポイントの代わりに表示するべき文字。最初の一文字が用いられる。
 		     */
 		    DynamicFont.prototype.asBitmapFont = function (missingGlyphChar) {
 		        var _this = this;
@@ -11694,6 +11711,7 @@
 			__exportStar(requireLabel(), exports);
 			__exportStar(requirePane(), exports);
 			__exportStar(requireSprite(), exports);
+			__exportStar(requireErrors(), exports);
 			__exportStar(requireAssetAccessor(), exports);
 			__exportStar(requireAssetGenerationConfiguration(), exports);
 			__exportStar(requireAssetHolder(), exports);

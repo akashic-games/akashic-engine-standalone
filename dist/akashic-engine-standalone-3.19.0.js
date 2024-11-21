@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.18.3 */
+/*! akashic-engine-standalone@3.19.0 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -297,6 +297,17 @@
 		return AssetConfiguration;
 	}
 
+	var AssetBundleConfiguration = {};
+
+	var hasRequiredAssetBundleConfiguration;
+
+	function requireAssetBundleConfiguration () {
+		if (hasRequiredAssetBundleConfiguration) return AssetBundleConfiguration;
+		hasRequiredAssetBundleConfiguration = 1;
+		Object.defineProperty(AssetBundleConfiguration, "__esModule", { value: true });
+		return AssetBundleConfiguration;
+	}
+
 	var GameConfiguration = {};
 
 	var hasRequiredGameConfiguration;
@@ -341,6 +352,7 @@
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
 			__exportStar(requireAssetConfiguration(), exports);
+			__exportStar(requireAssetBundleConfiguration(), exports);
 			__exportStar(requireGameConfiguration(), exports);
 			__exportStar(requireOperationPluginInfo(), exports); 
 		} (lib$3));
@@ -5378,6 +5390,51 @@
 
 	var AssetManager = {};
 
+	var BundledScriptAsset = {};
+
+	var hasRequiredBundledScriptAsset;
+
+	function requireBundledScriptAsset () {
+		if (hasRequiredBundledScriptAsset) return BundledScriptAsset;
+		hasRequiredBundledScriptAsset = 1;
+		Object.defineProperty(BundledScriptAsset, "__esModule", { value: true });
+		BundledScriptAsset.BundledScriptAsset = void 0;
+		var trigger_1 = requireLib$3();
+		var BundledScriptAsset$1 = /** @class */ (function () {
+		    function BundledScriptAsset(param) {
+		        this.type = "script";
+		        this.id = param.id;
+		        this.script = "";
+		        this.path = param.path;
+		        this.originalPath = param.path;
+		        this.onDestroyed = new trigger_1.Trigger();
+		        this.execute = param.execute.bind(this);
+		    }
+		    BundledScriptAsset.prototype.inUse = function () {
+		        return true;
+		    };
+		    BundledScriptAsset.prototype.destroy = function () {
+		        if (!this.onDestroyed.destroyed()) {
+		            this.onDestroyed.destroy();
+		        }
+		        this.execute = undefined;
+		    };
+		    BundledScriptAsset.prototype.destroyed = function () {
+		        return !this.execute;
+		    };
+		    BundledScriptAsset.prototype._load = function (loader) {
+		        loader._onAssetLoad(this);
+		    };
+		    BundledScriptAsset.prototype._assetPathFilter = function (path) {
+		        return path;
+		    };
+		    return BundledScriptAsset;
+		}());
+		BundledScriptAsset.BundledScriptAsset = BundledScriptAsset$1;
+		
+		return BundledScriptAsset;
+	}
+
 	var EmptyBinaryAsset = {};
 
 	var hasRequiredEmptyBinaryAsset;
@@ -5629,8 +5686,20 @@
 	function requireAssetManager () {
 		if (hasRequiredAssetManager) return AssetManager;
 		hasRequiredAssetManager = 1;
+		var __assign = (commonjsGlobal && commonjsGlobal.__assign) || function () {
+		    __assign = Object.assign || function(t) {
+		        for (var s, i = 1, n = arguments.length; i < n; i++) {
+		            s = arguments[i];
+		            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+		                t[p] = s[p];
+		        }
+		        return t;
+		    };
+		    return __assign.apply(this, arguments);
+		};
 		Object.defineProperty(AssetManager, "__esModule", { value: true });
 		AssetManager.AssetManager = void 0;
+		var BundledScriptAsset_1 = requireBundledScriptAsset();
 		var EmptyBinaryAsset_1 = requireEmptyBinaryAsset();
 		var EmptyGeneratedVectorImageAsset_1 = requireEmptyGeneratedVectorImageAsset();
 		var EmptyVectorImageAsset_1 = requireEmptyVectorImageAsset();
@@ -5741,6 +5810,7 @@
 		        this._refCounts = {};
 		        this._loadings = {};
 		        this._generatedAssetCount = 0;
+		        this._assetBundle = null;
 		        var assetIds = Object.keys(this.configuration);
 		        for (var i = 0; i < assetIds.length; ++i) {
 		            var assetId = assetIds[i];
@@ -5762,6 +5832,7 @@
 		        this._liveAssetPathTable = undefined;
 		        this._refCounts = undefined;
 		        this._loadings = undefined;
+		        this._assetBundle = undefined;
 		    };
 		    /**
 		     * このインスタンスが破棄済みであるかどうかを返す。
@@ -5805,18 +5876,21 @@
 		        return ret;
 		    };
 		    /**
-		     * プリロードすべきスクリプトアセットのIDを全て返す。
+		     * プリロードすべきスクリプトアセットの path を全て返す。
 		     */
-		    AssetManager.prototype.preloadScriptAssetIds = function () {
-		        return Object.entries(this.configuration)
-		            .filter(function (_a) {
-		            var conf = _a[1];
-		            return conf.type === "script" && conf.global && conf.preload;
-		        })
-		            .map(function (_a) {
-		            var assetId = _a[0];
-		            return assetId;
-		        });
+		    AssetManager.prototype.preloadScriptAssetPaths = function () {
+		        var assetPaths = [];
+		        if (this._assetBundle) {
+		            assetPaths.push.apply(assetPaths, Object.values(this._assetBundle.assets)
+		                .filter(function (conf) { return conf.type === "script" && conf.preload; })
+		                .map(function (conf) { return conf.path; }));
+		        }
+		        assetPaths.push.apply(assetPaths, Object.values(this.configuration)
+		            .filter(function (conf) { return conf.type === "script" && conf.global && conf.preload; })
+		            .map(function (conf) { return conf.virtualPath; }) // この箇所ではすでに virtualPath が補完されていることが前提
+		        );
+		        assetPaths = assetPaths.map(function (path) { return (path.startsWith("./") ? path : "./".concat(path)); });
+		        return assetPaths;
 		    };
 		    /**
 		     * パターンまたはフィルタに合致するパスを持つアセットIDを全て返す。
@@ -6013,6 +6087,14 @@
 		        return "/" + virtualPath;
 		    };
 		    /**
+		     * アセットバンドルを設定する。
+		     *
+		     * @param assetBundle アセットバンドル
+		     */
+		    AssetManager.prototype.setAssetBundle = function (assetBundle) {
+		        this._assetBundle = assetBundle;
+		    };
+		    /**
 		     * @ignore
 		     */
 		    AssetManager.prototype._normalize = function (configuration) {
@@ -6090,7 +6172,19 @@
 		        var id;
 		        var uri;
 		        var conf;
-		        if (typeof idOrConf === "string") {
+		        if (this._assetBundle && typeof idOrConf === "string") {
+		            var id_1 = idOrConf;
+		            var conf_2 = this._assetBundle.assets[id_1];
+		            var type_1 = conf_2.type;
+		            switch (type_1) {
+		                case "script":
+		                    var asset = new BundledScriptAsset_1.BundledScriptAsset(__assign({ id: id_1 }, conf_2));
+		                    return asset;
+		                default:
+		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("AssertionError#_createAssetFor: unknown asset type ".concat(type_1, " for asset ID: ").concat(id_1));
+		            }
+		        }
+		        else if (typeof idOrConf === "string") {
 		            id = idOrConf;
 		            conf = this.configuration[id];
 		            uri = this.configuration[id].path;
@@ -6283,19 +6377,25 @@
 		     */
 		    AssetManager.prototype._addAssetToTables = function (asset) {
 		        this._assets[asset.id] = asset;
+		        var path;
 		        // DynamicAsset の場合は configuration に書かれていないので以下の判定が偽になる
 		        if (this.configuration[asset.id]) {
-		            var virtualPath = this.configuration[asset.id].virtualPath; // virtualPath の存在は _normalize() で確認済みのため 非 null アサーションとする
-		            if (!this._liveAssetVirtualPathTable.hasOwnProperty(virtualPath)) {
-		                this._liveAssetVirtualPathTable[virtualPath] = asset;
-		            }
-		            else {
-		                if (this._liveAssetVirtualPathTable[virtualPath].path !== asset.path)
-		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("AssetManager#_onAssetLoad(): duplicated asset path");
-		            }
-		            if (!this._liveAssetPathTable.hasOwnProperty(asset.path))
-		                this._liveAssetPathTable[asset.path] = virtualPath;
+		            path = this.configuration[asset.id].virtualPath; // virtualPath の存在は _normalize() で確認済みのため 非 null アサーションとする
 		        }
+		        else if (this._assetBundle && this._assetBundle.assets[asset.id]) {
+		            path = this._assetBundle.assets[asset.id].path;
+		        }
+		        if (!path)
+		            return;
+		        if (!this._liveAssetVirtualPathTable.hasOwnProperty(path)) {
+		            this._liveAssetVirtualPathTable[path] = asset;
+		        }
+		        else {
+		            if (this._liveAssetVirtualPathTable[path].path !== asset.path)
+		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("AssetManager#_onAssetLoad(): duplicated asset path");
+		        }
+		        if (!this._liveAssetPathTable.hasOwnProperty(asset.path))
+		            this._liveAssetPathTable[asset.path] = path;
 		    };
 		    AssetManager.MAX_ERROR_COUNT = 3;
 		    return AssetManager;
@@ -9302,6 +9402,71 @@
 		return GameMainParameterObject;
 	}
 
+	var InitialScene = {};
+
+	var hasRequiredInitialScene;
+
+	function requireInitialScene () {
+		if (hasRequiredInitialScene) return InitialScene;
+		hasRequiredInitialScene = 1;
+		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		    var extendStatics = function (d, b) {
+		        extendStatics = Object.setPrototypeOf ||
+		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+		            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+		        return extendStatics(d, b);
+		    };
+		    return function (d, b) {
+		        if (typeof b !== "function" && b !== null)
+		            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+		        extendStatics(d, b);
+		        function __() { this.constructor = d; }
+		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+		    };
+		})();
+		Object.defineProperty(InitialScene, "__esModule", { value: true });
+		InitialScene.InitialScene = void 0;
+		var trigger_1 = requireLib$3();
+		var Scene_1 = requireScene();
+		/**
+		 * グローバルアセットを読み込むための初期シーン。
+		 */
+		var InitialScene$1 = /** @class */ (function (_super) {
+		    __extends(InitialScene, _super);
+		    function InitialScene(param) {
+		        var _this = _super.call(this, param) || this;
+		        _this.onAllAssetsLoad = new trigger_1.Trigger();
+		        _this.onLoad.add(_this._handleLoad, _this);
+		        return _this;
+		    }
+		    InitialScene.prototype.destroy = function () {
+		        _super.prototype.destroy.call(this);
+		        if (!this.onAllAssetsLoad.destroyed()) {
+		            this.onAllAssetsLoad.destroy();
+		        }
+		        this.onAllAssetsLoad = undefined;
+		    };
+		    InitialScene.prototype._handleLoad = function () {
+		        if (this.game._configuration.assetBundle) {
+		            var assetBundle = this.game._moduleManager._internalRequire(this.game._configuration.assetBundle);
+		            this.game._assetManager.setAssetBundle(assetBundle);
+		            var assetIds = Object.keys(assetBundle.assets);
+		            this.requestAssets(assetIds, this._handleRequestAssets.bind(this));
+		        }
+		        else {
+		            this.onAllAssetsLoad.fire();
+		        }
+		    };
+		    InitialScene.prototype._handleRequestAssets = function () {
+		        this.onAllAssetsLoad.fire();
+		    };
+		    return InitialScene;
+		}(Scene_1.Scene));
+		InitialScene.InitialScene = InitialScene$1;
+		
+		return InitialScene;
+	}
+
 	var InternalOperationPluginInfo = {};
 
 	var hasRequiredInternalOperationPluginInfo;
@@ -9544,15 +9709,20 @@
 		            // 2. If X begins with './' or '/' or '../'
 		            if (currentModule) {
 		                if (!currentModule._virtualDirname) {
-		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require.resolve: couldn't resolve the moudle path without virtualPath");
+		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require.resolve: couldn't resolve the module path without virtualPath");
 		                }
 		                resolvedPath = PathUtil_1.PathUtil.resolvePath(currentModule._virtualDirname, path);
 		            }
 		            else {
-		                if (!/^\.\//.test(path)) {
+		                if (/^\.\//.test(path)) {
+		                    resolvedPath = path.substring(2);
+		                }
+		                else if (/^\//.test(path)) {
+		                    resolvedPath = path.substring(1);
+		                }
+		                else {
 		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("g._require.resolve: entry point path must start with './'");
 		                }
-		                resolvedPath = path.substring(2);
 		            }
 		            // 2.a. LOAD_AS_FILE(Y + X)
 		            var targetPath = this._resolveAbsolutePathAsFile(resolvedPath, liveAssetVirtualPathTable);
@@ -10442,11 +10612,11 @@
 		var DefaultSkippingScene_1 = requireDefaultSkippingScene();
 		var EventConverter_1 = requireEventConverter();
 		var ExceptionFactory_1 = requireExceptionFactory$2();
+		var InitialScene_1 = requireInitialScene();
 		var LoadingScene_1 = requireLoadingScene();
 		var ModuleManager_1 = requireModuleManager();
 		var OperationPluginManager_1 = requireOperationPluginManager();
 		var PointEventResolver_1 = requirePointEventResolver();
-		var Scene_1 = requireScene();
 		var SurfaceAtlasSet_1 = requireSurfaceAtlasSet();
 		var WeakRefKVS_1 = requireWeakRefKVS();
 		var XorshiftRandomGenerator_1 = requireXorshiftRandomGenerator();
@@ -10574,13 +10744,13 @@
 		        this._onSceneChange.add(this._handleSceneChanged, this);
 		        this._sceneChanged = this._onSceneChange;
 		        this.onUpdate = new trigger_1.Trigger();
-		        this._initialScene = new Scene_1.Scene({
+		        this._initialScene = new InitialScene_1.InitialScene({
 		            game: this,
 		            assetIds: this._assetManager.globalAssetIds(),
 		            local: true,
 		            name: "akashic:initial-scene"
 		        });
-		        this._initialScene.onLoad.add(this._handleInitialSceneLoad, this);
+		        this._initialScene.onAllAssetsLoad.add(this._handleInitialSceneLoad, this);
 		        this._reset({ age: 0 });
 		    }
 		    Object.defineProperty(Game.prototype, "focusingCamera", {
@@ -11564,12 +11734,12 @@
 		            }
 		        }
 		        this.operationPlugins = this.operationPluginManager.plugins;
-		        var preloadAssetIds = this._assetManager.preloadScriptAssetIds();
-		        for (var _a = 0, preloadAssetIds_1 = preloadAssetIds; _a < preloadAssetIds_1.length; _a++) {
-		            var preloadAssetId = preloadAssetIds_1[_a];
-		            var fun = this._moduleManager._internalRequire(preloadAssetId);
+		        var preloadAssetPaths = this._assetManager.preloadScriptAssetPaths();
+		        for (var _a = 0, preloadAssetPaths_1 = preloadAssetPaths; _a < preloadAssetPaths_1.length; _a++) {
+		            var preloadAssetPath = preloadAssetPaths_1[_a];
+		            var fun = this._moduleManager._internalRequire(preloadAssetPath);
 		            if (!fun || typeof fun !== "function")
-		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#_handleLoad: ".concat(preloadAssetId, " has no-exported function."));
+		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Game#_handleLoad: ".concat(preloadAssetPath, " has no-exported function."));
 		            fun();
 		        }
 		        if (this._mainFunc) {
@@ -11740,6 +11910,7 @@
 			__exportStar(requireExceptionFactory$2(), exports);
 			__exportStar(requireFont(), exports);
 			__exportStar(requireGameMainParameterObject(), exports);
+			__exportStar(requireInitialScene(), exports);
 			__exportStar(requireInternalOperationPluginInfo(), exports);
 			__exportStar(requireLoadingScene(), exports);
 			__exportStar(requireLocalTickModeString(), exports);

@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.19.0 */
+/*! akashic-engine-standalone@3.19.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -6175,16 +6175,14 @@
 		        if (this._assetBundle && typeof idOrConf === "string") {
 		            var id_1 = idOrConf;
 		            var conf_2 = this._assetBundle.assets[id_1];
-		            var type_1 = conf_2.type;
+		            var type_1 = conf_2 === null || conf_2 === void 0 ? void 0 : conf_2.type;
 		            switch (type_1) {
 		                case "script":
 		                    var asset = new BundledScriptAsset_1.BundledScriptAsset(__assign({ id: id_1 }, conf_2));
 		                    return asset;
-		                default:
-		                    throw ExceptionFactory_1.ExceptionFactory.createAssertionError("AssertionError#_createAssetFor: unknown asset type ".concat(type_1, " for asset ID: ").concat(id_1));
 		            }
 		        }
-		        else if (typeof idOrConf === "string") {
+		        if (typeof idOrConf === "string") {
 		            id = idOrConf;
 		            conf = this.configuration[id];
 		            uri = this.configuration[id].path;

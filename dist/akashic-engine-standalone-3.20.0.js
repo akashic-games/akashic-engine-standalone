@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.19.1 */
+/*! akashic-engine-standalone@3.20.0 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -5435,6 +5435,51 @@
 		return BundledScriptAsset;
 	}
 
+	var BundledTextAsset = {};
+
+	var hasRequiredBundledTextAsset;
+
+	function requireBundledTextAsset () {
+		if (hasRequiredBundledTextAsset) return BundledTextAsset;
+		hasRequiredBundledTextAsset = 1;
+		Object.defineProperty(BundledTextAsset, "__esModule", { value: true });
+		BundledTextAsset.BundledTextAsset = void 0;
+		var trigger_1 = requireLib$3();
+		var BundledTextAsset$1 = /** @class */ (function () {
+		    function BundledTextAsset(param) {
+		        this.type = "text";
+		        this.id = param.id;
+		        this.data = param.data;
+		        this.path = param.path;
+		        this.originalPath = param.path;
+		        this.onDestroyed = new trigger_1.Trigger();
+		    }
+		    BundledTextAsset.prototype.inUse = function () {
+		        return true;
+		    };
+		    BundledTextAsset.prototype.destroy = function () {
+		        if (!this.onDestroyed.destroyed()) {
+		            this.onDestroyed.destroy();
+		            this.onDestroyed = undefined;
+		        }
+		        this.data = undefined;
+		    };
+		    BundledTextAsset.prototype.destroyed = function () {
+		        return !this.onDestroyed;
+		    };
+		    BundledTextAsset.prototype._load = function (loader) {
+		        loader._onAssetLoad(this);
+		    };
+		    BundledTextAsset.prototype._assetPathFilter = function (path) {
+		        return path;
+		    };
+		    return BundledTextAsset;
+		}());
+		BundledTextAsset.BundledTextAsset = BundledTextAsset$1;
+		
+		return BundledTextAsset;
+	}
+
 	var EmptyBinaryAsset = {};
 
 	var hasRequiredEmptyBinaryAsset;
@@ -5700,6 +5745,7 @@
 		Object.defineProperty(AssetManager, "__esModule", { value: true });
 		AssetManager.AssetManager = void 0;
 		var BundledScriptAsset_1 = requireBundledScriptAsset();
+		var BundledTextAsset_1 = requireBundledTextAsset();
 		var EmptyBinaryAsset_1 = requireEmptyBinaryAsset();
 		var EmptyGeneratedVectorImageAsset_1 = requireEmptyGeneratedVectorImageAsset();
 		var EmptyVectorImageAsset_1 = requireEmptyVectorImageAsset();
@@ -6178,8 +6224,9 @@
 		            var type_1 = conf_2 === null || conf_2 === void 0 ? void 0 : conf_2.type;
 		            switch (type_1) {
 		                case "script":
-		                    var asset = new BundledScriptAsset_1.BundledScriptAsset(__assign({ id: id_1 }, conf_2));
-		                    return asset;
+		                    return new BundledScriptAsset_1.BundledScriptAsset(__assign({ id: id_1 }, conf_2));
+		                case "text":
+		                    return new BundledTextAsset_1.BundledTextAsset(__assign({ id: id_1 }, conf_2));
 		            }
 		        }
 		        if (typeof idOrConf === "string") {

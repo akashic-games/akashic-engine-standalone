@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.20.0 */
+/*! akashic-engine-standalone@3.20.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1482,7 +1482,7 @@
 		                }
 		                message += ", actual type is " + (actualString.length > 40 ? actualString.substr(0, 40) : actualString);
 		            }
-		            catch (ex) {
+		            catch (_ex) {
 		                // メッセージ取得時に例外が発生したらactualの型情報出力はあきらめる
 		            }
 		        }
@@ -5803,7 +5803,7 @@
 		    // A: パターンの特殊文字でない文字の塊。そのままマッチさせる(ためにエスケープして正規表現にする)
 		    // B: パターンの特殊文字一つ(*, ** など)かそのエスケープ。patternSpecialsTable で対応する正規表現に変換
 		    var patternSpecialsTable = {
-		        "": "",
+		        "": "", // 入力末尾で parserRe の B 部分が $ にマッチして空文字列になることに対応
 		        "\\*": "\\*",
 		        "\\?": "\\?",
 		        "*": "[^/]*",
@@ -9273,95 +9273,95 @@
 		                throw ExceptionFactory_1.ExceptionFactory.createAssertionError("EventConverter#toPlaylogEvent: Invalid type: " + e.type);
 		            case "timestamp":
 		                var ts = e;
-		                playerId = preservePlayer ? (_a = ts.player.id) !== null && _a !== void 0 ? _a : null : this._playerId;
+		                playerId = preservePlayer ? ((_a = ts.player.id) !== null && _a !== void 0 ? _a : null) : this._playerId;
 		                return [
-		                    2 /* pl.EventCode.Timestamp */,
-		                    ts.eventFlags,
-		                    playerId,
+		                    2 /* pl.EventCode.Timestamp */, // 0: イベントコード
+		                    ts.eventFlags, //          1: イベントフラグ値
+		                    playerId, //               2: プレイヤーID
 		                    ts.timestamp //            3: タイムスタンプ
 		                ];
 		            case "player-info":
 		                var playerInfo = e;
-		                playerId = preservePlayer ? (_b = playerInfo.player.id) !== null && _b !== void 0 ? _b : null : this._playerId;
+		                playerId = preservePlayer ? ((_b = playerInfo.player.id) !== null && _b !== void 0 ? _b : null) : this._playerId;
 		                return [
-		                    3 /* pl.EventCode.PlayerInfo */,
-		                    playerInfo.eventFlags,
-		                    playerId,
-		                    playerInfo.player.name,
+		                    3 /* pl.EventCode.PlayerInfo */, //   0: イベントコード
+		                    playerInfo.eventFlags, //     1: イベントフラグ値
+		                    playerId, //                  2: プレイヤーID
+		                    playerInfo.player.name, //    3: プレイヤー名
 		                    playerInfo.player.userData // 4: ユーザデータ
 		                ];
 		            case "point-down":
 		                var pointDown = e;
 		                targetId = pointDown.target ? pointDown.target.id : null;
-		                playerId = preservePlayer && pointDown.player ? (_c = pointDown.player.id) !== null && _c !== void 0 ? _c : null : this._playerId;
+		                playerId = preservePlayer && pointDown.player ? ((_c = pointDown.player.id) !== null && _c !== void 0 ? _c : null) : this._playerId;
 		                return [
-		                    33 /* pl.EventCode.PointDown */,
-		                    pointDown.eventFlags,
-		                    playerId,
-		                    pointDown.pointerId,
-		                    pointDown.point.x,
-		                    pointDown.point.y,
-		                    targetId,
-		                    pointDown.button,
+		                    33 /* pl.EventCode.PointDown */, // 0: イベントコード
+		                    pointDown.eventFlags, //   1: イベントフラグ値
+		                    playerId, //               2: プレイヤーID
+		                    pointDown.pointerId, //    3: ポインターID
+		                    pointDown.point.x, //      4: X座標
+		                    pointDown.point.y, //      5: Y座標
+		                    targetId, //               6?: エンティティID
+		                    pointDown.button, //       7?: ボタンの種類
 		                    !!pointDown.local //       8?: ローカルイベントかどうか
 		                ];
 		            case "point-move":
 		                var pointMove = e;
 		                targetId = pointMove.target ? pointMove.target.id : null;
-		                playerId = preservePlayer && pointMove.player ? (_d = pointMove.player.id) !== null && _d !== void 0 ? _d : null : this._playerId;
+		                playerId = preservePlayer && pointMove.player ? ((_d = pointMove.player.id) !== null && _d !== void 0 ? _d : null) : this._playerId;
 		                return [
-		                    34 /* pl.EventCode.PointMove */,
-		                    pointMove.eventFlags,
-		                    playerId,
-		                    pointMove.pointerId,
-		                    pointMove.point.x,
-		                    pointMove.point.y,
-		                    pointMove.startDelta.x,
-		                    pointMove.startDelta.y,
-		                    pointMove.prevDelta.x,
-		                    pointMove.prevDelta.y,
-		                    targetId,
-		                    pointMove.button,
+		                    34 /* pl.EventCode.PointMove */, // 0: イベントコード
+		                    pointMove.eventFlags, //   1: イベントフラグ値
+		                    playerId, //               2: プレイヤーID
+		                    pointMove.pointerId, //    3: ポインターID
+		                    pointMove.point.x, //      4: X座標
+		                    pointMove.point.y, //      5: Y座標
+		                    pointMove.startDelta.x, // 6: ポイントダウンイベントからのX座標の差
+		                    pointMove.startDelta.y, // 7: ポイントダウンイベントからのY座標の差
+		                    pointMove.prevDelta.x, //  8: 直前のポイントムーブイベントからのX座標の差
+		                    pointMove.prevDelta.y, //  9: 直前のポイントムーブイベントからのY座標の差
+		                    targetId, //               10?: エンティティID
+		                    pointMove.button, //       11?:
 		                    !!pointMove.local //       12?: ローカルイベントかどうか
 		                ];
 		            case "point-up":
 		                var pointUp = e;
 		                targetId = pointUp.target ? pointUp.target.id : null;
-		                playerId = preservePlayer && pointUp.player ? (_e = pointUp.player.id) !== null && _e !== void 0 ? _e : null : this._playerId;
+		                playerId = preservePlayer && pointUp.player ? ((_e = pointUp.player.id) !== null && _e !== void 0 ? _e : null) : this._playerId;
 		                return [
-		                    35 /* pl.EventCode.PointUp */,
-		                    pointUp.eventFlags,
-		                    playerId,
-		                    pointUp.pointerId,
-		                    pointUp.point.x,
-		                    pointUp.point.y,
-		                    pointUp.startDelta.x,
-		                    pointUp.startDelta.y,
-		                    pointUp.prevDelta.x,
-		                    pointUp.prevDelta.y,
-		                    targetId,
-		                    pointUp.button,
+		                    35 /* pl.EventCode.PointUp */, // 0: イベントコード
+		                    pointUp.eventFlags, //   1: イベントフラグ値
+		                    playerId, //             2: プレイヤーID
+		                    pointUp.pointerId, //    3: ポインターID
+		                    pointUp.point.x, //      4: X座標
+		                    pointUp.point.y, //      5: Y座標
+		                    pointUp.startDelta.x, // 6: ポイントダウンイベントからのX座標の差
+		                    pointUp.startDelta.y, // 7: ポイントダウンイベントからのY座標の差
+		                    pointUp.prevDelta.x, //  8: 直前のポイントムーブイベントからのX座標の差
+		                    pointUp.prevDelta.y, //  9: 直前のポイントムーブイベントからのY座標の差
+		                    targetId, //             10?: エンティティID
+		                    pointUp.button, //       11?:
 		                    !!pointUp.local //       12?: ローカルイベントかどうか
 		                ];
 		            case "message":
 		                var message = e;
-		                playerId = preservePlayer && message.player ? (_f = message.player.id) !== null && _f !== void 0 ? _f : null : this._playerId;
+		                playerId = preservePlayer && message.player ? ((_f = message.player.id) !== null && _f !== void 0 ? _f : null) : this._playerId;
 		                return [
-		                    32 /* pl.EventCode.Message */,
-		                    message.eventFlags,
-		                    playerId,
-		                    message.data,
+		                    32 /* pl.EventCode.Message */, // 0: イベントコード
+		                    message.eventFlags, //   1: イベントフラグ値
+		                    playerId, //             2: プレイヤーID
+		                    message.data, //         3: 汎用的なデータ
 		                    !!message.local //       4?: ローカル
 		                ];
 		            case "operation":
 		                var op = e;
-		                playerId = preservePlayer && op.player ? (_g = op.player.id) !== null && _g !== void 0 ? _g : null : this._playerId;
+		                playerId = preservePlayer && op.player ? ((_g = op.player.id) !== null && _g !== void 0 ? _g : null) : this._playerId;
 		                return [
-		                    64 /* pl.EventCode.Operation */,
-		                    op.eventFlags,
-		                    playerId,
-		                    op.code,
-		                    op.data,
+		                    64 /* pl.EventCode.Operation */, // 0: イベントコード
+		                    op.eventFlags, //          1: イベントフラグ値
+		                    playerId, //               2: プレイヤーID
+		                    op.code, //                3: 操作プラグインコード
+		                    op.data, //                4: 操作プラグインデータ
 		                    !!op.local //              5?: ローカル
 		                ];
 		            default:
@@ -9372,11 +9372,11 @@
 		        var playerId = this._playerId;
 		        var eventFlags = op.priority != null ? op.priority & 3 /* pl.EventFlagsMask.Priority */ : 0;
 		        return [
-		            64 /* pl.EventCode.Operation */,
-		            eventFlags,
-		            playerId,
-		            op._code,
-		            op.data,
+		            64 /* pl.EventCode.Operation */, // 0: イベントコード
+		            eventFlags, //             1: イベントフラグ値
+		            playerId, //               2: プレイヤーID
+		            op._code, //               3: 操作プラグインコード
+		            op.data, //                4: 操作プラグインデータ
 		            !!op.local //              5: ローカル
 		        ];
 		    };
@@ -10172,13 +10172,13 @@
 		        this._currentPoints++;
 		        // NOTE: 優先度は機械的にJoinedをつけておく。Joinしていない限りPointDownEventなどはリジェクトされる。
 		        var ret = [
-		            33 /* pl.EventCode.PointDown */,
-		            2 /* EventPriority.Joined */,
-		            this._playerId,
-		            e.identifier,
-		            point.x,
-		            point.y,
-		            targetId,
+		            33 /* pl.EventCode.PointDown */, // 0: イベントコード
+		            2 /* EventPriority.Joined */, //   1: 優先度
+		            this._playerId, //         2: プレイヤーID
+		            e.identifier, //           3: ポインターID
+		            point.x, //                4: X座標
+		            point.y, //                5: Y座標
+		            targetId, //               6?: エンティティID
 		            e.button //                7?: ボタンの種類
 		        ];
 		        if (source && source.local)
@@ -10193,17 +10193,17 @@
 		        var start = { x: 0, y: 0 };
 		        this._pointMoveAndUp(holder, e.offset, prev, start);
 		        var ret = [
-		            34 /* pl.EventCode.PointMove */,
-		            2 /* EventPriority.Joined */,
-		            this._playerId,
-		            e.identifier,
-		            holder.point.x,
-		            holder.point.y,
-		            start.x,
-		            start.y,
-		            prev.x,
-		            prev.y,
-		            holder.targetId,
+		            34 /* pl.EventCode.PointMove */, // 0: イベントコード
+		            2 /* EventPriority.Joined */, //   1: 優先度
+		            this._playerId, //         2: プレイヤーID
+		            e.identifier, //           3: ポインターID
+		            holder.point.x, //         4: X座標
+		            holder.point.y, //         5: Y座標
+		            start.x, //                6: ポイントダウンイベントからのX座標の差
+		            start.y, //                7: ポイントダウンイベントからのY座標の差
+		            prev.x, //                 8: 直前のポイントムーブイベントからのX座標の差
+		            prev.y, //                 9: 直前のポイントムーブイベントからのY座標の差
+		            holder.targetId, //        10?: エンティティID
 		            e.button //                11?: ボタンの種類
 		        ];
 		        if (holder.local)
@@ -10220,17 +10220,17 @@
 		        delete this._pointEventMap[e.identifier];
 		        this._currentPoints--;
 		        var ret = [
-		            35 /* pl.EventCode.PointUp */,
-		            2 /* EventPriority.Joined */,
-		            this._playerId,
-		            e.identifier,
-		            holder.point.x,
-		            holder.point.y,
-		            start.x,
-		            start.y,
-		            prev.x,
-		            prev.y,
-		            holder.targetId,
+		            35 /* pl.EventCode.PointUp */, // 0: イベントコード
+		            2 /* EventPriority.Joined */, // 1: 優先度
+		            this._playerId, //       2: プレイヤーID
+		            e.identifier, //         3: ポインターID
+		            holder.point.x, //       4: X座標
+		            holder.point.y, //       5: Y座標
+		            start.x, //              6: ポイントダウンイベントからのX座標の差
+		            start.y, //              7: ポイントダウンイベントからのY座標の差
+		            prev.x, //               8: 直前のポイントムーブイベントからのX座標の差
+		            prev.y, //               9: 直前のポイントムーブイベントからのY座標の差
+		            holder.targetId, //      10?: エンティティID
 		            e.button //              11?: ボタンの種類
 		        ];
 		        if (holder.local)
@@ -11754,7 +11754,7 @@
 		            if (nextScene && nextScene._needsLoading() && nextScene._loadingState !== "loaded-fired") {
 		                var loadingScene = nextScene._waitingPrepare
 		                    ? this._createPreparingLoadingScene(nextScene, nextScene._waitingPrepare, "akashic:preparing-".concat(nextScene.name))
-		                    : (_a = this.loadingScene) !== null && _a !== void 0 ? _a : this._defaultLoadingScene;
+		                    : ((_a = this.loadingScene) !== null && _a !== void 0 ? _a : this._defaultLoadingScene);
 		                this._doPushScene(loadingScene, true, this._defaultLoadingScene);
 		                loadingScene.reset(nextScene);
 		            }

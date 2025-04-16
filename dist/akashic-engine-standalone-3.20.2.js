@@ -14785,7 +14785,8 @@
 		if (hasRequiredInputEventHandler) return InputEventHandler;
 		hasRequiredInputEventHandler = 1;
 		Object.defineProperty(InputEventHandler, "__esModule", { value: true });
-		InputEventHandler.preventEventDefault = InputEventHandler.InputEventHandler = void 0;
+		InputEventHandler.InputEventHandler = void 0;
+		InputEventHandler.preventEventDefault = preventEventDefault;
 		var trigger_1 = requireLib$3();
 		/**
 		 * 入力ハンドラ。
@@ -14874,7 +14875,6 @@
 		function preventEventDefault(ev) {
 		    ev.preventDefault();
 		}
-		InputEventHandler.preventEventDefault = preventEventDefault;
 		return InputEventHandler;
 	}
 
@@ -15350,6 +15350,10 @@
 		            }
 		        }
 		        return false;
+		    };
+		    AudioPluginManager.prototype.clear = function () {
+		        var _a;
+		        (_a = this._activePlugin) === null || _a === void 0 ? void 0 : _a.clear();
 		    };
 		    return AudioPluginManager;
 		}());
@@ -16590,7 +16594,6 @@
 		    WebGLShaderProgram.prototype._uniformMatrix4fv = function (loc, v) {
 		        this._context.uniformMatrix4fv(loc, false, v);
 		    };
-		    /* eslint-disable  @typescript-eslint/indent */
 		    WebGLShaderProgram._DEFAULT_VERTEX_SHADER = "#version 100\n" +
 		        "precision mediump float;\n" +
 		        "attribute vec4 aVertex;\n" +
@@ -17494,7 +17497,7 @@
 		    Platform.prototype.getOperationPluginViewInfo = function () {
 		        var _this = this;
 		        return {
-		            type: "pdi-browser",
+		            type: "pdi-browser", // note: scale情報を付加したため null ではないものを返している。
 		            view: this.containerController.inputHandlerLayer.view,
 		            getScale: function () { return _this.containerController.inputHandlerLayer._inputHandler.getScale(); }
 		        };
@@ -17534,6 +17537,8 @@
 		    Platform.prototype.destroy = function () {
 		        this.setRendererRequirement(undefined);
 		        this.setMasterVolume(0);
+		        // 各ローダーのキャッシュ削除
+		        this.audioPluginManager.clear();
 		    };
 		    return Platform;
 		}());
@@ -17543,6 +17548,87 @@
 
 	var HTMLAudioPlugin = {};
 
+	var CachedLoader = {};
+
+	var hasRequiredCachedLoader;
+
+	function requireCachedLoader () {
+		if (hasRequiredCachedLoader) return CachedLoader;
+		hasRequiredCachedLoader = 1;
+		Object.defineProperty(CachedLoader, "__esModule", { value: true });
+		CachedLoader.CachedLoader = void 0;
+		var CachedLoader$1 = /** @class */ (function () {
+		    function CachedLoader(loaderImpl, option) {
+		        this.loaderImpl = loaderImpl;
+		        this.table = new Map();
+		        this.priorities = new Map();
+		        this.totalSize = 0;
+		        this.totalUseCount = 0;
+		        this.limitSize = option.limitSize;
+		    }
+		    CachedLoader.prototype.load = function (key) {
+		        var _this = this;
+		        this._maximizePriority(key);
+		        var entry = this.table.get(key);
+		        if (entry) {
+		            return entry.promise;
+		        }
+		        var promise = this.loaderImpl(key).then(function (_a) {
+		            var value = _a.value, size = _a.size;
+		            _this.table.set(key, { size: size, promise: promise });
+		            _this._cleanupCache(size);
+		            return { value: value, size: size };
+		        }).catch(function (e) {
+		            _this._deleteCache(key);
+		            throw e;
+		        });
+		        this.table.set(key, { size: 0, promise: promise });
+		        return promise;
+		    };
+		    CachedLoader.prototype.reset = function () {
+		        this.table.clear();
+		        this.priorities.clear();
+		        this.totalSize = 0;
+		        this.totalUseCount = 0;
+		    };
+		    // キャッシュの整理。指定したサイズを合計サイズに加算して、合計サイズが上限を超えている場合は優先度が低い順に削除される
+		    CachedLoader.prototype._cleanupCache = function (size) {
+		        this.totalSize += size;
+		        if (this.totalSize <= this.limitSize) {
+		            return;
+		        }
+		        // 保存されている全リソースの容量が保存可能容量を超える場合、保存可能容量を下回るまで、使われていないリソースから順にキャッシュ用マップから削除していく
+		        var entries = Array.from(this.priorities).sort(function (a, b) { return a[1] - b[1]; });
+		        for (var _i = 0, entries_1 = entries; _i < entries_1.length; _i++) {
+		            var entry = entries_1[_i];
+		            this._deleteCache(entry[0]);
+		            if (this.totalSize <= this.limitSize) {
+		                break;
+		            }
+		        }
+		    };
+		    CachedLoader.prototype._deleteCache = function (key) {
+		        var entry = this.table.get(key);
+		        if (!entry) {
+		            return;
+		        }
+		        // キャッシュの合計容量を再計算
+		        this.totalSize -= entry.size;
+		        // キャッシュと優先度マップから削除
+		        this.table.delete(key);
+		        this.priorities.delete(key);
+		    };
+		    // 指定したキーの優先度を最大にする
+		    CachedLoader.prototype._maximizePriority = function (key) {
+		        this.totalUseCount++;
+		        this.priorities.set(key, this.totalUseCount);
+		    };
+		    return CachedLoader;
+		}());
+		CachedLoader.CachedLoader = CachedLoader$1;
+		return CachedLoader;
+	}
+
 	var audioUtil = {};
 
 	var hasRequiredAudioUtil;
@@ -17551,7 +17637,9 @@
 		if (hasRequiredAudioUtil) return audioUtil;
 		hasRequiredAudioUtil = 1;
 		Object.defineProperty(audioUtil, "__esModule", { value: true });
-		audioUtil.addExtname = audioUtil.resolveExtname = audioUtil.detectSupportedFormats = void 0;
+		audioUtil.detectSupportedFormats = detectSupportedFormats;
+		audioUtil.resolveExtname = resolveExtname;
+		audioUtil.addExtname = addExtname;
 		/**
 		 * Audio 要素で再生できる形式を検出する。
 		 * @returns 再生できる形式の配列
@@ -17581,7 +17669,6 @@
 		    }
 		    return supportedFormats;
 		}
-		audioUtil.detectSupportedFormats = detectSupportedFormats;
 		/**
 		 * 拡張子の配列から、再生可能な形式に合致するものを探す。
 		 * @param extensions 拡張子の配列または null | undefined (空配列と見なす)
@@ -17599,7 +17686,6 @@
 		    }
 		    return null;
 		}
-		audioUtil.resolveExtname = resolveExtname;
 		/**
 		 * 与えられたパス文字列に与えられた拡張子を追加する。
 		 * @param path パス文字列
@@ -17613,7 +17699,6 @@
 		    // hoge?query => hoge.ext?query
 		    return path.substring(0, index) + ext + path.substring(index, path.length);
 		}
-		audioUtil.addExtname = addExtname;
 		return audioUtil;
 	}
 
@@ -17706,18 +17791,154 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
+		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+		    return new (P || (P = Promise))(function (resolve, reject) {
+		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+		        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+		        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+		        step((generator = generator.apply(thisArg, _arguments || [])).next());
+		    });
+		};
+		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+		    function verb(n) { return function (v) { return step([n, v]); }; }
+		    function step(op) {
+		        if (f) throw new TypeError("Generator is already executing.");
+		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+		            if (y = 0, t) op = [op[0] & 2, t.value];
+		            switch (op[0]) {
+		                case 0: case 1: t = op; break;
+		                case 4: _.label++; return { value: op[1], done: false };
+		                case 5: _.label++; y = op[1]; op = [0]; continue;
+		                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+		                default:
+		                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+		                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+		                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+		                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+		                    if (t[2]) _.ops.pop();
+		                    _.trys.pop(); continue;
+		            }
+		            op = body.call(thisArg, _);
+		        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+		        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+		    }
+		};
 		Object.defineProperty(HTMLAudioAsset, "__esModule", { value: true });
 		HTMLAudioAsset.HTMLAudioAsset = void 0;
+		HTMLAudioAsset.loadAudioElement = loadAudioElement;
 		var AudioAsset_1 = requireAudioAsset();
 		var ExceptionFactory_1 = requireExceptionFactory$1();
 		var audioUtil_1 = requireAudioUtil();
+		function loadAudioElement(url) {
+		    return __awaiter(this, void 0, void 0, function () {
+		        function _loadAudioElement(url) {
+		            var audio = new Audio();
+		            var attachAll = function (audio, handlers) {
+		                if (handlers.success) {
+		                    /* eslint-disable max-len */
+		                    // https://developer.mozilla.org/en-US/docs/Web/Events/canplaythrough
+		                    // https://github.com/goldfire/howler.js/blob/1dad25cdd9d6982232050454e8b45411902efe65/howler.js#L372
+		                    // https://github.com/CreateJS/SoundJS/blob/e2d4842a84ff425ada861edb9f6e9b57f63d7caf/src/soundjs/htmlaudio/HTMLAudioSoundInstance.js#L145-145
+		                    /* eslint-enable max-len */
+		                    audio.addEventListener("canplaythrough", handlers.success, false);
+		                }
+		                if (handlers.error) {
+		                    // https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events
+		                    // stalledはfetchして取れなかった時に起きるイベント
+		                    audio.addEventListener("stalled", handlers.error, false);
+		                    audio.addEventListener("error", handlers.error, false);
+		                    audio.addEventListener("abort", handlers.error, false);
+		                }
+		            };
+		            var detachAll = function (audio, handlers) {
+		                if (handlers.success) {
+		                    audio.removeEventListener("canplaythrough", handlers.success, false);
+		                }
+		                if (handlers.error) {
+		                    audio.removeEventListener("stalled", handlers.error, false);
+		                    audio.removeEventListener("error", handlers.error, false);
+		                    audio.removeEventListener("abort", handlers.error, false);
+		                }
+		            };
+		            return new Promise(function (resolve, reject) {
+		                var intervalId = -1;
+		                var handlers = {
+		                    success: function () {
+		                        detachAll(audio, handlers);
+		                        window.clearInterval(intervalId);
+		                        resolve({ value: { audio: audio, url: url }, size: 1000 * audio.duration });
+		                    },
+		                    error: function () {
+		                        detachAll(audio, handlers);
+		                        window.clearInterval(intervalId);
+		                        reject();
+		                    }
+		                };
+		                var setAudioLoadInterval = function (audio, handlers) {
+		                    // IE11において、canplaythroughイベントが正常に発火しない問題が確認されたため、その対処として以下の処理を行っている。
+		                    // なお、canplaythroughはreadyStateの値が4になった時点で呼び出されるイベントである。
+		                    // インターバルとして指定している100msに根拠は無い。
+		                    var intervalCount = 0;
+		                    intervalId = window.setInterval(function () {
+		                        if (audio.readyState === 4) {
+		                            handlers.success();
+		                        }
+		                        else {
+		                            ++intervalCount;
+		                            // readyStateの値が4にならない状態が1分（100ms×600）続いた場合、
+		                            // 読み込みに失敗したとする。1分という時間に根拠は無い。
+		                            if (intervalCount === 600) {
+		                                handlers.error();
+		                            }
+		                        }
+		                    }, 100);
+		                };
+		                audio.autoplay = false;
+		                audio.preload = "none";
+		                audio.src = url;
+		                attachAll(audio, handlers);
+		                /* eslint-disable max-len */
+		                // Firefoxはpreload="auto"でないと読み込みされない
+		                // preloadはブラウザに対するHint属性なので、どう扱うかはブラウザの実装次第となる
+		                // https://html.spec.whatwg.org/multipage/embedded-content.html#attr-media-preload
+		                // https://developer.mozilla.org/ja/docs/Web/HTML/Element/audio#attr-preload
+		                // https://github.com/CreateJS/SoundJS/blob/e2d4842a84ff425ada861edb9f6e9b57f63d7caf/src/soundjs/htmlaudio/HTMLAudioSoundInstance.js#L147-147
+		                /* eslint-enable max-len */
+		                audio.preload = "auto";
+		                setAudioLoadInterval(audio, handlers);
+		                audio.load();
+		            });
+		        }
+		        var e_1, delIndex, basePath, newUrl, query;
+		        return __generator(this, function (_a) {
+		            switch (_a.label) {
+		                case 0:
+		                    _a.trys.push([0, 2, , 5]);
+		                    return [4 /*yield*/, _loadAudioElement(url)];
+		                case 1: return [2 /*return*/, _a.sent()];
+		                case 2:
+		                    e_1 = _a.sent();
+		                    delIndex = url.indexOf("?");
+		                    basePath = delIndex >= 0 ? url.substring(0, delIndex) : url;
+		                    if (!(basePath.slice(-4) === ".aac" && HTMLAudioAsset$1.supportedFormats.indexOf("mp4") !== -1)) return [3 /*break*/, 4];
+		                    newUrl = url.substring(0, delIndex - 4) + ".mp4";
+		                    query = delIndex >= 0 ? url.substring(delIndex, url.length) : "";
+		                    return [4 /*yield*/, _loadAudioElement(newUrl + query)];
+		                case 3: return [2 /*return*/, _a.sent()];
+		                case 4: throw e_1;
+		                case 5: return [2 /*return*/];
+		            }
+		        });
+		    });
+		}
 		var HTMLAudioAsset$1 = /** @class */ (function (_super) {
 		    __extends(HTMLAudioAsset, _super);
 		    function HTMLAudioAsset() {
-		        var _this = _super !== null && _super.apply(this, arguments) || this;
-		        _this._intervalId = -1;
-		        _this._intervalCount = 0;
-		        return _this;
+		        return _super !== null && _super.apply(this, arguments) || this;
 		    }
 		    HTMLAudioAsset.prototype._load = function (loader) {
 		        var _this = this;
@@ -17727,78 +17948,20 @@
 		            setTimeout(function () { return loader._onAssetLoad(_this); }, 0);
 		            return;
 		        }
-		        var audio = this.createAudioElement();
-		        var startLoadingAudio = function (path, handlers) {
-		            // autoplay は preload よりも優先されるため明示的にfalseとする
-		            audio.autoplay = false;
-		            audio.preload = "none";
-		            audio.src = path;
-		            _this._attachAll(audio, handlers);
-		            /* eslint-disable max-len */
-		            // Firefoxはpreload="auto"でないと読み込みされない
-		            // preloadはブラウザに対するHint属性なので、どう扱うかはブラウザの実装次第となる
-		            // https://html.spec.whatwg.org/multipage/embedded-content.html#attr-media-preload
-		            // https://developer.mozilla.org/ja/docs/Web/HTML/Element/audio#attr-preload
-		            // https://github.com/CreateJS/SoundJS/blob/e2d4842a84ff425ada861edb9f6e9b57f63d7caf/src/soundjs/htmlaudio/HTMLAudioSoundInstance.js#L147-147
-		            /* eslint-enable max-len */
-		            audio.preload = "auto";
-		            setAudioLoadInterval(audio, handlers);
-		            audio.load();
-		        };
-		        var handlers = {
-		            success: function () {
-		                _this._detachAll(audio, handlers);
-		                _this.data = audio;
-		                loader._onAssetLoad(_this);
-		                window.clearInterval(_this._intervalId);
-		            },
-		            error: function () {
-		                _this._detachAll(audio, handlers);
-		                _this.data = audio;
-		                loader._onAssetError(_this, ExceptionFactory_1.ExceptionFactory.createAssetLoadError("HTMLAudioAsset loading error"));
-		                window.clearInterval(_this._intervalId);
+		        var load = this._loadFun ? this._loadFun : loadAudioElement;
+		        load(this.path).then(function (data) {
+		            // aac読み込み失敗時に代わりにmp4が読み込まれるなど、パスの拡張子が変わるケースがある
+		            if (_this.path !== data.value.url) {
+		                _this.path = data.value.url;
 		            }
-		        };
-		        var setAudioLoadInterval = function (audio, handlers) {
-		            // IE11において、canplaythroughイベントが正常に発火しない問題が確認されたため、その対処として以下の処理を行っている。
-		            // なお、canplaythroughはreadyStateの値が4になった時点で呼び出されるイベントである。
-		            // インターバルとして指定している100msに根拠は無い。
-		            _this._intervalCount = 0;
-		            _this._intervalId = window.setInterval(function () {
-		                if (audio.readyState === 4) {
-		                    handlers.success();
-		                }
-		                else {
-		                    ++_this._intervalCount;
-		                    // readyStateの値が4にならない状態が1分（100ms×600）続いた場合、
-		                    // 読み込みに失敗したとする。1分という時間に根拠は無い。
-		                    if (_this._intervalCount === 600) {
-		                        handlers.error();
-		                    }
-		                }
-		            }, 100);
-		        };
-		        // 暫定対応：後方互換性のため、aacファイルが無い場合はmp4へのフォールバックを試みる。
-		        // この対応を止める際には、HTMLAudioPluginのsupportedExtensionsからaacを除外する必要がある。
-		        var delIndex = this.path.indexOf("?");
-		        var basePath = delIndex >= 0 ? this.path.substring(0, delIndex) : this.path;
-		        if (basePath.slice(-4) === ".aac" && HTMLAudioAsset.supportedFormats.indexOf("mp4") !== -1) {
-		            var altHandlers_1 = {
-		                success: handlers.success,
-		                error: function () {
-		                    _this._detachAll(audio, altHandlers_1);
-		                    window.clearInterval(_this._intervalId);
-		                    _this.path = (0, audioUtil_1.addExtname)(_this.originalPath, ".mp4");
-		                    startLoadingAudio(_this.path, handlers);
-		                }
-		            };
-		            startLoadingAudio(this.path, altHandlers_1);
-		            return;
-		        }
-		        startLoadingAudio(this.path, handlers);
+		            _this.data = data.value.audio;
+		            loader._onAssetLoad(_this);
+		        }).catch(function (_e) {
+		            loader._onAssetError(_this, ExceptionFactory_1.ExceptionFactory.createAssetLoadError("HTMLAudioAsset loading error"));
+		        });
 		    };
 		    HTMLAudioAsset.prototype.cloneElement = function () {
-		        return this.data ? this.createAudioElement(this.data.src) : null;
+		        return this.data ? new Audio(this.data.src) : null;
 		    };
 		    HTMLAudioAsset.prototype._assetPathFilter = function (path) {
 		        if (HTMLAudioAsset.supportedFormats.indexOf("ogg") !== -1) {
@@ -17816,36 +17979,6 @@
 		        var _a;
 		        var ext = (0, audioUtil_1.resolveExtname)((_a = this.hint) === null || _a === void 0 ? void 0 : _a.extensions, HTMLAudioAsset.supportedFormats);
 		        return ext ? (0, audioUtil_1.addExtname)(this.originalPath, ext) : path;
-		    };
-		    HTMLAudioAsset.prototype.createAudioElement = function (src) {
-		        return new Audio(src);
-		    };
-		    HTMLAudioAsset.prototype._attachAll = function (audio, handlers) {
-		        if (handlers.success) {
-		            /* eslint-disable max-len */
-		            // https://developer.mozilla.org/en-US/docs/Web/Events/canplaythrough
-		            // https://github.com/goldfire/howler.js/blob/1dad25cdd9d6982232050454e8b45411902efe65/howler.js#L372
-		            // https://github.com/CreateJS/SoundJS/blob/e2d4842a84ff425ada861edb9f6e9b57f63d7caf/src/soundjs/htmlaudio/HTMLAudioSoundInstance.js#L145-145
-		            /* eslint-enable max-len */
-		            audio.addEventListener("canplaythrough", handlers.success, false);
-		        }
-		        if (handlers.error) {
-		            // https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events
-		            // stalledはfetchして取れなかった時に起きるイベント
-		            audio.addEventListener("stalled", handlers.error, false);
-		            audio.addEventListener("error", handlers.error, false);
-		            audio.addEventListener("abort", handlers.error, false);
-		        }
-		    };
-		    HTMLAudioAsset.prototype._detachAll = function (audio, handlers) {
-		        if (handlers.success) {
-		            audio.removeEventListener("canplaythrough", handlers.success, false);
-		        }
-		        if (handlers.error) {
-		            audio.removeEventListener("stalled", handlers.error, false);
-		            audio.removeEventListener("error", handlers.error, false);
-		            audio.removeEventListener("abort", handlers.error, false);
-		        }
 		    };
 		    return HTMLAudioAsset;
 		}(AudioAsset_1.AudioAsset));
@@ -17922,8 +18055,44 @@
 		hasRequiredHTMLAudioAutoplayHelper = 1;
 		/// chrome66以降などのブラウザに導入されるAutoplay Policyに対応する
 		// https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+		    return new (P || (P = Promise))(function (resolve, reject) {
+		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+		        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+		        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+		        step((generator = generator.apply(thisArg, _arguments || [])).next());
+		    });
+		};
+		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+		    function verb(n) { return function (v) { return step([n, v]); }; }
+		    function step(op) {
+		        if (f) throw new TypeError("Generator is already executing.");
+		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+		            if (y = 0, t) op = [op[0] & 2, t.value];
+		            switch (op[0]) {
+		                case 0: case 1: t = op; break;
+		                case 4: _.label++; return { value: op[1], done: false };
+		                case 5: _.label++; y = op[1]; op = [0]; continue;
+		                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+		                default:
+		                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+		                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+		                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+		                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+		                    if (t[2]) _.ops.pop();
+		                    _.trys.pop(); continue;
+		            }
+		            op = body.call(thisArg, _);
+		        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+		        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+		    }
+		};
 		Object.defineProperty(HTMLAudioAutoplayHelper, "__esModule", { value: true });
-		HTMLAudioAutoplayHelper.setupChromeMEIWorkaround = void 0;
+		HTMLAudioAutoplayHelper.setupChromeMEIWorkaround = setupChromeMEIWorkaround;
 		var state = 0 /* PlayableState.Unknown */;
 		var suspendedAudioElements = [];
 		function setupChromeMEIWorkaround(audio) {
@@ -17941,21 +18110,35 @@
 		        clearTimeout(timer);
 		    }
 		    function suspendedHandler() {
-		        audio.removeEventListener("play", playHandler);
-		        switch (state) {
-		            case 0 /* PlayableState.Unknown */:
-		                suspendedAudioElements.push(audio);
-		                state = 1 /* PlayableState.WaitingInteraction */;
-		                setUserInteractListener();
-		                break;
-		            case 1 /* PlayableState.WaitingInteraction */:
-		                suspendedAudioElements.push(audio);
-		                break;
-		            case 2 /* PlayableState.Ready */:
-		                audio.play(); // suspendedHandler が呼ばれるまでに音が鳴らせるようになった場合
-		                break;
-		            // do nothing;
-		        }
+		        return __awaiter(this, void 0, void 0, function () {
+		            var _a;
+		            return __generator(this, function (_b) {
+		                switch (_b.label) {
+		                    case 0:
+		                        audio.removeEventListener("play", playHandler);
+		                        _a = state;
+		                        switch (_a) {
+		                            case 0 /* PlayableState.Unknown */: return [3 /*break*/, 1];
+		                            case 1 /* PlayableState.WaitingInteraction */: return [3 /*break*/, 2];
+		                            case 2 /* PlayableState.Ready */: return [3 /*break*/, 3];
+		                        }
+		                        return [3 /*break*/, 5];
+		                    case 1:
+		                        suspendedAudioElements.push(audio);
+		                        state = 1 /* PlayableState.WaitingInteraction */;
+		                        setUserInteractListener();
+		                        return [3 /*break*/, 5];
+		                    case 2:
+		                        suspendedAudioElements.push(audio);
+		                        return [3 /*break*/, 5];
+		                    case 3: return [4 /*yield*/, audio.play()];
+		                    case 4:
+		                        _b.sent(); // suspendedHandler が呼ばれるまでに音が鳴らせるようになった場合
+		                        return [3 /*break*/, 5];
+		                    case 5: return [2 /*return*/];
+		                }
+		            });
+		        });
 		    }
 		    switch (state) {
 		        case 0 /* PlayableState.Unknown */:
@@ -17968,7 +18151,6 @@
 		        // do nothing
 		    }
 		}
-		HTMLAudioAutoplayHelper.setupChromeMEIWorkaround = setupChromeMEIWorkaround;
 		function resumeHandler() {
 		    playSuspendedAudioElements();
 		    clearUserInteractListener();
@@ -18011,6 +18193,42 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
+		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+		    return new (P || (P = Promise))(function (resolve, reject) {
+		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+		        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+		        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+		        step((generator = generator.apply(thisArg, _arguments || [])).next());
+		    });
+		};
+		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+		    function verb(n) { return function (v) { return step([n, v]); }; }
+		    function step(op) {
+		        if (f) throw new TypeError("Generator is already executing.");
+		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+		            if (y = 0, t) op = [op[0] & 2, t.value];
+		            switch (op[0]) {
+		                case 0: case 1: t = op; break;
+		                case 4: _.label++; return { value: op[1], done: false };
+		                case 5: _.label++; y = op[1]; op = [0]; continue;
+		                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+		                default:
+		                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+		                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+		                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+		                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+		                    if (t[2]) _.ops.pop();
+		                    _.trys.pop(); continue;
+		            }
+		            op = body.call(thisArg, _);
+		        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+		        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+		    }
+		};
 		Object.defineProperty(HTMLAudioPlayer, "__esModule", { value: true });
 		HTMLAudioPlayer.HTMLAudioPlayer = void 0;
 		var AudioPlayer_1 = requireAudioPlayer();
@@ -18034,6 +18252,7 @@
 		        return _this;
 		    }
 		    HTMLAudioPlayer.prototype.play = function (asset) {
+		        var _this = this;
 		        var _a, _b;
 		        if (this.currentAudio) {
 		            if (asset.id === this.currentAudio.id) {
@@ -18067,12 +18286,20 @@
 		                        }
 		                    }
 		                };
-		                audio.onended = function () {
-		                    if (asset.loop) {
-		                        audio.currentTime = offsetSec_1;
-		                        audio.play();
-		                    }
-		                };
+		                audio.onended = function () { return __awaiter(_this, void 0, void 0, function () {
+		                    return __generator(this, function (_a) {
+		                        switch (_a.label) {
+		                            case 0:
+		                                if (!asset.loop) return [3 /*break*/, 2];
+		                                audio.currentTime = offsetSec_1;
+		                                return [4 /*yield*/, audio.play()];
+		                            case 1:
+		                                _a.sent();
+		                                _a.label = 2;
+		                            case 2: return [2 /*return*/];
+		                        }
+		                    });
+		                }); };
 		            }
 		            (0, HTMLAudioAutoplayHelper_1.setupChromeMEIWorkaround)(audio);
 		            audio.volume = this._calculateVolume();
@@ -18167,6 +18394,7 @@
 		hasRequiredHTMLAudioPlugin = 1;
 		Object.defineProperty(HTMLAudioPlugin, "__esModule", { value: true });
 		HTMLAudioPlugin.HTMLAudioPlugin = void 0;
+		var CachedLoader_1 = requireCachedLoader();
 		var audioUtil_1 = requireAudioUtil();
 		var HTMLAudioAsset_1 = requireHTMLAudioAsset();
 		var HTMLAudioPlayer_1 = requireHTMLAudioPlayer();
@@ -18174,6 +18402,8 @@
 		    function HTMLAudioPlugin() {
 		        this._supportedFormats = [];
 		        this.supportedFormats = (0, audioUtil_1.detectSupportedFormats)();
+		        // 音声ファイルのファイルサイズ取得が困難なので、保存可能容量として音声の合計再生時間を利用。100分を上限とする
+		        this._cachedLoader = new CachedLoader_1.CachedLoader(HTMLAudioAsset_1.loadAudioElement, { limitSize: 6000000 });
 		    }
 		    // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/audio.js
 		    // https://github.com/CreateJS/SoundJS/blob/master/src/soundjs/htmlaudio/HTMLAudioPlugin.js
@@ -18184,7 +18414,7 @@
 		        try {
 		            result = (audioElement.canPlayType !== undefined);
 		        }
-		        catch (e) {
+		        catch (_e) {
 		            // ignore Error
 		        }
 		        return result;
@@ -18201,10 +18431,15 @@
 		        configurable: true
 		    });
 		    HTMLAudioPlugin.prototype.createAsset = function (id, path, duration, system, loop, hint, offset) {
-		        return new HTMLAudioAsset_1.HTMLAudioAsset(id, path, duration, system, loop, hint, offset);
+		        var asset = new HTMLAudioAsset_1.HTMLAudioAsset(id, path, duration, system, loop, hint, offset);
+		        asset._loadFun = this._cachedLoader.load.bind(this._cachedLoader);
+		        return asset;
 		    };
 		    HTMLAudioPlugin.prototype.createPlayer = function (system, manager) {
 		        return new HTMLAudioPlayer_1.HTMLAudioPlayer(system, manager);
+		    };
+		    HTMLAudioPlugin.prototype.clear = function () {
+		        this._cachedLoader.reset();
 		    };
 		    return HTMLAudioPlugin;
 		}());
@@ -18386,6 +18621,9 @@
 		    ProxyAudioPlugin.prototype.createPlayer = function (system, manager) {
 		        return new ProxyAudioPlayer_1.ProxyAudioPlayer(this._handlerSet, system, manager);
 		    };
+		    ProxyAudioPlugin.prototype.clear = function () {
+		        // このクラスで初期化が必要なプロパティはないため、このメソッドでは何もしない
+		    };
 		    return ProxyAudioPlugin;
 		}());
 		ProxyAudioPlugin.ProxyAudioPlugin = ProxyAudioPlugin$1;
@@ -18482,13 +18720,91 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
+		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+		    return new (P || (P = Promise))(function (resolve, reject) {
+		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+		        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+		        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+		        step((generator = generator.apply(thisArg, _arguments || [])).next());
+		    });
+		};
+		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+		    function verb(n) { return function (v) { return step([n, v]); }; }
+		    function step(op) {
+		        if (f) throw new TypeError("Generator is already executing.");
+		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+		            if (y = 0, t) op = [op[0] & 2, t.value];
+		            switch (op[0]) {
+		                case 0: case 1: t = op; break;
+		                case 4: _.label++; return { value: op[1], done: false };
+		                case 5: _.label++; y = op[1]; op = [0]; continue;
+		                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+		                default:
+		                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+		                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+		                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+		                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+		                    if (t[2]) _.ops.pop();
+		                    _.trys.pop(); continue;
+		            }
+		            op = body.call(thisArg, _);
+		        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+		        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+		    }
+		};
 		Object.defineProperty(WebAudioAsset, "__esModule", { value: true });
 		WebAudioAsset.WebAudioAsset = void 0;
+		WebAudioAsset.loadArrayBuffer = loadArrayBuffer;
 		var AudioAsset_1 = requireAudioAsset();
 		var ExceptionFactory_1 = requireExceptionFactory$1();
 		var XHRLoader_1 = requireXHRLoader();
 		var audioUtil_1 = requireAudioUtil();
 		var helper = requireWebAudioHelper();
+		function loadArrayBuffer(url) {
+		    return __awaiter(this, void 0, void 0, function () {
+		        function _loadArrayBuffer(url) {
+		            var l = new XHRLoader_1.XHRLoader();
+		            return new Promise(function (resolve, reject) {
+		                l.getArrayBuffer(url, function (err, result) {
+		                    if (err) {
+		                        return reject(err);
+		                    }
+		                    if (!result) {
+		                        return reject("response is undefined: ".concat(url));
+		                    }
+		                    var audioContext = helper.getAudioContext();
+		                    audioContext.decodeAudioData(result, function (audio) { var _a; return resolve({ value: { audio: audio, url: url }, size: (_a = result.byteLength) !== null && _a !== void 0 ? _a : 0 }); }, reject).catch(function (e) {
+		                        reject(e);
+		                    });
+		                });
+		            });
+		        }
+		        var e_1, delIndex, basePath, newUrl, query;
+		        return __generator(this, function (_a) {
+		            switch (_a.label) {
+		                case 0:
+		                    _a.trys.push([0, 2, , 5]);
+		                    return [4 /*yield*/, _loadArrayBuffer(url)];
+		                case 1: return [2 /*return*/, _a.sent()];
+		                case 2:
+		                    e_1 = _a.sent();
+		                    delIndex = url.indexOf("?");
+		                    basePath = delIndex >= 0 ? url.substring(0, delIndex) : url;
+		                    if (!(basePath.slice(-4) === ".aac")) return [3 /*break*/, 4];
+		                    newUrl = url.substring(0, delIndex - 4) + ".mp4";
+		                    query = delIndex >= 0 ? url.substring(delIndex, url.length) : "";
+		                    return [4 /*yield*/, _loadArrayBuffer(newUrl + query)];
+		                case 3: return [2 /*return*/, _a.sent()];
+		                case 4: throw e_1;
+		                case 5: return [2 /*return*/];
+		            }
+		        });
+		    });
+		}
 		var WebAudioAsset$1 = /** @class */ (function (_super) {
 		    __extends(WebAudioAsset, _super);
 		    function WebAudioAsset() {
@@ -18502,43 +18818,17 @@
 		            setTimeout(function () { return loader._onAssetLoad(_this); }, 0);
 		            return;
 		        }
-		        var successHandler = function (decodedAudio) {
-		            _this.data = decodedAudio;
+		        var load = this._loadFun ? this._loadFun : loadArrayBuffer;
+		        load(this.path).then(function (data) {
+		            // aac読み込み失敗時に代わりにmp4が読み込まれるなど、パスの拡張子が変わるケースがある
+		            if (_this.path !== data.value.url) {
+		                _this.path = data.value.url;
+		            }
+		            _this.data = data.value.audio;
 		            loader._onAssetLoad(_this);
-		        };
-		        var errorHandler = function () {
+		        }).catch(function (_e) {
 		            loader._onAssetError(_this, ExceptionFactory_1.ExceptionFactory.createAssetLoadError("WebAudioAsset unknown loading error"));
-		        };
-		        var onLoadArrayBufferHandler = function (response) {
-		            var audioContext = helper.getAudioContext();
-		            audioContext.decodeAudioData(response, successHandler, errorHandler);
-		        };
-		        var xhrLoader = new XHRLoader_1.XHRLoader();
-		        var loadArrayBuffer = function (path, onSuccess, onFailed) {
-		            xhrLoader.getArrayBuffer(path, function (error, response) {
-		                if (error) {
-		                    onFailed(error);
-		                }
-		                else {
-		                    onSuccess(response);
-		                }
-		            });
-		        };
-		        var delIndex = this.path.indexOf("?");
-		        var basePath = delIndex >= 0 ? this.path.substring(0, delIndex) : this.path;
-		        if (basePath.slice(-4) === ".aac") {
-		            // 暫定対応：後方互換性のため、aacファイルが無い場合はmp4へのフォールバックを試みる。
-		            // この対応を止める際には、WebAudioPluginのsupportedExtensionsからaacを除外する必要がある。
-		            loadArrayBuffer(this.path, onLoadArrayBufferHandler, function (_error) {
-		                var altPath = (0, audioUtil_1.addExtname)(_this.originalPath, ".mp4");
-		                loadArrayBuffer(altPath, function (response) {
-		                    _this.path = altPath;
-		                    onLoadArrayBufferHandler(response);
-		                }, errorHandler);
-		            });
-		            return;
-		        }
-		        loadArrayBuffer(this.path, onLoadArrayBufferHandler, errorHandler);
+		        });
 		    };
 		    WebAudioAsset.prototype._assetPathFilter = function (path) {
 		        if (WebAudioAsset.supportedFormats.indexOf("ogg") !== -1) {
@@ -18571,6 +18861,42 @@
 	function requireWebAudioAutoplayHelper () {
 		if (hasRequiredWebAudioAutoplayHelper) return WebAudioAutoplayHelper_1;
 		hasRequiredWebAudioAutoplayHelper = 1;
+		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+		    return new (P || (P = Promise))(function (resolve, reject) {
+		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+		        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+		        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+		        step((generator = generator.apply(thisArg, _arguments || [])).next());
+		    });
+		};
+		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+		    function verb(n) { return function (v) { return step([n, v]); }; }
+		    function step(op) {
+		        if (f) throw new TypeError("Generator is already executing.");
+		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+		            if (y = 0, t) op = [op[0] & 2, t.value];
+		            switch (op[0]) {
+		                case 0: case 1: t = op; break;
+		                case 4: _.label++; return { value: op[1], done: false };
+		                case 5: _.label++; y = op[1]; op = [0]; continue;
+		                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+		                default:
+		                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+		                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+		                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+		                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+		                    if (t[2]) _.ops.pop();
+		                    _.trys.pop(); continue;
+		            }
+		            op = body.call(thisArg, _);
+		        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+		        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+		    }
+		};
 		var helper = requireWebAudioHelper();
 		// chrome66以降などのブラウザに導入されるAutoplay Policyに対応する
 		// https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
@@ -18595,9 +18921,20 @@
 		    WebAudioAutoplayHelper.setupChromeMEIWorkaround = setupChromeMEIWorkaround;
 		})(WebAudioAutoplayHelper || (WebAudioAutoplayHelper = {}));
 		function resumeHandler() {
-		    var context = helper.getAudioContext();
-		    context.resume();
-		    clearUserInteractListener();
+		    return __awaiter(this, void 0, void 0, function () {
+		        var context;
+		        return __generator(this, function (_a) {
+		            switch (_a.label) {
+		                case 0:
+		                    context = helper.getAudioContext();
+		                    clearUserInteractListener();
+		                    return [4 /*yield*/, context.resume()];
+		                case 1:
+		                    _a.sent();
+		                    return [2 /*return*/];
+		            }
+		        });
+		    });
 		}
 		function setUserInteractListener() {
 		    document.addEventListener("keydown", resumeHandler, true);
@@ -18737,6 +19074,7 @@
 		hasRequiredWebAudioPlugin = 1;
 		Object.defineProperty(WebAudioPlugin, "__esModule", { value: true });
 		WebAudioPlugin.WebAudioPlugin = void 0;
+		var CachedLoader_1 = requireCachedLoader();
 		var audioUtil_1 = requireAudioUtil();
 		var WebAudioAsset_1 = requireWebAudioAsset();
 		var autoPlayHelper = requireWebAudioAutoplayHelper();
@@ -18745,6 +19083,8 @@
 		    function WebAudioPlugin() {
 		        this._supportedFormats = [];
 		        this.supportedFormats = (0, audioUtil_1.detectSupportedFormats)();
+		        // 保存可能容量としてファイルサイズの合計値を利用。100MBを上限とする
+		        this._cachedLoader = new CachedLoader_1.CachedLoader(WebAudioAsset_1.loadArrayBuffer, { limitSize: 100000000 });
 		        autoPlayHelper.setupChromeMEIWorkaround();
 		    }
 		    // AudioContextが存在するかどうかで判定する
@@ -18771,10 +19111,15 @@
 		        configurable: true
 		    });
 		    WebAudioPlugin.prototype.createAsset = function (id, assetPath, duration, system, loop, hint, offset) {
-		        return new WebAudioAsset_1.WebAudioAsset(id, assetPath, duration, system, loop, hint, offset);
+		        var asset = new WebAudioAsset_1.WebAudioAsset(id, assetPath, duration, system, loop, hint, offset);
+		        asset._loadFun = this._cachedLoader.load.bind(this._cachedLoader);
+		        return asset;
 		    };
 		    WebAudioPlugin.prototype.createPlayer = function (system, manager) {
 		        return new WebAudioPlayer_1.WebAudioPlayer(system, manager);
+		    };
+		    WebAudioPlugin.prototype.clear = function () {
+		        this._cachedLoader.reset();
 		    };
 		    return WebAudioPlugin;
 		}());

@@ -76,6 +76,14 @@ export class GameHandlerSet implements g.GameHandlerSet {
 		return this.shouldSaveSnapshot() ? "active" : "passive";
 	}
 
+	suspendLocalTick(): void {
+		// do nothing
+	}
+
+	resumeLocalTick(): void {
+		// do nothing
+	}
+
 	saveSnapshot(frame: number, gameSnapshot: any, randGenSer: any, timestamp?: number): void {
 		if (!this.shouldSaveSnapshot()) return;
 		this.snapshotTrigger.fire({

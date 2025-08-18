@@ -2,16 +2,16 @@ require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c=
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Box2D = void 0;
-var box2dweb = require("box2dweb");
+const box2dweb = require("box2dweb");
 /**
  * AkashicのエンティティをBox2DWebのb2Worldに追加し、演算結果をエンティティに反映するクラス。
  */
-var Box2D = /** @class */ (function () {
+class Box2D {
     /**
      * `Box2D` のインスタンスを生成する。
      * @param param `b2World` の生成オプション
      */
-    function Box2D(param) {
+    constructor(param) {
         /**
          * このクラスが保持する `EBody` のリスト。
          */
@@ -25,8 +25,8 @@ var Box2D = /** @class */ (function () {
         if (param.scale == null) {
             throw g.ExceptionFactory.createAssertionError("Missing parameter: scale");
         }
-        var sleep = param.sleep != null ? !!param.sleep : true;
-        var b2world = new box2dweb.Dynamics.b2World(new box2dweb.Common.Math.b2Vec2(param.gravity[0], param.gravity[1]), sleep);
+        const sleep = param.sleep != null ? !!param.sleep : true;
+        const b2world = new box2dweb.Dynamics.b2World(new box2dweb.Common.Math.b2Vec2(param.gravity[0], param.gravity[1]), sleep);
         this.scale = param.scale;
         this.world = b2world;
     }
@@ -38,22 +38,22 @@ var Box2D = /** @class */ (function () {
      * @param bodyDef 対象のb2BodyDef
      * @param fixtureDef 対象のb2FixtureDefまたは対象のb2FixtureDefの配列
      */
-    Box2D.prototype.createBody = function (entity, bodyDef, fixtureDef) {
-        for (var i = 0; i < this.bodies.length; i++) {
+    createBody(entity, bodyDef, fixtureDef) {
+        for (let i = 0; i < this.bodies.length; i++) {
             if (this.bodies[i].entity === entity) {
                 return null;
             }
         }
-        var fixtureDefs = Array.isArray(fixtureDef) ? fixtureDef : [fixtureDef];
-        var b2Body = this.world.CreateBody(bodyDef);
-        for (var i = 0; i < fixtureDefs.length; i++) {
+        const fixtureDefs = Array.isArray(fixtureDef) ? fixtureDef : [fixtureDef];
+        const b2Body = this.world.CreateBody(bodyDef);
+        for (let i = 0; i < fixtureDefs.length; i++) {
             b2Body.CreateFixture(fixtureDefs[i]);
         }
         if (entity.anchorX !== 0.5 || entity.anchorY !== 0.5) {
-            var m = this._matrix;
-            var e = entity;
+            const m = this._matrix;
+            const e = entity;
             m.update(e.width, e.height, e.scaleX, e.scaleY, e.angle, e.x, e.y, e.anchorX, e.anchorY);
-            var _a = m.multiplyPoint({ x: e.width / 2, y: e.height / 2 }), x = _a.x, y = _a.y;
+            const { x, y } = m.multiplyPoint({ x: e.width / 2, y: e.height / 2 });
             e.x = x;
             e.y = y;
             e.anchorX = 0.5;
@@ -61,63 +61,67 @@ var Box2D = /** @class */ (function () {
         }
         b2Body.SetPositionAndAngle(this.vec2(entity.x, entity.y), this.radian(entity.angle));
         b2Body.SetUserData(bodyDef.userData != null ? bodyDef.userData : entity.id);
-        var body = {
-            id: "".concat(this._createBodyCount++),
-            entity: entity,
-            b2Body: b2Body
+        const body = {
+            id: `${this._createBodyCount++}`,
+            entity,
+            b2Body
         };
         this.bodies.push(body);
         return body;
-    };
+    }
     /**
      * このクラスに追加された `EBody` を削除する。
+     * step() 中は削除できない。 (例えば接触判定のコールバック内など)
      * @param ebody 削除する `EBody`
      */
-    Box2D.prototype.removeBody = function (ebody) {
-        var index = this.bodies.indexOf(ebody);
+    removeBody(ebody) {
+        const index = this.bodies.indexOf(ebody);
         if (index === -1) {
             return;
         }
+        if (this.world.IsLocked()) {
+            throw new Error("removeBody(): can't remove a body while the world is locked (step() is running). Please call after step()");
+        }
         this.world.DestroyBody(ebody.b2Body);
         this.bodies.splice(index, 1);
-    };
+    }
     /**
      * エンティティからこのクラスに追加されている `EBody` を返す。
      * @param entity エンティティ
      */
-    Box2D.prototype.getEBodyFromEntity = function (entity) {
-        for (var i = 0; i < this.bodies.length; i++) {
+    getEBodyFromEntity(entity) {
+        for (let i = 0; i < this.bodies.length; i++) {
             if (this.bodies[i].entity === entity) {
                 return this.bodies[i];
             }
         }
         return null;
-    };
+    }
     /**
      * `b2Body` からこのクラスに追加されている `EBody` を返す。
      * @param b2Body b2Body
      */
-    Box2D.prototype.getEBodyFromb2Body = function (b2Body) {
-        for (var i = 0; i < this.bodies.length; i++) {
+    getEBodyFromb2Body(b2Body) {
+        for (let i = 0; i < this.bodies.length; i++) {
             if (this.bodies[i].b2Body === b2Body) {
                 return this.bodies[i];
             }
         }
         return null;
-    };
+    }
     /**
      * このクラスのインスタンスを破棄する。
      */
-    Box2D.prototype.destroy = function () {
+    destroy() {
         this.world = undefined;
         this.bodies = undefined;
-    };
+    }
     /**
      * このクラスのインスタンスが破棄済みであるかを返す。
      */
-    Box2D.prototype.destroyed = function () {
+    destroyed() {
         return this.world === undefined;
-    };
+    }
     /**
      * 時間を経過させ、このクラスに追加されたエンティティの座標と角度を変更する。
      * このメソッドは暗黙的に `E#modified()` を呼び出している。
@@ -125,59 +129,60 @@ var Box2D = /** @class */ (function () {
      * @param velocityIteration 速度演算のイテレーション回数 省略時は10
      * @param positionIteration 位置演算のイテレーション回数 省略時は10
      */
-    Box2D.prototype.step = function (dt, velocityIteration, positionIteration) {
-        if (velocityIteration === void 0) { velocityIteration = 10; }
-        if (positionIteration === void 0) { positionIteration = 10; }
+    step(dt, velocityIteration = 10, positionIteration = 10) {
         this.world.Step(dt, velocityIteration, positionIteration);
         this.stepBodies();
-    };
+    }
     /**
-     * ボディ同士の接触を、Box2DWebのユーザデータを参照して検出する。
+     * 指定した二つのボディの接触であるかどうかを判定する。
+     * ただし、この判定はボディそのものではなく「ボディ生成時に与えた `userData`」が一致するかで行われる。
+     * 詳細は下記の「複数ボディ同士の接触イベント検出」を参照のこと。
+     * https://github.com/akashic-games/akashic-box2d/blob/master/getstarted.md
      * @param body1 対象のボディ
      * @param body2 対象のボディ
      * @param contact 対象のb2Contacts
      */
-    Box2D.prototype.isContact = function (body1, body2, contact) {
-        var bodyA = contact.GetFixtureA().GetBody().GetUserData();
-        var bodyB = contact.GetFixtureB().GetBody().GetUserData();
+    isContact(body1, body2, contact) {
+        const bodyA = contact.GetFixtureA().GetBody().GetUserData();
+        const bodyB = contact.GetFixtureB().GetBody().GetUserData();
         if ((body1.b2Body.GetUserData() === bodyA && body2.b2Body.GetUserData() === bodyB)
             || (body1.b2Body.GetUserData() === bodyB && body2.b2Body.GetUserData() === bodyA)) {
             return true;
         }
         return false;
-    };
+    }
     /**
      * 長方形を表す `b2PolygonShape` インスタンスを生成する。
      * @param width 横幅 px
      * @param height 縦幅 px
      */
-    Box2D.prototype.createRectShape = function (width, height) {
-        var shape = new box2dweb.Collision.Shapes.b2PolygonShape();
+    createRectShape(width, height) {
+        const shape = new box2dweb.Collision.Shapes.b2PolygonShape();
         shape.SetAsBox(width / (this.scale * 2), height / (this.scale * 2));
         return shape;
-    };
+    }
     /**
      * 円を表す `b2CircleShape` インスタンスを生成する。
      * @param diameter 直径 px
      */
-    Box2D.prototype.createCircleShape = function (diameter) {
+    createCircleShape(diameter) {
         return new box2dweb.Collision.Shapes.b2CircleShape((diameter / 2) / this.scale);
-    };
+    }
     /**
      * 任意の多角形を表す `b2PolygonShape` インスタンスを生成する。
      * @param vertices[] 各頂点の `b2Vec2` 配列
      */
-    Box2D.prototype.createPolygonShape = function (vertices) {
-        var shape = new box2dweb.Collision.Shapes.b2PolygonShape();
+    createPolygonShape(vertices) {
+        const shape = new box2dweb.Collision.Shapes.b2PolygonShape();
         shape.SetAsArray(vertices, vertices.length);
         return shape;
-    };
+    }
     /**
      * b2FixtureDefインスタンスを生成する。
      * @param fixtureOption FixtureOption
      */
-    Box2D.prototype.createFixtureDef = function (fixtureDef) {
-        var def = new box2dweb.Dynamics.b2FixtureDef();
+    createFixtureDef(fixtureDef) {
+        const def = new box2dweb.Dynamics.b2FixtureDef();
         if (fixtureDef.shape != null) {
             def.shape = fixtureDef.shape;
         }
@@ -196,7 +201,7 @@ var Box2D = /** @class */ (function () {
         if (fixtureDef.userData != null) {
             def.userData = fixtureDef.userData;
         }
-        var opt = fixtureDef.filter;
+        const opt = fixtureDef.filter;
         if (opt) {
             def.filter.categoryBits = opt.categoryBits;
             def.filter.maskBits = opt.maskBits;
@@ -205,13 +210,13 @@ var Box2D = /** @class */ (function () {
             }
         }
         return def;
-    };
+    }
     /**
      * `b2BodyDef` インスタンスを生成する。
      * @param bodyDef Box2DBodyDef
      */
-    Box2D.prototype.createBodyDef = function (bodyDef) {
-        var def = new box2dweb.Dynamics.b2BodyDef();
+    createBodyDef(bodyDef) {
+        const def = new box2dweb.Dynamics.b2BodyDef();
         if (bodyDef.type != null) {
             def.type = bodyDef.type;
         }
@@ -246,37 +251,37 @@ var Box2D = /** @class */ (function () {
             def.userData = bodyDef.userData;
         }
         return def;
-    };
+    }
     /**
      * ラジアンを度に変換する。
      * @param radian 対象のラジアン
      */
-    Box2D.prototype.degree = function (radian) {
+    degree(radian) {
         return radian * 180 / Math.PI;
-    };
+    }
     /**
      * 度をラジアンに変換する。
      * @param degree 対象の度
      */
-    Box2D.prototype.radian = function (degree) {
+    radian(degree) {
         return degree * Math.PI / 180;
-    };
+    }
     /**
      * この物理エンジン世界のビクセルスケールに変換した `b2Vec2` インスタンスを生成する。
      * @param x x方向のピクセル値
      * @param y y方向のピクセル値
      */
-    Box2D.prototype.vec2 = function (x, y) {
+    vec2(x, y) {
         return new box2dweb.Common.Math.b2Vec2(x / this.scale, y / this.scale);
-    };
-    Box2D.prototype.stepBodies = function () {
-        for (var i = 0; i < this.bodies.length; i++) {
-            var b2Body = this.bodies[i].b2Body;
-            var entity = this.bodies[i].entity;
+    }
+    stepBodies() {
+        for (let i = 0; i < this.bodies.length; i++) {
+            const b2Body = this.bodies[i].b2Body;
+            const entity = this.bodies[i].entity;
             if (entity.destroyed()) {
                 continue;
             }
-            var pos = b2Body.GetPosition();
+            const pos = b2Body.GetPosition();
             entity.anchorX = 0.5;
             entity.anchorY = 0.5;
             entity.x = pos.x * this.scale;
@@ -284,43 +289,41 @@ var Box2D = /** @class */ (function () {
             entity.angle = this.degree(b2Body.GetAngle());
             entity.modified();
         }
-    };
-    return Box2D;
-}());
+    }
+}
 exports.Box2D = Box2D;
 
 },{"box2dweb":4}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContactManager = void 0;
-var box2dweb = require("box2dweb");
+const box2dweb = require("box2dweb");
 /**
  * 衝突判定を管理するクラス。
  */
-var ContactManager = /** @class */ (function () {
+class ContactManager {
     /**
      * `ContactManager` のインスタンスを生成する。
      * @param param `ContactManager` の生成オプション
      */
-    function ContactManager(param) {
-        var _this = this;
+    constructor(param) {
         this._beginContactTriggerMap = {};
         this._endContactTriggerMap = {};
         this.box2d = param.box2d;
-        var contactListener = new box2dweb.Dynamics.b2ContactListener();
-        contactListener.BeginContact = function (contact) {
-            var bodyA = _this.box2d.getEBodyFromb2Body(contact.GetFixtureA().GetBody());
+        const contactListener = new box2dweb.Dynamics.b2ContactListener();
+        contactListener.BeginContact = contact => {
+            const bodyA = this.box2d.getEBodyFromb2Body(contact.GetFixtureA().GetBody());
             if (bodyA == null) {
                 return;
             }
-            var bodyB = _this.box2d.getEBodyFromb2Body(contact.GetFixtureB().GetBody());
+            const bodyB = this.box2d.getEBodyFromb2Body(contact.GetFixtureB().GetBody());
             if (bodyB == null) {
                 return;
             }
-            var id1 = "".concat(bodyA.id, "-").concat(bodyB.id);
-            var id2 = "".concat(bodyB.id, "-").concat(bodyA.id);
-            var trigger1 = _this._beginContactTriggerMap[id1];
-            var trigger2 = _this._beginContactTriggerMap[id2];
+            const id1 = `${bodyA.id}-${bodyB.id}`;
+            const id2 = `${bodyB.id}-${bodyA.id}`;
+            const trigger1 = this._beginContactTriggerMap[id1];
+            const trigger2 = this._beginContactTriggerMap[id2];
             if (trigger1 && !trigger1.destroyed()) {
                 trigger1.fire();
             }
@@ -328,19 +331,19 @@ var ContactManager = /** @class */ (function () {
                 trigger2.fire();
             }
         };
-        contactListener.EndContact = function (contact) {
-            var bodyA = _this.box2d.getEBodyFromb2Body(contact.GetFixtureA().GetBody());
+        contactListener.EndContact = contact => {
+            const bodyA = this.box2d.getEBodyFromb2Body(contact.GetFixtureA().GetBody());
             if (bodyA == null) {
                 return;
             }
-            var bodyB = _this.box2d.getEBodyFromb2Body(contact.GetFixtureB().GetBody());
+            const bodyB = this.box2d.getEBodyFromb2Body(contact.GetFixtureB().GetBody());
             if (bodyB == null) {
                 return;
             }
-            var id1 = "".concat(bodyA.id, "-").concat(bodyB.id);
-            var id2 = "".concat(bodyB.id, "-").concat(bodyA.id);
-            var trigger1 = _this._endContactTriggerMap[id1];
-            var trigger2 = _this._endContactTriggerMap[id2];
+            const id1 = `${bodyA.id}-${bodyB.id}`;
+            const id2 = `${bodyB.id}-${bodyA.id}`;
+            const trigger1 = this._endContactTriggerMap[id1];
+            const trigger2 = this._endContactTriggerMap[id2];
             if (trigger1 && !trigger1.destroyed()) {
                 trigger1.fire();
             }
@@ -353,32 +356,31 @@ var ContactManager = /** @class */ (function () {
     /**
      * このクラスのインスタンスを破棄する。
      */
-    ContactManager.prototype.destroy = function () {
-        var _this = this;
+    destroy() {
         this.box2d = undefined;
-        Object.keys(this._beginContactTriggerMap).forEach(function (k) {
-            _this._beginContactTriggerMap[k].destroy();
+        Object.keys(this._beginContactTriggerMap).forEach(k => {
+            this._beginContactTriggerMap[k].destroy();
         });
         this._beginContactTriggerMap = undefined;
-        Object.keys(this._endContactTriggerMap).forEach(function (k) {
-            _this._endContactTriggerMap[k].destroy();
+        Object.keys(this._endContactTriggerMap).forEach(k => {
+            this._endContactTriggerMap[k].destroy();
         });
         this._beginContactTriggerMap = undefined;
-    };
+    }
     /**
      * このクラスのインスタンスが破棄済みであるかを返す。
      */
-    ContactManager.prototype.destroyed = function () {
+    destroyed() {
         return this.box2d === undefined;
-    };
+    }
     /**
      * `EBody` 同士の接触開始を検出する `g.Trigger` を生成する。
      * @param bodyA 対象のボディ
      * @param bodyB 対象のボディ
      */
-    ContactManager.prototype.createBeginContactTrigger = function (bodyA, bodyB) {
-        var id = "".concat(bodyA.id, "-").concat(bodyB.id);
-        var trigger = this._beginContactTriggerMap[id];
+    createBeginContactTrigger(bodyA, bodyB) {
+        const id = `${bodyA.id}-${bodyB.id}`;
+        const trigger = this._beginContactTriggerMap[id];
         if (trigger) {
             return trigger;
         }
@@ -386,19 +388,19 @@ var ContactManager = /** @class */ (function () {
             this._beginContactTriggerMap[id] = new g.Trigger();
             return this._beginContactTriggerMap[id];
         }
-    };
+    }
     /**
      * `EBody` 同士の接触開始を検出する `g.Trigger` を削除する。
      * @param bodyA 対象のボディ
      * @param bodyB 対象のボディ
      */
-    ContactManager.prototype.removeBeginContactTrigger = function (bodyA, bodyB) {
-        var idA = bodyA.id;
-        var idB = bodyB.id;
-        var id1 = "".concat(idA, "-").concat(idB);
-        var id2 = "".concat(idB, "-").concat(idA);
+    removeBeginContactTrigger(bodyA, bodyB) {
+        const idA = bodyA.id;
+        const idB = bodyB.id;
+        const id1 = `${idA}-${idB}`;
+        const id2 = `${idB}-${idA}`;
         if (this._beginContactTriggerMap[id1]) {
-            var trigger = this._beginContactTriggerMap[id1];
+            const trigger = this._beginContactTriggerMap[id1];
             if (!trigger.destroyed()) {
                 trigger.destroy();
             }
@@ -406,7 +408,7 @@ var ContactManager = /** @class */ (function () {
             return true;
         }
         else if (this._beginContactTriggerMap[id2]) {
-            var trigger = this._beginContactTriggerMap[id2];
+            const trigger = this._beginContactTriggerMap[id2];
             if (!trigger.destroyed()) {
                 trigger.destroy();
             }
@@ -414,15 +416,15 @@ var ContactManager = /** @class */ (function () {
             return true;
         }
         return false;
-    };
+    }
     /**
      * `EBody` 同士の接触終了を検出する `g.Trigger` を生成する。
      * @param bodyA 対象のボディ
      * @param bodyB 対象のボディ
      */
-    ContactManager.prototype.createEndContactTrigger = function (bodyA, bodyB) {
-        var id = "".concat(bodyA.id, "-").concat(bodyB.id);
-        var trigger = this._endContactTriggerMap[id];
+    createEndContactTrigger(bodyA, bodyB) {
+        const id = `${bodyA.id}-${bodyB.id}`;
+        const trigger = this._endContactTriggerMap[id];
         if (trigger) {
             return trigger;
         }
@@ -430,19 +432,19 @@ var ContactManager = /** @class */ (function () {
             this._endContactTriggerMap[id] = new g.Trigger();
             return this._endContactTriggerMap[id];
         }
-    };
+    }
     /**
      * `EBody` 同士の接触終了を検出する `g.Trigger` を削除する。
      * @param bodyA 対象のボディ
      * @param bodyB 対象のボディ
      */
-    ContactManager.prototype.removeEndContactTrigger = function (bodyA, bodyB) {
-        var idA = bodyA.id;
-        var idB = bodyB.id;
-        var id1 = "".concat(idA, "-").concat(idB);
-        var id2 = "".concat(idB, "-").concat(idA);
+    removeEndContactTrigger(bodyA, bodyB) {
+        const idA = bodyA.id;
+        const idB = bodyB.id;
+        const id1 = `${idA}-${idB}`;
+        const id2 = `${idB}-${idA}`;
         if (this._endContactTriggerMap[id1]) {
-            var trigger = this._endContactTriggerMap[id1];
+            const trigger = this._endContactTriggerMap[id1];
             if (!trigger.destroyed()) {
                 trigger.destroy();
             }
@@ -450,7 +452,7 @@ var ContactManager = /** @class */ (function () {
             return true;
         }
         else if (this._endContactTriggerMap[id2]) {
-            var trigger = this._endContactTriggerMap[id2];
+            const trigger = this._endContactTriggerMap[id2];
             if (!trigger.destroyed()) {
                 trigger.destroy();
             }
@@ -458,16 +460,15 @@ var ContactManager = /** @class */ (function () {
             return true;
         }
         return false;
-    };
-    return ContactManager;
-}());
+    }
+}
 exports.ContactManager = ContactManager;
 
 },{"box2dweb":4}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BodyType = void 0;
-var box2dweb = require("box2dweb");
+const box2dweb = require("box2dweb");
 /**
  * ボディタイプの定義。
  */
@@ -485,7 +486,7 @@ var BodyType;
      * 動的物体。
      */
     BodyType[BodyType["Dynamic"] = box2dweb.Dynamics.b2Body.b2_dynamicBody] = "Dynamic";
-})(BodyType = exports.BodyType || (exports.BodyType = {}));
+})(BodyType || (exports.BodyType = BodyType = {}));
 
 },{"box2dweb":4}],4:[function(require,module,exports){
 /*
@@ -11350,7 +11351,11 @@ module.exports = Box2D
 /// <reference path="../typings/box2dweb.d.ts"/>
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -11360,7 +11365,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Box2DWeb = void 0;
-var Box2DWeb = require("box2dweb");
+const Box2DWeb = require("box2dweb");
 exports.Box2DWeb = Box2DWeb;
 __exportStar(require("./Box2D"), exports);
 __exportStar(require("./ContactManager"), exports);

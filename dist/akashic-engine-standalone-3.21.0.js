@@ -13717,56 +13717,59 @@
 	function requireExceptionFactory () {
 		if (hasRequiredExceptionFactory) return ExceptionFactory;
 		hasRequiredExceptionFactory = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.ExceptionFactory = void 0;
-			(function (ExceptionFactory) {
-			    function createAssertionError(message, cause) {
-			        var e = new Error(message);
-			        e.name = "AssertionError";
-			        e.cause = cause;
-			        return e;
-			    }
-			    ExceptionFactory.createAssertionError = createAssertionError;
-			    function createTypeMismatchError(methodName, expected, actual, cause) {
-			        var message = "Type mismatch on " + methodName + "," + " expected type is " + expected;
-			        if (arguments.length > 2) {
-			            // actual 指定時
-			            try {
-			                var actualString = void 0;
-			                if (actual && actual.constructor && actual.constructor.name) {
-			                    actualString = actual.constructor.name;
-			                }
-			                else {
-			                    actualString = typeof actual;
-			                }
-			                message += ", actual type is " + (actualString.length > 40 ? actualString.substr(0, 40) : actualString);
-			            }
-			            catch (ex) {
-			                // メッセージ取得時に例外が発生したらactualの型情報出力はあきらめる
-			            }
-			        }
-			        message += ".";
-			        var e = new Error(message);
-			        e.name = "TypeMismatchError";
-			        e.cause = cause;
-			        e.expected = expected;
-			        e.actual = actual;
-			        return e;
-			    }
-			    ExceptionFactory.createTypeMismatchError = createTypeMismatchError;
-			    function createAssetLoadError(message, retriable, _type, // 歴史的経緯により残っている値。利用していない。
-			    cause) {
-			        if (retriable === void 0) { retriable = true; }
-			        var e = new Error(message);
-			        e.name = "AssetLoadError";
-			        e.cause = cause;
-			        e.retriable = retriable;
-			        return e;
-			    }
-			    ExceptionFactory.createAssetLoadError = createAssetLoadError;
-			})(exports.ExceptionFactory || (exports.ExceptionFactory = {})); 
-		} (ExceptionFactory));
+		Object.defineProperty(ExceptionFactory, "__esModule", { value: true });
+		ExceptionFactory.ExceptionFactory = void 0;
+		/**
+		 * 例外生成ファクトリ。
+		 * エンジン内部での例外生成に利用するもので、ゲーム開発者は通常本モジュールを利用する必要はない。
+		 */
+		var ExceptionFactory$1;
+		(function (ExceptionFactory) {
+		    function createAssertionError(message, cause) {
+		        var e = new Error(message);
+		        e.name = "AssertionError";
+		        e.cause = cause;
+		        return e;
+		    }
+		    ExceptionFactory.createAssertionError = createAssertionError;
+		    function createTypeMismatchError(methodName, expected, actual, cause) {
+		        var message = "Type mismatch on " + methodName + "," + " expected type is " + expected;
+		        if (arguments.length > 2) {
+		            // actual 指定時
+		            try {
+		                var actualString = void 0;
+		                if (actual && actual.constructor && actual.constructor.name) {
+		                    actualString = actual.constructor.name;
+		                }
+		                else {
+		                    actualString = typeof actual;
+		                }
+		                message += ", actual type is " + (actualString.length > 40 ? actualString.substr(0, 40) : actualString);
+		            }
+		            catch (_ex) {
+		                // メッセージ取得時に例外が発生したらactualの型情報出力はあきらめる
+		            }
+		        }
+		        message += ".";
+		        var e = new Error(message);
+		        e.name = "TypeMismatchError";
+		        e.cause = cause;
+		        e.expected = expected;
+		        e.actual = actual;
+		        return e;
+		    }
+		    ExceptionFactory.createTypeMismatchError = createTypeMismatchError;
+		    function createAssetLoadError(message, retriable, _type, // 歴史的経緯により残っている値。利用していない。
+		    cause) {
+		        if (retriable === void 0) { retriable = true; }
+		        var e = new Error(message);
+		        e.name = "AssetLoadError";
+		        e.cause = cause;
+		        e.retriable = retriable;
+		        return e;
+		    }
+		    ExceptionFactory.createAssetLoadError = createAssetLoadError;
+		})(ExceptionFactory$1 || (ExceptionFactory.ExceptionFactory = ExceptionFactory$1 = {}));
 		return ExceptionFactory;
 	}
 
@@ -13932,26 +13935,28 @@
 	function requirePdiCommonUtil () {
 		if (hasRequiredPdiCommonUtil) return PdiCommonUtil;
 		hasRequiredPdiCommonUtil = 1;
-		(function (exports) {
-			Object.defineProperty(exports, "__esModule", { value: true });
-			exports.PdiCommonUtil = void 0;
-			(function (PdiCommonUtil) {
-			    /**
-			     * 与えられたパス文字列に与えられた拡張子を追加する。
-			     * @param path パス文字列
-			     * @param ext 追加する拡張子
-			     */
-			    function addExtname(path, ext) {
-			        var index = path.indexOf("?");
-			        if (index === -1) {
-			            return path + "." + ext;
-			        }
-			        // hoge?query => hoge.ext?query
-			        return path.substring(0, index) + "." + ext + path.substring(index, path.length);
-			    }
-			    PdiCommonUtil.addExtname = addExtname;
-			})(exports.PdiCommonUtil || (exports.PdiCommonUtil = {})); 
-		} (PdiCommonUtil));
+		Object.defineProperty(PdiCommonUtil, "__esModule", { value: true });
+		PdiCommonUtil.PdiCommonUtil = void 0;
+		/**
+		 * pdi-browserから使用されるユーティリティ
+		 */
+		var PdiCommonUtil$1;
+		(function (PdiCommonUtil) {
+		    /**
+		     * 与えられたパス文字列に与えられた拡張子を追加する。
+		     * @param path パス文字列
+		     * @param ext 追加する拡張子
+		     */
+		    function addExtname(path, ext) {
+		        var index = path.indexOf("?");
+		        if (index === -1) {
+		            return path + "." + ext;
+		        }
+		        // hoge?query => hoge.ext?query
+		        return path.substring(0, index) + "." + ext + path.substring(index, path.length);
+		    }
+		    PdiCommonUtil.addExtname = addExtname;
+		})(PdiCommonUtil$1 || (PdiCommonUtil.PdiCommonUtil = PdiCommonUtil$1 = {}));
 		return PdiCommonUtil;
 	}
 
@@ -14072,7 +14077,6 @@
 		hasRequiredSurface = 1;
 		Object.defineProperty(Surface, "__esModule", { value: true });
 		Surface.Surface = void 0;
-		var ExceptionFactory_1 = requireExceptionFactory();
 		/**
 		 * 描画領域を表すクラス。
 		 *
@@ -14082,16 +14086,13 @@
 		var Surface$1 = /** @class */ (function () {
 		    /**
 		     * `Surface` のインスタンスを生成する。
-		     * @param width 描画領域の幅（整数値でなければならない）
-		     * @param height 描画領域の高さ（整数値でなければならない）
+		     * @param width 描画領域の幅
+		     * @param height 描画領域の高さ
 		     * @param drawable 描画可能な実体。省略された場合、 `undefined`
 		     */
 		    function Surface(width, height, drawable) {
-		        if (width % 1 !== 0 || height % 1 !== 0) {
-		            throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Surface#constructor: width and height must be integers");
-		        }
-		        this.width = width;
-		        this.height = height;
+		        this.width = Math.floor(width);
+		        this.height = Math.floor(height);
 		        this._drawable = drawable;
 		        // this._destroyedは破棄時に一度だけ代入する特殊なフィールドなため、コンストラクタで初期値を代入しない
 		    }

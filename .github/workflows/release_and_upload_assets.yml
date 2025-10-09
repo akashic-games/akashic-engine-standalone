@@ -8,17 +8,24 @@ name: Release and Upload Assets
 env:
   NODE_VERSION: 18
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          persist-credentials: false
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+          # 依存ファイルパスを空の文字列に設定し、キャッシュのヒット/保存を防止
+          cache-dependency-path: '' 
       - name: Install project
         run: npm ci
       - name: Build project
@@ -27,7 +34,7 @@ jobs:
         run: zip -r bundle.zip dist/
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -36,7 +43,7 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload Release Asset (Bundle file)
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -45,7 +52,7 @@ jobs:
           asset_name: bundle.zip
           asset_content_type: application/zip
       - name: Upload Release Asset (JS files)
-        uses: csexton/release-asset-action@v3
+        uses: csexton/release-asset-action@3567794e918fa3068116688122a76cdeb57b5f09 # v3
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

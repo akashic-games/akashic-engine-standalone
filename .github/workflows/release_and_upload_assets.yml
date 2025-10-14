@@ -23,9 +23,7 @@ jobs:
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          # 依存ファイルパスを空の文字列に設定し、キャッシュのヒット/保存を防止
-          cache-dependency-path: '' 
+          package-manager-cache: false # トリガーがpush:tags:の場合、キャッシュポイズニング攻撃のリスクがあるため、npm等のパッケージマネージャーのキャッシュを明示的に無効化する
       - name: Install project
         run: npm ci
       - name: Build project

@@ -21,7 +21,7 @@ jobs:
           cache: npm
       - name: Update internal modules
         run: |
-          npx -y npm-check-updates -f "@akashic*" -t minor -u
+          npx npm-check-updates -f "@akashic*" -t minor -u
       - name: Get version of @akashic/akashic-engine
         id: version
         run: |

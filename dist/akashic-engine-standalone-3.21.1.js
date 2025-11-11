@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.21.0 */
+/*! akashic-engine-standalone@3.21.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -3764,15 +3764,14 @@
 		     * このメソッドはエンジンから暗黙に呼び出され、ゲーム開発者が呼び出す必要はない。
 		     */
 		    CacheableE.prototype.renderSelf = function (renderer, camera) {
-		        var padding = CacheableE.PADDING;
 		        if (this._renderedCamera !== camera) {
 		            this.state &= ~2 /* EntityStateFlags.Cached */;
 		            this._renderedCamera = camera;
 		        }
 		        if (!(this.state & 2 /* EntityStateFlags.Cached */)) {
 		            this._cacheSize = this.calculateCacheSize();
-		            var w = Math.ceil(this._cacheSize.width) + padding * 2;
-		            var h = Math.ceil(this._cacheSize.height) + padding * 2;
+		            var w = Math.ceil(this._cacheSize.width);
+		            var h = Math.ceil(this._cacheSize.height);
 		            var isNew = !this._cache || this._cache.width < w || this._cache.height < h;
 		            if (isNew) {
 		                if (this._cache && !this._cache.destroyed()) {
@@ -3787,16 +3786,13 @@
 		                cacheRenderer.clear();
 		            }
 		            cacheRenderer.save();
-		            cacheRenderer.translate(padding, padding);
 		            this.renderCache(cacheRenderer, camera);
 		            cacheRenderer.restore();
 		            this.state |= 2 /* EntityStateFlags.Cached */;
 		            cacheRenderer.end();
 		        }
 		        if (this._cache && this._cacheSize.width > 0 && this._cacheSize.height > 0) {
-		            renderer.translate(-padding, -padding);
 		            this.renderSelfFromCache(renderer);
-		            renderer.translate(padding, padding);
 		        }
 		        return this._shouldRenderChildren;
 		    };
@@ -3805,7 +3801,7 @@
 		     * このメソッドはエンジンから暗黙に呼び出され、ゲーム開発者が呼び出す必要はない。
 		     */
 		    CacheableE.prototype.renderSelfFromCache = function (renderer) {
-		        renderer.drawImage(this._cache, 0, 0, this._cacheSize.width + CacheableE.PADDING, this._cacheSize.height + CacheableE.PADDING, 0, 0);
+		        renderer.drawImage(this._cache, 0, 0, this._cacheSize.width, this._cacheSize.height, 0, 0);
 		    };
 		    /**
 		     * 利用している `Surface` を破棄した上で、このエンティティを破棄する。
@@ -3829,12 +3825,6 @@
 		            height: this.height
 		        };
 		    };
-		    /**
-		     * _cache のパディングサイズ。
-		     *
-		     * @private
-		     */
-		    CacheableE.PADDING = 1;
 		    return CacheableE;
 		}(E_1.E));
 		CacheableE.CacheableE = CacheableE$1;
@@ -4550,7 +4540,7 @@
 		                destOffsetX = this._overhangLeft;
 		                break;
 		        }
-		        renderer.drawImage(this._cache, 0, 0, this._cacheSize.width + CacheableE_1.CacheableE.PADDING, this._cacheSize.height + CacheableE_1.CacheableE.PADDING, destOffsetX, 0);
+		        renderer.drawImage(this._cache, 0, 0, this._cacheSize.width, this._cacheSize.height, destOffsetX, 0);
 		    };
 		    Label.prototype.renderCache = function (renderer) {
 		        if (!this.fontSize || this.height <= 0 || this._textWidth <= 0) {
@@ -9548,6 +9538,108 @@
 		return LocalTickModeString;
 	}
 
+	var _Math = {};
+
+	var hasRequired_Math;
+
+	function require_Math () {
+		if (hasRequired_Math) return _Math;
+		hasRequired_Math = 1;
+		Object.defineProperty(_Math, "__esModule", { value: true });
+		_Math.Math = void 0;
+		var ExceptionFactory_1 = requireExceptionFactory$2();
+		/**
+		 * ルックアップテーブルを使った三角関数計算を提供する。
+		 */
+		var Math;
+		(function (Math) {
+		    var PI = globalThis.Math.PI;
+		    var PI2 = PI * 2;
+		    var arrayType = typeof Float32Array !== "undefined" ? Float32Array : Array;
+		    /**
+		     * Math を初期化する関数。
+		     * 指定したテーブルサイズおよび近似計算の反復回数に基づき、正弦値のルックアップテーブルを生成する。
+		     * 本関数は `Math.sin()` や `Math.cos()` を使用する前に呼ぶ必要がある。
+		     */
+		    function initialize(option) {
+		        var _a, _b, _c;
+		        var tableSize = (_a = option === null || option === void 0 ? void 0 : option.tableSize) !== null && _a !== void 0 ? _a : 8192 * 2;
+		        var wholePeriod = (_b = option === null || option === void 0 ? void 0 : option.wholePeriod) !== null && _b !== void 0 ? _b : true;
+		        var iterationNum = (_c = option === null || option === void 0 ? void 0 : option.iterationNum) !== null && _c !== void 0 ? _c : 5;
+		        var angleRange = wholePeriod ? PI * 2 : PI / 2;
+		        var factor = (tableSize - 1) / angleRange;
+		        var sinTable = setupSinTable(new arrayType(tableSize), angleRange, iterationNum);
+		        Math.sin = function (th) {
+		            th %= PI2;
+		            if (th < 0)
+		                th += PI2;
+		            if (wholePeriod) {
+		                return sinTable[(th * factor) | 0];
+		            }
+		            else {
+		                var sign = 1;
+		                if (th > PI) {
+		                    th -= PI;
+		                    sign = -1;
+		                }
+		                var idx = (th * factor) | 0;
+		                if (idx > sinTable.length - 1) {
+		                    idx = (sinTable.length - 1) * 2 - idx;
+		                }
+		                return sign * sinTable[idx];
+		            }
+		        };
+		        Math.cos = function (th) {
+		            return Math.sin(th + PI / 2);
+		        };
+		    }
+		    Math.initialize = initialize;
+		    /**
+		     * 高速な正弦関数。
+		     *
+		     * @param th ラジアン角
+		     * @returns 結果
+		     */
+		    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+		    Math.sin = function (th) {
+		        throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Math.sin: module not initialized. Call g.Math.initialize() before calling this function.");
+		    };
+		    /**
+		     * 高速な余弦関数。
+		     *
+		     * @param th ラジアン角
+		     * @returns 結果
+		     */
+		    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+		    Math.cos = function (th) {
+		        throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Math.cos: module not initialized. Call g.Math.initialize() before calling this function.");
+		    };
+		    function setupSinTable(arr, angleRange, iterNum) {
+		        var reso = arr.length;
+		        function sin(x) {
+		            var minusXSquared = -x * x;
+		            var s = 1;
+		            var n = 0;
+		            var term = 1;
+		            for (var i = 1; i <= 2 * iterNum; i++) {
+		                n = n + 2;
+		                term = (term * minusXSquared) / (n * (n + 1));
+		                s = s + term;
+		            }
+		            s = x * s;
+		            return s;
+		        }
+		        var factor = angleRange / (reso - 1);
+		        for (var i = 0; i < reso; i++) {
+		            arr[i] = sin(factor * i);
+		        }
+		        return arr;
+		    }
+		})(Math || (_Math.Math = Math = {}));
+		
+		return _Math;
+	}
+
 	var ModuleManager = {};
 
 	var RequireCachedValue = {};
@@ -11996,6 +12088,7 @@
 			__exportStar(requireInternalOperationPluginInfo(), exports);
 			__exportStar(requireLoadingScene(), exports);
 			__exportStar(requireLocalTickModeString(), exports);
+			__exportStar(require_Math(), exports);
 			__exportStar(requireMatrix(), exports);
 			__exportStar(requireModule(), exports);
 			__exportStar(requireModuleManager(), exports);

@@ -19637,6 +19637,7 @@
 	    var getScaleY = function () {
 	        return element.getBoundingClientRect().height / element.clientHeight;
 	    };
+	    var handlerPointerEventCache = {};
 	    var handlePointerDownEvent = function (event) {
 	        var rect = element.getBoundingClientRect();
 	        pointEvents.push({
@@ -19648,34 +19649,44 @@
 	            },
 	            button: event.button
 	        });
+	        var handlePointerMoveEvent = function (ev) {
+	            var rect = element.getBoundingClientRect();
+	            pointEvents.push({
+	                type: 1 /* g.PlatformPointType.Move */,
+	                identifier: ev.pointerId,
+	                offset: {
+	                    x: (ev.clientX - rect.left) / getScaleX(),
+	                    y: (ev.clientY - rect.top) / getScaleY()
+	                },
+	                button: ev.button
+	            });
+	        };
+	        var handlePointerUpEvent = function (ev) {
+	            var rect = element.getBoundingClientRect();
+	            pointEvents.push({
+	                type: 2 /* g.PlatformPointType.Up */,
+	                identifier: ev.pointerId,
+	                offset: {
+	                    x: (ev.clientX - rect.left) / getScaleX(),
+	                    y: (ev.clientY - rect.top) / getScaleY()
+	                },
+	                button: ev.button
+	            });
+	            if (ev.pointerId === event.pointerId) {
+	                if (!handlerPointerEventCache[ev.pointerId])
+	                    return;
+	                var _a = handlerPointerEventCache[ev.pointerId], moveHandler = _a.moveHandler, releaseHandler = _a.releaseHandler;
+	                window.removeEventListener("pointermove", moveHandler);
+	                window.removeEventListener("pointerup", releaseHandler);
+	                delete handlerPointerEventCache[ev.pointerId];
+	            }
+	        };
 	        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 	        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
-	    };
-	    var handlePointerMoveEvent = function (event) {
-	        var rect = element.getBoundingClientRect();
-	        pointEvents.push({
-	            type: 1 /* g.PlatformPointType.Move */,
-	            identifier: event.pointerId,
-	            offset: {
-	                x: (event.clientX - rect.left) / getScaleX(),
-	                y: (event.clientY - rect.top) / getScaleY()
-	            },
-	            button: event.button
-	        });
-	    };
-	    var handlePointerUpEvent = function (event) {
-	        var rect = element.getBoundingClientRect();
-	        pointEvents.push({
-	            type: 2 /* g.PlatformPointType.Up */,
-	            identifier: event.pointerId,
-	            offset: {
-	                x: (event.clientX - rect.left) / getScaleX(),
-	                y: (event.clientY - rect.top) / getScaleY()
-	            },
-	            button: event.button
-	        });
-	        window.removeEventListener("pointermove", handlePointerMoveEvent);
-	        window.removeEventListener("pointerup", handlePointerUpEvent);
+	        handlerPointerEventCache[event.pointerId] = {
+	            moveHandler: handlePointerMoveEvent,
+	            releaseHandler: handlePointerUpEvent
+	        };
 	    };
 	    var handlePreventDefaultEvent = function (event) {
 	        event.preventDefault();

@@ -118,6 +118,11 @@ export function initialize(param: InitializeParameter): () => void {
 		return element.getBoundingClientRect().height / element.clientHeight;
 	};
 
+	// ポインタ関連のイベントハンドラをポインタID毎にキャッシュ
+	const handlerPointerEventCache: {
+		[id: string]: { moveHandler: (event: PointerEvent) => void; releaseHandler: (event: PointerEvent) => void };
+	} = {};
+
 	const handlePointerDownEvent = (event: PointerEvent): void => {
 		const rect = element.getBoundingClientRect();
 		pointEvents.push({
@@ -129,36 +134,42 @@ export function initialize(param: InitializeParameter): () => void {
 			},
 			button: event.button
 		});
+		const handlePointerMoveEvent = (ev: PointerEvent): void => {
+			const rect = element.getBoundingClientRect();
+			pointEvents.push({
+				type: g.PlatformPointType.Move,
+				identifier: ev.pointerId,
+				offset: {
+					x: (ev.clientX - rect.left) / getScaleX(),
+					y: (ev.clientY - rect.top) / getScaleY()
+				},
+				button: ev.button
+			});
+		};
+		const handlePointerUpEvent = (ev: PointerEvent): void => {
+			const rect = element.getBoundingClientRect();
+			pointEvents.push({
+				type: g.PlatformPointType.Up,
+				identifier: ev.pointerId,
+				offset: {
+					x: (ev.clientX - rect.left) / getScaleX(),
+					y: (ev.clientY - rect.top) / getScaleY()
+				},
+				button: ev.button
+			});
+			if (ev.pointerId === event.pointerId && handlerPointerEventCache[ev.pointerId]) {
+				const { moveHandler, releaseHandler } = handlerPointerEventCache[ev.pointerId];
+				window.removeEventListener("pointermove", moveHandler);
+				window.removeEventListener("pointerup", releaseHandler);
+				delete handlerPointerEventCache[ev.pointerId];
+			}
+		};
 		window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 		window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
-	};
-
-	const handlePointerMoveEvent = (event: PointerEvent): void => {
-		const rect = element.getBoundingClientRect();
-		pointEvents.push({
-			type: g.PlatformPointType.Move,
-			identifier: event.pointerId,
-			offset: {
-				x: (event.clientX - rect.left) / getScaleX(),
-				y: (event.clientY - rect.top) / getScaleY()
-			},
-			button: event.button
-		});
-	};
-
-	const handlePointerUpEvent = (event: PointerEvent): void => {
-		const rect = element.getBoundingClientRect();
-		pointEvents.push({
-			type: g.PlatformPointType.Up,
-			identifier: event.pointerId,
-			offset: {
-				x: (event.clientX - rect.left) / getScaleX(),
-				y: (event.clientY - rect.top) / getScaleY()
-			},
-			button: event.button
-		});
-		window.removeEventListener("pointermove", handlePointerMoveEvent);
-		window.removeEventListener("pointerup", handlePointerUpEvent);
+		handlerPointerEventCache[event.pointerId] = {
+			moveHandler: handlePointerMoveEvent,
+			releaseHandler: handlePointerUpEvent
+		};
 	};
 
 	const handlePreventDefaultEvent = (event: MouseEvent): void => {

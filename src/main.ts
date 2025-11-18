@@ -119,9 +119,7 @@ export function initialize(param: InitializeParameter): () => void {
 	};
 
 	// ポインタ関連のイベントハンドラをポインタID毎にキャッシュ
-	const handlerPointerEventCache: {
-		[id: string]: { moveHandler: (event: PointerEvent) => void; releaseHandler: (event: PointerEvent) => void };
-	} = {};
+	const handlerPointerEventCache: Record<string, { move: (event: PointerEvent) => void; release: (event: PointerEvent) => void }> = {};
 
 	const handlePointerDownEvent = (event: PointerEvent): void => {
 		const rect = element.getBoundingClientRect();
@@ -158,17 +156,17 @@ export function initialize(param: InitializeParameter): () => void {
 				button: ev.button
 			});
 			if (ev.pointerId === event.pointerId && handlerPointerEventCache[ev.pointerId]) {
-				const { moveHandler, releaseHandler } = handlerPointerEventCache[ev.pointerId];
-				window.removeEventListener("pointermove", moveHandler);
-				window.removeEventListener("pointerup", releaseHandler);
+				const { move, release } = handlerPointerEventCache[ev.pointerId];
+				window.removeEventListener("pointermove", move);
+				window.removeEventListener("pointerup", release);
 				delete handlerPointerEventCache[ev.pointerId];
 			}
 		};
 		window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 		window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
 		handlerPointerEventCache[event.pointerId] = {
-			moveHandler: handlePointerMoveEvent,
-			releaseHandler: handlePointerUpEvent
+			move: handlePointerMoveEvent,
+			release: handlePointerUpEvent
 		};
 	};
 

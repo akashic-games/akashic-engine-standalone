@@ -19637,6 +19637,7 @@
 	    var getScaleY = function () {
 	        return element.getBoundingClientRect().height / element.clientHeight;
 	    };
+	    // ポインタ関連のイベントハンドラをポインタID毎にキャッシュ
 	    var handlerPointerEventCache = {};
 	    var handlePointerDownEvent = function (event) {
 	        var rect = element.getBoundingClientRect();
@@ -19672,20 +19673,18 @@
 	                },
 	                button: ev.button
 	            });
-	            if (ev.pointerId === event.pointerId) {
-	                if (!handlerPointerEventCache[ev.pointerId])
-	                    return;
-	                var _a = handlerPointerEventCache[ev.pointerId], moveHandler = _a.moveHandler, releaseHandler = _a.releaseHandler;
-	                window.removeEventListener("pointermove", moveHandler);
-	                window.removeEventListener("pointerup", releaseHandler);
+	            if (ev.pointerId === event.pointerId && handlerPointerEventCache[ev.pointerId]) {
+	                var _a = handlerPointerEventCache[ev.pointerId], move = _a.move, release = _a.release;
+	                window.removeEventListener("pointermove", move);
+	                window.removeEventListener("pointerup", release);
 	                delete handlerPointerEventCache[ev.pointerId];
 	            }
 	        };
 	        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 	        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
 	        handlerPointerEventCache[event.pointerId] = {
-	            moveHandler: handlePointerMoveEvent,
-	            releaseHandler: handlePointerUpEvent
+	            move: handlePointerMoveEvent,
+	            release: handlePointerUpEvent
 	        };
 	    };
 	    var handlePreventDefaultEvent = function (event) {

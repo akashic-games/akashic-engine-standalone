@@ -133,6 +133,10 @@ export function initialize(param: InitializeParameter): () => void {
 			button: event.button
 		});
 		const handlePointerMoveEvent = (ev: PointerEvent): void => {
+			// ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
+			if (ev.pointerId !== event.pointerId) {
+				return;
+			}
 			const rect = element.getBoundingClientRect();
 			pointEvents.push({
 				type: g.PlatformPointType.Move,
@@ -145,6 +149,10 @@ export function initialize(param: InitializeParameter): () => void {
 			});
 		};
 		const handlePointerUpEvent = (ev: PointerEvent): void => {
+			// ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
+			if (ev.pointerId !== event.pointerId) {
+				return;
+			}
 			const rect = element.getBoundingClientRect();
 			pointEvents.push({
 				type: g.PlatformPointType.Up,
@@ -155,15 +163,20 @@ export function initialize(param: InitializeParameter): () => void {
 				},
 				button: ev.button
 			});
-			if (ev.pointerId === event.pointerId && handlerPointerEventCache[ev.pointerId]) {
-				const { move, release } = handlerPointerEventCache[ev.pointerId];
-				window.removeEventListener("pointermove", move);
-				window.removeEventListener("pointerup", release);
-				delete handlerPointerEventCache[ev.pointerId];
+			if (!handlerPointerEventCache[ev.pointerId]) {
+				return;
 			}
+			const { move, release } = handlerPointerEventCache[ev.pointerId];
+			window.removeEventListener("pointermove", move);
+			window.removeEventListener("pointerup", release);
+			window.removeEventListener("pointercancel", release);
+			delete handlerPointerEventCache[ev.pointerId];
 		};
 		window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 		window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
+		// マルチタップを行う場合、ブラウザのネイティブジェスチャーが優先されて pointerup の代わりにこのイベントが発火することがある
+		// その場合は代わりに handlePointerUpEvent を実行する
+		window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
 		handlerPointerEventCache[event.pointerId] = {
 			move: handlePointerMoveEvent,
 			release: handlePointerUpEvent

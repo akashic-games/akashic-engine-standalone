@@ -19651,6 +19651,10 @@
 	            button: event.button
 	        });
 	        var handlePointerMoveEvent = function (ev) {
+	            // ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
+	            if (ev.pointerId !== event.pointerId) {
+	                return;
+	            }
 	            var rect = element.getBoundingClientRect();
 	            pointEvents.push({
 	                type: 1 /* g.PlatformPointType.Move */,
@@ -19663,6 +19667,10 @@
 	            });
 	        };
 	        var handlePointerUpEvent = function (ev) {
+	            // ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
+	            if (ev.pointerId !== event.pointerId) {
+	                return;
+	            }
 	            var rect = element.getBoundingClientRect();
 	            pointEvents.push({
 	                type: 2 /* g.PlatformPointType.Up */,
@@ -19673,15 +19681,20 @@
 	                },
 	                button: ev.button
 	            });
-	            if (ev.pointerId === event.pointerId && handlerPointerEventCache[ev.pointerId]) {
-	                var _a = handlerPointerEventCache[ev.pointerId], move = _a.move, release = _a.release;
-	                window.removeEventListener("pointermove", move);
-	                window.removeEventListener("pointerup", release);
-	                delete handlerPointerEventCache[ev.pointerId];
+	            if (!handlerPointerEventCache[ev.pointerId]) {
+	                return;
 	            }
+	            var _a = handlerPointerEventCache[ev.pointerId], move = _a.move, release = _a.release;
+	            window.removeEventListener("pointermove", move);
+	            window.removeEventListener("pointerup", release);
+	            window.removeEventListener("pointercancel", release);
+	            delete handlerPointerEventCache[ev.pointerId];
 	        };
 	        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 	        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
+	        // マルチタップを行う場合、ブラウザのネイティブジェスチャーが優先されて pointerup の代わりにこのイベントが発火することがある
+	        // その場合は代わりに handlePointerUpEvent を実行する
+	        window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
 	        handlerPointerEventCache[event.pointerId] = {
 	            move: handlePointerMoveEvent,
 	            release: handlePointerUpEvent

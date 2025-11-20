@@ -133,7 +133,6 @@ export function initialize(param: InitializeParameter): () => void {
 			button: event.button
 		});
 		const handlePointerMoveEvent = (ev: PointerEvent): void => {
-			// ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
 			if (ev.pointerId !== event.pointerId) {
 				return;
 			}
@@ -149,7 +148,6 @@ export function initialize(param: InitializeParameter): () => void {
 			});
 		};
 		const handlePointerUpEvent = (ev: PointerEvent): void => {
-			// ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
 			if (ev.pointerId !== event.pointerId) {
 				return;
 			}
@@ -174,8 +172,6 @@ export function initialize(param: InitializeParameter): () => void {
 		};
 		window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 		window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
-		// マルチタップを行う場合、ブラウザのネイティブジェスチャーが優先されて pointerup の代わりにこのイベントが発火することがある
-		// その場合は代わりに handlePointerUpEvent を実行する
 		window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
 		handlerPointerEventCache[event.pointerId] = {
 			move: handlePointerMoveEvent,

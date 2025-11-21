@@ -19651,7 +19651,6 @@
 	            button: event.button
 	        });
 	        var handlePointerMoveEvent = function (ev) {
-	            // ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
 	            if (ev.pointerId !== event.pointerId) {
 	                return;
 	            }
@@ -19667,7 +19666,6 @@
 	            });
 	        };
 	        var handlePointerUpEvent = function (ev) {
-	            // ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
 	            if (ev.pointerId !== event.pointerId) {
 	                return;
 	            }
@@ -19692,8 +19690,6 @@
 	        };
 	        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 	        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
-	        // マルチタップを行う場合、ブラウザのネイティブジェスチャーが優先されて pointerup の代わりにこのイベントが発火することがある
-	        // その場合は代わりに handlePointerUpEvent を実行する
 	        window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
 	        handlerPointerEventCache[event.pointerId] = {
 	            move: handlePointerMoveEvent,

@@ -19637,6 +19637,8 @@
 	    var getScaleY = function () {
 	        return element.getBoundingClientRect().height / element.clientHeight;
 	    };
+	    // ポインタ関連のイベントハンドラをポインタID毎にキャッシュ
+	    var handlerPointerEventCache = {};
 	    var handlePointerDownEvent = function (event) {
 	        var rect = element.getBoundingClientRect();
 	        pointEvents.push({
@@ -19648,34 +19650,55 @@
 	            },
 	            button: event.button
 	        });
+	        var handlePointerMoveEvent = function (ev) {
+	            // ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
+	            if (ev.pointerId !== event.pointerId) {
+	                return;
+	            }
+	            var rect = element.getBoundingClientRect();
+	            pointEvents.push({
+	                type: 1 /* g.PlatformPointType.Move */,
+	                identifier: ev.pointerId,
+	                offset: {
+	                    x: (ev.clientX - rect.left) / getScaleX(),
+	                    y: (ev.clientY - rect.top) / getScaleY()
+	                },
+	                button: ev.button
+	            });
+	        };
+	        var handlePointerUpEvent = function (ev) {
+	            // ハンドラが多重登録されているため、ポインタIDが同一のもののみ起動するように
+	            if (ev.pointerId !== event.pointerId) {
+	                return;
+	            }
+	            var rect = element.getBoundingClientRect();
+	            pointEvents.push({
+	                type: 2 /* g.PlatformPointType.Up */,
+	                identifier: ev.pointerId,
+	                offset: {
+	                    x: (ev.clientX - rect.left) / getScaleX(),
+	                    y: (ev.clientY - rect.top) / getScaleY()
+	                },
+	                button: ev.button
+	            });
+	            if (!handlerPointerEventCache[ev.pointerId]) {
+	                return;
+	            }
+	            var _a = handlerPointerEventCache[ev.pointerId], move = _a.move, release = _a.release;
+	            window.removeEventListener("pointermove", move);
+	            window.removeEventListener("pointerup", release);
+	            window.removeEventListener("pointercancel", release);
+	            delete handlerPointerEventCache[ev.pointerId];
+	        };
 	        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
 	        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
-	    };
-	    var handlePointerMoveEvent = function (event) {
-	        var rect = element.getBoundingClientRect();
-	        pointEvents.push({
-	            type: 1 /* g.PlatformPointType.Move */,
-	            identifier: event.pointerId,
-	            offset: {
-	                x: (event.clientX - rect.left) / getScaleX(),
-	                y: (event.clientY - rect.top) / getScaleY()
-	            },
-	            button: event.button
-	        });
-	    };
-	    var handlePointerUpEvent = function (event) {
-	        var rect = element.getBoundingClientRect();
-	        pointEvents.push({
-	            type: 2 /* g.PlatformPointType.Up */,
-	            identifier: event.pointerId,
-	            offset: {
-	                x: (event.clientX - rect.left) / getScaleX(),
-	                y: (event.clientY - rect.top) / getScaleY()
-	            },
-	            button: event.button
-	        });
-	        window.removeEventListener("pointermove", handlePointerMoveEvent);
-	        window.removeEventListener("pointerup", handlePointerUpEvent);
+	        // マルチタップを行う場合、ブラウザのネイティブジェスチャーが優先されて pointerup の代わりにこのイベントが発火することがある
+	        // その場合は代わりに handlePointerUpEvent を実行する
+	        window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
+	        handlerPointerEventCache[event.pointerId] = {
+	            move: handlePointerMoveEvent,
+	            release: handlePointerUpEvent
+	        };
 	    };
 	    var handlePreventDefaultEvent = function (event) {
 	        event.preventDefault();

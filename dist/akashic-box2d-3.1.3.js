@@ -11348,7 +11348,7 @@ module.exports = Box2D
 },{}],"@akashic-extension/akashic-box2d":[function(require,module,exports){
 "use strict";
 // tslint:disable-next-line:no-reference
-/// <reference path="../typings/box2dweb.d.ts"/>
+/// <reference path="../typings/box2dweb.d.ts" preserve="true" />
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);

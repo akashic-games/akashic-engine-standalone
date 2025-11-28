@@ -49,24 +49,23 @@ jobs:
         id: diff
         run: |
           echo "count=$(git diff --name-only | wc -l)" >> $GITHUB_OUTPUT
-      - name: Create commits
+      - name: Create Commit and Pull Request
         if: 2 <= steps.diff.outputs.count # package.json, package-lock.json
         run: |
+          BRANCH_NAME="update_akashic_engine/${LATEST_VERSION}"
+          git checkout -b "${BRANCH_NAME}"
           git config user.name 'github-actions'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m "Update to ${STEPS_VERSION_OUTPUTS_LATEST_VERSION}"
+          git commit -m "Update to ${LATEST_VERSION}"
+          git push origin "${BRANCH_NAME}"
+          gh pr create \
+            --title "update to akashic-engine@${LATEST_VERSION}" \
+            --body "$(printf '# このPullRequestが解決する内容\nakashic-engine を ${LATEST_VERSION} に更新します。\n## 動作確認方法\n[こちら](${WORKFLOW_URL}) から **output_${LATEST_VERSION}.zip** をダウンロードして、手元で実行できるかを確認してください。')" \
+            --base "${CURRENT_BRANCH}" \
+            --head "${BRANCH_NAME}"
         env:
-          STEPS_VERSION_OUTPUTS_LATEST_VERSION: ${{ steps.version.outputs.LATEST_VERSION }}
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
-        if: 2 <= steps.diff.outputs.count # package.json, package-lock.json
-        with:
-          title: update to akashic-engine@${{ steps.version.outputs.LATEST_VERSION }}
-          branch: update_akashic_engine/${{ steps.version.outputs.LATEST_VERSION }}
-          body: |
-            ## このPullRequestが解決する内容
-            akashic-engine を ${{ steps.version.outputs.LATEST_VERSION }} に更新します。
-            ## 動作確認方法
-            [こちら](${{ steps.workflow.outputs.WORKFLOW_URL }}) から **output_${{ steps.version.outputs.LATEST_VERSION }}.zip** をダウンロードして、手元で実行できるかを確認してください。
-          delete-branch: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LATEST_VERSION: ${{ steps.version.outputs.LATEST_VERSION }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
+          WORKFLOW_URL: ${{ steps.workflow.outputs.WORKFLOW_URL }}

@@ -15182,22 +15182,28 @@
 		        _this.onPointerDown = function (e) {
 		            _this.pointDown(e.pointerId, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e, 0 /* PlatformButtonType.Primary */));
 		            var onPointerMove = function (event) {
+		                if (e.pointerId !== event.pointerId) {
+		                    return;
+		                }
 		                _this.pointMove(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, -1 /* PlatformButtonType.Unchanged */));
 		            };
 		            var onPointerUp = function (event) {
-		                _this.pointUp(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, 0 /* PlatformButtonType.Primary */));
-		                if (e.pointerId === event.pointerId) {
-		                    var handlers = _this._eventHandlersMap[event.pointerId];
-		                    if (!handlers)
-		                        return;
-		                    var onPointerMove_1 = handlers.onPointerMove, onPointerUp_1 = handlers.onPointerUp;
-		                    window.removeEventListener("pointermove", onPointerMove_1, false);
-		                    window.removeEventListener("pointerup", onPointerUp_1, false);
-		                    delete _this._eventHandlersMap[event.pointerId];
+		                if (e.pointerId !== event.pointerId) {
+		                    return;
 		                }
+		                _this.pointUp(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, 0 /* PlatformButtonType.Primary */));
+		                var handlers = _this._eventHandlersMap[event.pointerId];
+		                if (!handlers)
+		                    return;
+		                var onPointerMove = handlers.onPointerMove, onPointerUp = handlers.onPointerUp;
+		                window.removeEventListener("pointermove", onPointerMove, false);
+		                window.removeEventListener("pointerup", onPointerUp, false);
+		                window.removeEventListener("pointercancel", onPointerUp, false);
+		                delete _this._eventHandlersMap[event.pointerId];
 		            };
 		            window.addEventListener("pointermove", onPointerMove, false);
 		            window.addEventListener("pointerup", onPointerUp, false);
+		            window.addEventListener("pointercancel", onPointerUp, false);
 		            _this._eventHandlersMap[e.pointerId] = { onPointerMove: onPointerMove, onPointerUp: onPointerUp };
 		        };
 		        _this._eventHandlersMap = Object.create(null);

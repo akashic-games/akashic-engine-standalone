@@ -59,11 +59,9 @@ jobs:
           git add -A
           git commit -m "Update to ${LATEST_VERSION}"
           git push origin "${BRANCH_NAME}"
-          gh pr create \
-            --title "update to akashic-engine@${LATEST_VERSION}" \
-            --body "$(printf '# このPullRequestが解決する内容\nakashic-engine を ${LATEST_VERSION} に更新します。\n## 動作確認方法\n[こちら](${WORKFLOW_URL}) から **output_${LATEST_VERSION}.zip** をダウンロードして、手元で実行できるかを確認してください。')" \
-            --base "${CURRENT_BRANCH}" \
-            --head "${BRANCH_NAME}"
+          PR_TITLE="update to akashic-engine@${LATEST_VERSION}"
+          PR_BODY=$(printf '# このPullRequestが解決する内容\nakashic-engine を %s に更新します。\n## 動作確認方法\n[こちら](%s) から **output_%s.zip** をダウンロードして、手元で実行できるかを確認してください。' "${LATEST_VERSION}" "${WORKFLOW_URL}" "${LATEST_VERSION}")
+          gh pr create --title "${PR_TITLE}" --body "${PR_BODY}" --base "${CURRENT_BRANCH}" --head "${BRANCH_NAME}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LATEST_VERSION: ${{ steps.version.outputs.LATEST_VERSION }}

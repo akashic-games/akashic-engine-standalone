@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.21.1 */
+/*! akashic-engine-standalone@3.21.2 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -9555,21 +9555,27 @@
 		(function (Math) {
 		    var PI = globalThis.Math.PI;
 		    var PI2 = PI * 2;
+		    var COS_EPSILON = 1e-7;
+		    var TAN_MAX = 1e7;
 		    var arrayType = typeof Float32Array !== "undefined" ? Float32Array : Array;
 		    /**
 		     * Math を初期化する関数。
-		     * 指定したテーブルサイズおよび近似計算の反復回数に基づき、正弦値のルックアップテーブルを生成する。
-		     * 本関数は `Math.sin()` や `Math.cos()` を使用する前に呼ぶ必要がある。
+		     * 指定したテーブルサイズおよび近似計算の反復回数に基づき、ルックアップテーブルを生成する。
+		     * 本関数は `g.Math.sin()`, `g.Math.cos()`, `g.Math.tan()` を使用する前に呼ぶ必要がある。
 		     */
 		    function initialize(option) {
 		        var _a, _b, _c;
 		        var tableSize = (_a = option === null || option === void 0 ? void 0 : option.tableSize) !== null && _a !== void 0 ? _a : 8192 * 2;
 		        var wholePeriod = (_b = option === null || option === void 0 ? void 0 : option.wholePeriod) !== null && _b !== void 0 ? _b : true;
 		        var iterationNum = (_c = option === null || option === void 0 ? void 0 : option.iterationNum) !== null && _c !== void 0 ? _c : 5;
-		        var angleRange = wholePeriod ? PI * 2 : PI / 2;
-		        var factor = (tableSize - 1) / angleRange;
-		        var sinTable = setupSinTable(new arrayType(tableSize), angleRange, iterationNum);
+		        var sinAngleRange = wholePeriod ? PI * 2 : PI / 2;
+		        var sinFactor = (tableSize - 1) / sinAngleRange;
+		        var sinTable = setupSinTable(new arrayType(tableSize), sinAngleRange, iterationNum);
+		        var tanAngleRange = wholePeriod ? PI : PI / 2;
+		        var tanFactor = (tableSize - 1) / tanAngleRange;
+		        var tanTable = setupTanTable(new arrayType(tableSize), tanAngleRange, iterationNum);
 		        Math.sin = function (th) {
+		            var factor = sinFactor;
 		            th %= PI2;
 		            if (th < 0)
 		                th += PI2;
@@ -9592,10 +9598,31 @@
 		        Math.cos = function (th) {
 		            return Math.sin(th + PI / 2);
 		        };
+		        Math.tan = function (th) {
+		            var factor = tanFactor;
+		            th %= PI;
+		            if (th < 0)
+		                th += PI;
+		            if (wholePeriod) {
+		                return tanTable[(th * factor) | 0];
+		            }
+		            else {
+		                var sign = 1;
+		                if (th > PI / 2) {
+		                    th = PI - th;
+		                    sign = -1;
+		                }
+		                var idx = (th * factor) | 0;
+		                if (idx > tanTable.length - 1) {
+		                    idx = (tanTable.length - 1) * 2 - idx;
+		                }
+		                return sign * tanTable[idx];
+		            }
+		        };
 		    }
 		    Math.initialize = initialize;
 		    /**
-		     * 高速な正弦関数。
+		     * ルックアップテーブルを使用した高速な正弦関数。
 		     *
 		     * @param th ラジアン角
 		     * @returns 結果
@@ -9605,7 +9632,7 @@
 		        throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Math.sin: module not initialized. Call g.Math.initialize() before calling this function.");
 		    };
 		    /**
-		     * 高速な余弦関数。
+		     * ルックアップテーブルを使用した高速な余弦関数。
 		     *
 		     * @param th ラジアン角
 		     * @returns 結果
@@ -9614,26 +9641,48 @@
 		    Math.cos = function (th) {
 		        throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Math.cos: module not initialized. Call g.Math.initialize() before calling this function.");
 		    };
+		    /**
+		     * ルックアップテーブルを使用した高速な正接関数。
+		     *
+		     * @param th ラジアン角
+		     * @returns 結果
+		     */
+		    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+		    Math.tan = function (th) {
+		        throw ExceptionFactory_1.ExceptionFactory.createAssertionError("Math.tan: module not initialized. Call g.Math.initialize() before calling this function.");
+		    };
 		    function setupSinTable(arr, angleRange, iterNum) {
 		        var reso = arr.length;
-		        function sin(x) {
-		            var minusXSquared = -x * x;
-		            var s = 1;
-		            var n = 0;
-		            var term = 1;
-		            for (var i = 1; i <= 2 * iterNum; i++) {
-		                n = n + 2;
-		                term = (term * minusXSquared) / (n * (n + 1));
-		                s = s + term;
-		            }
-		            s = x * s;
-		            return s;
-		        }
 		        var factor = angleRange / (reso - 1);
 		        for (var i = 0; i < reso; i++) {
-		            arr[i] = sin(factor * i);
+		            var x = factor * i;
+		            arr[i] = sinApprox(x, iterNum);
 		        }
 		        return arr;
+		    }
+		    function setupTanTable(arr, angleRange, iterNum) {
+		        var reso = arr.length;
+		        var factor = angleRange / (reso - 1);
+		        for (var i = 0; i < reso; i++) {
+		            var x = factor * i;
+		            var sin_1 = sinApprox(x, iterNum);
+		            var cos_1 = sinApprox(x + PI / 2, iterNum);
+		            arr[i] = globalThis.Math.abs(cos_1) < COS_EPSILON ? (cos_1 >= 0 ? TAN_MAX : -TAN_MAX) : sin_1 / cos_1;
+		        }
+		        return arr;
+		    }
+		    function sinApprox(x, iterNum) {
+		        var minusXSquared = -x * x;
+		        var s = 1;
+		        var n = 0;
+		        var term = 1;
+		        for (var i = 1; i <= 2 * iterNum; i++) {
+		            n = n + 2;
+		            term = (term * minusXSquared) / (n * (n + 1));
+		            s = s + term;
+		        }
+		        s = x * s;
+		        return s;
 		    }
 		})(Math || (_Math.Math = Math = {}));
 		
@@ -15182,22 +15231,28 @@
 		        _this.onPointerDown = function (e) {
 		            _this.pointDown(e.pointerId, _this.getOffsetPositionFromInputView(e), _this.getPlatformButtonType(e, 0 /* PlatformButtonType.Primary */));
 		            var onPointerMove = function (event) {
+		                if (e.pointerId !== event.pointerId) {
+		                    return;
+		                }
 		                _this.pointMove(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, -1 /* PlatformButtonType.Unchanged */));
 		            };
 		            var onPointerUp = function (event) {
-		                _this.pointUp(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, 0 /* PlatformButtonType.Primary */));
-		                if (e.pointerId === event.pointerId) {
-		                    var handlers = _this._eventHandlersMap[event.pointerId];
-		                    if (!handlers)
-		                        return;
-		                    var onPointerMove_1 = handlers.onPointerMove, onPointerUp_1 = handlers.onPointerUp;
-		                    window.removeEventListener("pointermove", onPointerMove_1, false);
-		                    window.removeEventListener("pointerup", onPointerUp_1, false);
-		                    delete _this._eventHandlersMap[event.pointerId];
+		                if (e.pointerId !== event.pointerId) {
+		                    return;
 		                }
+		                _this.pointUp(event.pointerId, _this.getOffsetPositionFromInputView(event), _this.getPlatformButtonType(event, 0 /* PlatformButtonType.Primary */));
+		                var handlers = _this._eventHandlersMap[event.pointerId];
+		                if (!handlers)
+		                    return;
+		                var onPointerMove = handlers.onPointerMove, onPointerUp = handlers.onPointerUp;
+		                window.removeEventListener("pointermove", onPointerMove, false);
+		                window.removeEventListener("pointerup", onPointerUp, false);
+		                window.removeEventListener("pointercancel", onPointerUp, false);
+		                delete _this._eventHandlersMap[event.pointerId];
 		            };
 		            window.addEventListener("pointermove", onPointerMove, false);
 		            window.addEventListener("pointerup", onPointerUp, false);
+		            window.addEventListener("pointercancel", onPointerUp, false);
 		            _this._eventHandlersMap[e.pointerId] = { onPointerMove: onPointerMove, onPointerUp: onPointerUp };
 		        };
 		        _this._eventHandlersMap = Object.create(null);

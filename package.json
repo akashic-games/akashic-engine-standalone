@@ -80,7 +80,7 @@
   "devDependencies": {
     "@akashic-extension/akashic-box2d": "3.1.4",
     "@akashic-extension/akashic-label": "3.1.0",
-    "@akashic-extension/akashic-timeline": "3.2.1",
+    "@akashic-extension/akashic-timeline": "3.2.2",
     "@akashic/eslint-config": "^1.1.1",
     "@akashic/remark-preset-lint": "^0.1.2",
     "@octokit/rest": "^19.0.13",

@@ -1,18 +1,24 @@
 /*! akashic-engine-standalone@3.21.2 */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.AE = {}));
-})(this, (function (exports) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.AE = factory());
+})(this, (function () { 'use strict';
 
-	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+	function getDefaultExportFromCjs (x) {
+		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+	}
 
 	function getAugmentedNamespace(n) {
-	  if (n.__esModule) return n;
+	  if (Object.prototype.hasOwnProperty.call(n, '__esModule')) return n;
 	  var f = n.default;
 		if (typeof f == "function") {
 			var a = function a () {
-				if (this instanceof a) {
+				var isInstance = false;
+	      try {
+	        isInstance = this instanceof a;
+	      } catch {}
+				if (isInstance) {
 	        return Reflect.construct(f, arguments, this.constructor);
 				}
 				return f.apply(this, arguments);
@@ -32,7 +38,7 @@
 		return a;
 	}
 
-	var main = {};
+	var main$1 = {};
 
 	/******************************************************************************
 	Copyright (c) Microsoft Corporation.
@@ -527,7 +533,7 @@
 		if (hasRequiredLib$4) return lib$3;
 		hasRequiredLib$4 = 1;
 		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			var __createBinding = (lib$3 && lib$3.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
 			    var desc = Object.getOwnPropertyDescriptor(m, k);
 			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
@@ -538,7 +544,7 @@
 			    if (k2 === undefined) k2 = k;
 			    o[k2] = m[k];
 			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			var __exportStar = (lib$3 && lib$3.__exportStar) || function(m, exports) {
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
@@ -879,7 +885,7 @@
 		if (hasRequiredLib$3) return lib$2;
 		hasRequiredLib$3 = 1;
 		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			var __createBinding = (lib$2 && lib$2.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
 			    var desc = Object.getOwnPropertyDescriptor(m, k);
 			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
@@ -890,7 +896,7 @@
 			    if (k2 === undefined) k2 = k;
 			    o[k2] = m[k];
 			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			var __exportStar = (lib$2 && lib$2.__exportStar) || function(m, exports) {
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
@@ -1495,7 +1501,7 @@
 		if (hasRequiredLib$2) return lib$1;
 		hasRequiredLib$2 = 1;
 		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			var __createBinding = (lib$1 && lib$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
 			    var desc = Object.getOwnPropertyDescriptor(m, k);
 			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
@@ -1506,7 +1512,7 @@
 			    if (k2 === undefined) k2 = k;
 			    o[k2] = m[k];
 			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			var __exportStar = (lib$1 && lib$1.__exportStar) || function(m, exports) {
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
@@ -1792,7 +1798,7 @@
 	function requireAudioSystem () {
 		if (hasRequiredAudioSystem) return AudioSystem;
 		hasRequiredAudioSystem = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (AudioSystem && AudioSystem.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2431,7 +2437,7 @@
 	function requireEvent () {
 		if (hasRequiredEvent) return Event;
 		hasRequiredEvent = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (Event && Event.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3151,7 +3157,7 @@
 	function requireE () {
 		if (hasRequiredE) return E;
 		hasRequiredE = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (E && E.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3907,7 +3913,7 @@
 	function requireCacheableE () {
 		if (hasRequiredCacheableE) return CacheableE;
 		hasRequiredCacheableE = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (CacheableE && CacheableE.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4030,7 +4036,7 @@
 	function requireFilledRect () {
 		if (hasRequiredFilledRect) return FilledRect;
 		hasRequiredFilledRect = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (FilledRect && FilledRect.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4303,7 +4309,7 @@
 	function requireSprite () {
 		if (hasRequiredSprite) return Sprite;
 		hasRequiredSprite = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (Sprite && Sprite.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4453,7 +4459,7 @@
 	function requireFrameSprite () {
 		if (hasRequiredFrameSprite) return FrameSprite;
 		hasRequiredFrameSprite = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (FrameSprite && FrameSprite.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4644,7 +4650,7 @@
 	function requireLabel () {
 		if (hasRequiredLabel) return Label;
 		hasRequiredLabel = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (Label && Label.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4879,7 +4885,7 @@
 	function requirePane () {
 		if (hasRequiredPane) return Pane;
 		hasRequiredPane = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (Pane && Pane.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5777,7 +5783,7 @@
 	function requireEmptyGeneratedVectorImageAsset () {
 		if (hasRequiredEmptyGeneratedVectorImageAsset) return EmptyGeneratedVectorImageAsset;
 		hasRequiredEmptyGeneratedVectorImageAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (EmptyGeneratedVectorImageAsset && EmptyGeneratedVectorImageAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5924,7 +5930,7 @@
 	function requireAssetManager () {
 		if (hasRequiredAssetManager) return AssetManager;
 		hasRequiredAssetManager = 1;
-		var __assign = (commonjsGlobal && commonjsGlobal.__assign) || function () {
+		var __assign = (AssetManager && AssetManager.__assign) || function () {
 		    __assign = Object.assign || function(t) {
 		        for (var s, i = 1, n = arguments.length; i < n; i++) {
 		            s = arguments[i];
@@ -6979,7 +6985,7 @@
 	function requireBitmapFont () {
 		if (hasRequiredBitmapFont) return BitmapFont;
 		hasRequiredBitmapFont = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (BitmapFont && BitmapFont.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7098,7 +7104,7 @@
 	function requireCamera2D () {
 		if (hasRequiredCamera2D) return Camera2D;
 		hasRequiredCamera2D = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (Camera2D && Camera2D.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7411,7 +7417,7 @@
 	function requireCameraCancellingE () {
 		if (hasRequiredCameraCancellingE) return CameraCancellingE;
 		hasRequiredCameraCancellingE = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (CameraCancellingE && CameraCancellingE.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8230,7 +8236,7 @@
 	function requireLoadingScene () {
 		if (hasRequiredLoadingScene) return LoadingScene;
 		hasRequiredLoadingScene = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (LoadingScene && LoadingScene.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8380,7 +8386,7 @@
 	function requireDefaultLoadingScene () {
 		if (hasRequiredDefaultLoadingScene) return DefaultLoadingScene;
 		hasRequiredDefaultLoadingScene = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (DefaultLoadingScene && DefaultLoadingScene.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8526,7 +8532,7 @@
 	function requireDefaultSkippingScene () {
 		if (hasRequiredDefaultSkippingScene) return DefaultSkippingScene;
 		hasRequiredDefaultSkippingScene = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (DefaultSkippingScene && DefaultSkippingScene.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9109,7 +9115,7 @@
 	function requireDynamicFont () {
 		if (hasRequiredDynamicFont) return DynamicFont;
 		hasRequiredDynamicFont = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (DynamicFont && DynamicFont.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9647,7 +9653,7 @@
 	function requireInitialScene () {
 		if (hasRequiredInitialScene) return InitialScene;
 		hasRequiredInitialScene = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (InitialScene && InitialScene.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -10301,7 +10307,7 @@
 	function requireOperationPluginManager () {
 		if (hasRequiredOperationPluginManager) return OperationPluginManager;
 		hasRequiredOperationPluginManager = 1;
-		var __assign = (commonjsGlobal && commonjsGlobal.__assign) || function () {
+		var __assign = (OperationPluginManager && OperationPluginManager.__assign) || function () {
 		    __assign = Object.assign || function(t) {
 		        for (var s, i = 1, n = arguments.length; i < n; i++) {
 		            s = arguments[i];
@@ -10909,7 +10915,7 @@
 	function requireXorshiftRandomGenerator () {
 		if (hasRequiredXorshiftRandomGenerator) return XorshiftRandomGenerator;
 		hasRequiredXorshiftRandomGenerator = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (XorshiftRandomGenerator && XorshiftRandomGenerator.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -12254,7 +12260,7 @@
 		if (hasRequiredIndex_common) return index_common;
 		hasRequiredIndex_common = 1;
 		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			var __createBinding = (index_common && index_common.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
 			    var desc = Object.getOwnPropertyDescriptor(m, k);
 			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
@@ -12265,7 +12271,7 @@
 			    if (k2 === undefined) k2 = k;
 			    o[k2] = m[k];
 			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			var __exportStar = (index_common && index_common.__exportStar) || function(m, exports) {
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
@@ -12389,7 +12395,7 @@
 		if (hasRequiredLib$1) return lib$4;
 		hasRequiredLib$1 = 1;
 		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			var __createBinding = (lib$4 && lib$4.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
 			    var desc = Object.getOwnPropertyDescriptor(m, k);
 			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
@@ -12400,7 +12406,7 @@
 			    if (k2 === undefined) k2 = k;
 			    o[k2] = m[k];
 			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			var __exportStar = (lib$4 && lib$4.__exportStar) || function(m, exports) {
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
@@ -12726,7 +12732,7 @@
 	function requireBinaryAsset$2 () {
 		if (hasRequiredBinaryAsset$2) return BinaryAsset$1;
 		hasRequiredBinaryAsset$2 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (BinaryAsset$1 && BinaryAsset$1.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -12848,7 +12854,7 @@
 	function requireCanvasSurface () {
 		if (hasRequiredCanvasSurface) return CanvasSurface;
 		hasRequiredCanvasSurface = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (CanvasSurface && CanvasSurface.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13276,7 +13282,7 @@
 	function requireContext2DSurface$1 () {
 		if (hasRequiredContext2DSurface$1) return Context2DSurface$1;
 		hasRequiredContext2DSurface$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (Context2DSurface$1 && Context2DSurface$1.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13339,7 +13345,7 @@
 	function requireSVGImageAsset$1 () {
 		if (hasRequiredSVGImageAsset$1) return SVGImageAsset$1;
 		hasRequiredSVGImageAsset$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (SVGImageAsset$1 && SVGImageAsset$1.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13442,7 +13448,7 @@
 	function requireGeneratedSVGImageAsset () {
 		if (hasRequiredGeneratedSVGImageAsset) return GeneratedSVGImageAsset;
 		hasRequiredGeneratedSVGImageAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (GeneratedSVGImageAsset && GeneratedSVGImageAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13560,7 +13566,7 @@
 	function requireHTMLImageAsset () {
 		if (hasRequiredHTMLImageAsset) return HTMLImageAsset;
 		hasRequiredHTMLImageAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (HTMLImageAsset && HTMLImageAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13677,7 +13683,7 @@
 	function requireXHRScriptAsset () {
 		if (hasRequiredXHRScriptAsset) return XHRScriptAsset;
 		hasRequiredXHRScriptAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (XHRScriptAsset && XHRScriptAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13819,7 +13825,7 @@
 	function requireAudioAsset$1 () {
 		if (hasRequiredAudioAsset$1) return AudioAsset$1;
 		hasRequiredAudioAsset$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (AudioAsset$1 && AudioAsset$1.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -13999,7 +14005,7 @@
 	function requireBinaryAsset () {
 		if (hasRequiredBinaryAsset) return BinaryAsset;
 		hasRequiredBinaryAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (BinaryAsset && BinaryAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14216,7 +14222,7 @@
 	function requireImageAsset () {
 		if (hasRequiredImageAsset) return ImageAsset;
 		hasRequiredImageAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (ImageAsset && ImageAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14354,7 +14360,7 @@
 	function requireScriptAsset$1 () {
 		if (hasRequiredScriptAsset$1) return ScriptAsset;
 		hasRequiredScriptAsset$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (ScriptAsset && ScriptAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14456,7 +14462,7 @@
 	function requireTextAsset$1 () {
 		if (hasRequiredTextAsset$1) return TextAsset$1;
 		hasRequiredTextAsset$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (TextAsset$1 && TextAsset$1.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14507,7 +14513,7 @@
 	function requireVectorImageAsset () {
 		if (hasRequiredVectorImageAsset) return VectorImageAsset;
 		hasRequiredVectorImageAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (VectorImageAsset && VectorImageAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14554,7 +14560,7 @@
 	function requireVideoAsset$1 () {
 		if (hasRequiredVideoAsset$1) return VideoAsset$1;
 		hasRequiredVideoAsset$1 = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (VideoAsset$1 && VideoAsset$1.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14686,7 +14692,7 @@
 		if (hasRequiredLib) return lib;
 		hasRequiredLib = 1;
 		(function (exports) {
-			var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+			var __createBinding = (lib && lib.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 			    if (k2 === undefined) k2 = k;
 			    var desc = Object.getOwnPropertyDescriptor(m, k);
 			    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
@@ -14697,7 +14703,7 @@
 			    if (k2 === undefined) k2 = k;
 			    o[k2] = m[k];
 			}));
-			var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
+			var __exportStar = (lib && lib.__exportStar) || function(m, exports) {
 			    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 			};
 			Object.defineProperty(exports, "__esModule", { value: true });
@@ -14940,7 +14946,7 @@
 	function requireHTMLVideoAsset () {
 		if (hasRequiredHTMLVideoAsset) return HTMLVideoAsset;
 		hasRequiredHTMLVideoAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (HTMLVideoAsset && HTMLVideoAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -15051,7 +15057,7 @@
 	function requireXHRTextAsset () {
 		if (hasRequiredXHRTextAsset) return XHRTextAsset;
 		hasRequiredXHRTextAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (XHRTextAsset && XHRTextAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -15260,7 +15266,7 @@
 	function requireMouseTouchEventHandler () {
 		if (hasRequiredMouseTouchEventHandler) return MouseTouchEventHandler;
 		hasRequiredMouseTouchEventHandler = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (MouseTouchEventHandler && MouseTouchEventHandler.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -15390,7 +15396,7 @@
 	function requirePointerEventHandler () {
 		if (hasRequiredPointerEventHandler) return PointerEventHandler;
 		hasRequiredPointerEventHandler = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (PointerEventHandler && PointerEventHandler.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -16556,7 +16562,7 @@
 	function requireWebGLBackSurfaceRenderer () {
 		if (hasRequiredWebGLBackSurfaceRenderer) return WebGLBackSurfaceRenderer;
 		hasRequiredWebGLBackSurfaceRenderer = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (WebGLBackSurfaceRenderer && WebGLBackSurfaceRenderer.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -16621,7 +16627,7 @@
 	function requireWebGLPrimarySurfaceRenderer () {
 		if (hasRequiredWebGLPrimarySurfaceRenderer) return WebGLPrimarySurfaceRenderer;
 		hasRequiredWebGLPrimarySurfaceRenderer = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (WebGLPrimarySurfaceRenderer && WebGLPrimarySurfaceRenderer.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -16661,7 +16667,7 @@
 	function requireWebGLPrimarySurface () {
 		if (hasRequiredWebGLPrimarySurface) return WebGLPrimarySurface;
 		hasRequiredWebGLPrimarySurface = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (WebGLPrimarySurface && WebGLPrimarySurface.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -16716,7 +16722,7 @@
 	function requireWebGLBackSurface () {
 		if (hasRequiredWebGLBackSurface) return WebGLBackSurface;
 		hasRequiredWebGLBackSurface = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (WebGLBackSurface && WebGLBackSurface.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18094,7 +18100,7 @@
 	function requireAudioAsset () {
 		if (hasRequiredAudioAsset) return AudioAsset;
 		hasRequiredAudioAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (AudioAsset && AudioAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18159,7 +18165,7 @@
 	function requireHTMLAudioAsset () {
 		if (hasRequiredHTMLAudioAsset) return HTMLAudioAsset;
 		hasRequiredHTMLAudioAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (HTMLAudioAsset && HTMLAudioAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18174,7 +18180,7 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
-		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		var __awaiter = (HTMLAudioAsset && HTMLAudioAsset.__awaiter) || function (thisArg, _arguments, P, generator) {
 		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 		    return new (P || (P = Promise))(function (resolve, reject) {
 		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -18183,7 +18189,7 @@
 		        step((generator = generator.apply(thisArg, _arguments || [])).next());
 		    });
 		};
-		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		var __generator = (HTMLAudioAsset && HTMLAudioAsset.__generator) || function (thisArg, body) {
 		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
 		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 		    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -18438,7 +18444,7 @@
 		hasRequiredHTMLAudioAutoplayHelper = 1;
 		/// chrome66以降などのブラウザに導入されるAutoplay Policyに対応する
 		// https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
-		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		var __awaiter = (HTMLAudioAutoplayHelper && HTMLAudioAutoplayHelper.__awaiter) || function (thisArg, _arguments, P, generator) {
 		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 		    return new (P || (P = Promise))(function (resolve, reject) {
 		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -18447,7 +18453,7 @@
 		        step((generator = generator.apply(thisArg, _arguments || [])).next());
 		    });
 		};
-		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		var __generator = (HTMLAudioAutoplayHelper && HTMLAudioAutoplayHelper.__generator) || function (thisArg, body) {
 		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
 		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 		    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -18561,7 +18567,7 @@
 	function requireHTMLAudioPlayer () {
 		if (hasRequiredHTMLAudioPlayer) return HTMLAudioPlayer;
 		hasRequiredHTMLAudioPlayer = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (HTMLAudioPlayer && HTMLAudioPlayer.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18576,7 +18582,7 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
-		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		var __awaiter = (HTMLAudioPlayer && HTMLAudioPlayer.__awaiter) || function (thisArg, _arguments, P, generator) {
 		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 		    return new (P || (P = Promise))(function (resolve, reject) {
 		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -18585,7 +18591,7 @@
 		        step((generator = generator.apply(thisArg, _arguments || [])).next());
 		    });
 		};
-		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		var __generator = (HTMLAudioPlayer && HTMLAudioPlayer.__generator) || function (thisArg, body) {
 		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
 		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 		    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -18839,7 +18845,7 @@
 	function requireProxyAudioAsset () {
 		if (hasRequiredProxyAudioAsset) return ProxyAudioAsset;
 		hasRequiredProxyAudioAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (ProxyAudioAsset && ProxyAudioAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -18906,7 +18912,7 @@
 	function requireProxyAudioPlayer () {
 		if (hasRequiredProxyAudioPlayer) return ProxyAudioPlayer;
 		hasRequiredProxyAudioPlayer = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (ProxyAudioPlayer && ProxyAudioPlayer.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -19088,7 +19094,7 @@
 	function requireWebAudioAsset () {
 		if (hasRequiredWebAudioAsset) return WebAudioAsset;
 		hasRequiredWebAudioAsset = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (WebAudioAsset && WebAudioAsset.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -19103,7 +19109,7 @@
 		        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 		    };
 		})();
-		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		var __awaiter = (WebAudioAsset && WebAudioAsset.__awaiter) || function (thisArg, _arguments, P, generator) {
 		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 		    return new (P || (P = Promise))(function (resolve, reject) {
 		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -19112,7 +19118,7 @@
 		        step((generator = generator.apply(thisArg, _arguments || [])).next());
 		    });
 		};
-		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		var __generator = (WebAudioAsset && WebAudioAsset.__generator) || function (thisArg, body) {
 		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
 		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 		    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -19244,7 +19250,7 @@
 	function requireWebAudioAutoplayHelper () {
 		if (hasRequiredWebAudioAutoplayHelper) return WebAudioAutoplayHelper_1;
 		hasRequiredWebAudioAutoplayHelper = 1;
-		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
+		var __awaiter = (WebAudioAutoplayHelper_1 && WebAudioAutoplayHelper_1.__awaiter) || function (thisArg, _arguments, P, generator) {
 		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 		    return new (P || (P = Promise))(function (resolve, reject) {
 		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -19253,7 +19259,7 @@
 		        step((generator = generator.apply(thisArg, _arguments || [])).next());
 		    });
 		};
-		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+		var __generator = (WebAudioAutoplayHelper_1 && WebAudioAutoplayHelper_1.__generator) || function (thisArg, body) {
 		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
 		    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 		    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -19340,7 +19346,7 @@
 	function requireWebAudioPlayer () {
 		if (hasRequiredWebAudioPlayer) return WebAudioPlayer;
 		hasRequiredWebAudioPlayer = 1;
-		var __extends = (commonjsGlobal && commonjsGlobal.__extends) || (function () {
+		var __extends = (WebAudioPlayer && WebAudioPlayer.__extends) || (function () {
 		    var extendStatics = function (d, b) {
 		        extendStatics = Object.setPrototypeOf ||
 		            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -19825,182 +19831,190 @@
 		return ResourceFactory$2;
 	}
 
-	Object.defineProperty(main, "__esModule", { value: true });
-	var initialize_1 = main.initialize = initialize;
-	var tslib_1 = require$$0;
-	var g = tslib_1.__importStar(requireAkashicEngine());
-	var GameHandlerSet_1 = requireGameHandlerSet();
-	var ResourceFactory_1 = requireResourceFactory();
-	var requestAnimationFrameId = null;
-	window.g = g; // 他のモジュールが g を参照するケースを考慮して require() 時点で g を参照できるようにする
-	/**
-	 * akashic-engine を初期化してゲームを実行する。
-	 * @param param 初期化パラメータ。
-	 * @returns ゲームを破棄する関数。
-	 */
-	function initialize(param) {
-	    var _a, _b, _c;
-	    var resourceFactory = new ResourceFactory_1.ResourceFactory({
-	        canvas: param.canvas,
-	        assetLoaderFuncs: param.assetLoaderFuncs,
-	        assetBaseDir: param.assetBaseDir
-	    });
-	    if (param.configuration == null) {
-	        param.configuration = {};
-	    }
-	    if (param.configuration.assets == null) {
-	        param.configuration.assets = {};
-	    }
-	    // virtual path を補完
-	    var assets = param.configuration.assets;
-	    var assetKeys = Object.keys(assets);
-	    for (var i = 0; i < assetKeys.length; i++) {
-	        assets[assetKeys[i]].virtualPath = assets[assetKeys[i]].path;
-	    }
-	    var game = new g.Game({
-	        engineModule: g,
-	        handlerSet: new GameHandlerSet_1.GameHandlerSet({ isSnapshotSaver: true }),
-	        configuration: tslib_1.__assign(tslib_1.__assign({}, param.configuration), { assets: param.configuration.assets, main: (_a = param.configuration.main) !== null && _a !== void 0 ? _a : "", width: (_b = param.configuration.width) !== null && _b !== void 0 ? _b : param.canvas.width, height: (_c = param.configuration.height) !== null && _c !== void 0 ? _c : param.canvas.height }),
-	        resourceFactory: resourceFactory,
-	        operationPluginViewInfo: {
-	            view: param.canvas
-	        },
-	        mainFunc: param.mainFunc
-	    });
-	    // primary surface の設定
-	    var primarySurface = resourceFactory.createPrimarySurface(game.width, game.height);
-	    game.renderers.push(primarySurface.renderer());
-	    // NOTE: game._loadAndStart() のみを呼び出した場合 `g.game.random === undefined` となるため、事前に game.reset() で randSeed を与えている。
-	    // TODO: akashic-engine 側の `g.Game#_loadAndStart()` のコメントを修正
-	    game._reset({ randSeed: Date.now() });
-	    game._loadAndStart({});
-	    // ポイントイベントの処理
-	    var pointEvents = [];
-	    var element = param.canvas;
-	    var getScaleX = function () {
-	        return element.getBoundingClientRect().width / element.clientWidth;
-	    };
-	    var getScaleY = function () {
-	        return element.getBoundingClientRect().height / element.clientHeight;
-	    };
-	    // ポインタ関連のイベントハンドラをポインタID毎にキャッシュ
-	    var handlerPointerEventCache = {};
-	    var handlePointerDownEvent = function (event) {
-	        var rect = element.getBoundingClientRect();
-	        pointEvents.push({
-	            type: 0 /* g.PlatformPointType.Down */,
-	            identifier: event.pointerId,
-	            offset: {
-	                x: (event.clientX - rect.left) / getScaleX(),
-	                y: (event.clientY - rect.top) / getScaleY()
-	            },
-	            button: event.button
-	        });
-	        var handlePointerMoveEvent = function (ev) {
-	            if (ev.pointerId !== event.pointerId) {
-	                return;
-	            }
-	            var rect = element.getBoundingClientRect();
-	            pointEvents.push({
-	                type: 1 /* g.PlatformPointType.Move */,
-	                identifier: ev.pointerId,
-	                offset: {
-	                    x: (ev.clientX - rect.left) / getScaleX(),
-	                    y: (ev.clientY - rect.top) / getScaleY()
-	                },
-	                button: ev.button
-	            });
-	        };
-	        var handlePointerUpEvent = function (ev) {
-	            if (ev.pointerId !== event.pointerId) {
-	                return;
-	            }
-	            var rect = element.getBoundingClientRect();
-	            pointEvents.push({
-	                type: 2 /* g.PlatformPointType.Up */,
-	                identifier: ev.pointerId,
-	                offset: {
-	                    x: (ev.clientX - rect.left) / getScaleX(),
-	                    y: (ev.clientY - rect.top) / getScaleY()
-	                },
-	                button: ev.button
-	            });
-	            if (!handlerPointerEventCache[ev.pointerId]) {
-	                return;
-	            }
-	            var _a = handlerPointerEventCache[ev.pointerId], move = _a.move, release = _a.release;
-	            window.removeEventListener("pointermove", move);
-	            window.removeEventListener("pointerup", release);
-	            window.removeEventListener("pointercancel", release);
-	            delete handlerPointerEventCache[ev.pointerId];
-	        };
-	        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
-	        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
-	        window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
-	        handlerPointerEventCache[event.pointerId] = {
-	            move: handlePointerMoveEvent,
-	            release: handlePointerUpEvent
-	        };
-	    };
-	    var handlePreventDefaultEvent = function (event) {
-	        event.preventDefault();
-	    };
-	    var handlePointEvent = function () {
-	        element.addEventListener("pointerdown", handlePointerDownEvent, { passive: false });
-	        element.addEventListener("contextmenu", handlePreventDefaultEvent, { passive: false });
-	    };
-	    var unhandlePointEvent = function () {
-	        element.removeEventListener("pointerdown", handlePointerDownEvent);
-	        element.removeEventListener("contextmenu", handlePreventDefaultEvent);
-	    };
-	    handlePointEvent();
-	    // ゲームループ
-	    var before = Date.now();
-	    var frame = 1000 / game.fps;
-	    var tick = function () {
-	        if (requestAnimationFrameId === null) {
-	            return;
-	        }
-	        var now = Date.now();
-	        if (before + frame * 2 < now) {
-	            // NOTE: 別タブなどで長時間 (ここでは実フレームの2倍以上の時間) tick() が呼ばれなかった場合は直前まで進める
-	            before = now - frame - 1;
-	        }
-	        if (before + frame < now) {
-	            if (pointEvents.length) {
-	                var events = [];
-	                for (var i = 0; i < pointEvents.length; i++) {
-	                    var event_1 = game.resolvePointEvent(pointEvents[i]);
-	                    if (event_1 == null)
-	                        continue;
-	                    events.push(event_1);
-	                }
-	                pointEvents.length = 0;
-	                game.tick(true, undefined, events);
-	            }
-	            else {
-	                game.tick(true);
-	            }
-	            game.render();
-	            before += frame;
-	        }
-	        requestAnimationFrameId = window.requestAnimationFrame(tick);
-	    };
-	    requestAnimationFrameId = window.requestAnimationFrame(tick);
-	    return function () {
-	        if (requestAnimationFrameId !== null) {
-	            window.cancelAnimationFrame(requestAnimationFrameId);
-	            requestAnimationFrameId = null;
-	        }
-	        game._destroy();
-	        unhandlePointEvent();
-	        primarySurface.renderer().clear();
-	    };
+	var hasRequiredMain;
+
+	function requireMain () {
+		if (hasRequiredMain) return main$1;
+		hasRequiredMain = 1;
+		Object.defineProperty(main$1, "__esModule", { value: true });
+		main$1.initialize = initialize;
+		var tslib_1 = require$$0;
+		var g = tslib_1.__importStar(requireAkashicEngine());
+		var GameHandlerSet_1 = requireGameHandlerSet();
+		var ResourceFactory_1 = requireResourceFactory();
+		var requestAnimationFrameId = null;
+		window.g = g; // 他のモジュールが g を参照するケースを考慮して require() 時点で g を参照できるようにする
+		/**
+		 * akashic-engine を初期化してゲームを実行する。
+		 * @param param 初期化パラメータ。
+		 * @returns ゲームを破棄する関数。
+		 */
+		function initialize(param) {
+		    var _a, _b, _c;
+		    var resourceFactory = new ResourceFactory_1.ResourceFactory({
+		        canvas: param.canvas,
+		        assetLoaderFuncs: param.assetLoaderFuncs,
+		        assetBaseDir: param.assetBaseDir
+		    });
+		    if (param.configuration == null) {
+		        param.configuration = {};
+		    }
+		    if (param.configuration.assets == null) {
+		        param.configuration.assets = {};
+		    }
+		    // virtual path を補完
+		    var assets = param.configuration.assets;
+		    var assetKeys = Object.keys(assets);
+		    for (var i = 0; i < assetKeys.length; i++) {
+		        assets[assetKeys[i]].virtualPath = assets[assetKeys[i]].path;
+		    }
+		    var game = new g.Game({
+		        engineModule: g,
+		        handlerSet: new GameHandlerSet_1.GameHandlerSet({ isSnapshotSaver: true }),
+		        configuration: tslib_1.__assign(tslib_1.__assign({}, param.configuration), { assets: param.configuration.assets, main: (_a = param.configuration.main) !== null && _a !== void 0 ? _a : "", width: (_b = param.configuration.width) !== null && _b !== void 0 ? _b : param.canvas.width, height: (_c = param.configuration.height) !== null && _c !== void 0 ? _c : param.canvas.height }),
+		        resourceFactory: resourceFactory,
+		        operationPluginViewInfo: {
+		            view: param.canvas
+		        },
+		        mainFunc: param.mainFunc
+		    });
+		    // primary surface の設定
+		    var primarySurface = resourceFactory.createPrimarySurface(game.width, game.height);
+		    game.renderers.push(primarySurface.renderer());
+		    // NOTE: game._loadAndStart() のみを呼び出した場合 `g.game.random === undefined` となるため、事前に game.reset() で randSeed を与えている。
+		    // TODO: akashic-engine 側の `g.Game#_loadAndStart()` のコメントを修正
+		    game._reset({ randSeed: Date.now() });
+		    game._loadAndStart({});
+		    // ポイントイベントの処理
+		    var pointEvents = [];
+		    var element = param.canvas;
+		    var getScaleX = function () {
+		        return element.getBoundingClientRect().width / element.clientWidth;
+		    };
+		    var getScaleY = function () {
+		        return element.getBoundingClientRect().height / element.clientHeight;
+		    };
+		    // ポインタ関連のイベントハンドラをポインタID毎にキャッシュ
+		    var handlerPointerEventCache = {};
+		    var handlePointerDownEvent = function (event) {
+		        var rect = element.getBoundingClientRect();
+		        pointEvents.push({
+		            type: 0 /* g.PlatformPointType.Down */,
+		            identifier: event.pointerId,
+		            offset: {
+		                x: (event.clientX - rect.left) / getScaleX(),
+		                y: (event.clientY - rect.top) / getScaleY()
+		            },
+		            button: event.button
+		        });
+		        var handlePointerMoveEvent = function (ev) {
+		            if (ev.pointerId !== event.pointerId) {
+		                return;
+		            }
+		            var rect = element.getBoundingClientRect();
+		            pointEvents.push({
+		                type: 1 /* g.PlatformPointType.Move */,
+		                identifier: ev.pointerId,
+		                offset: {
+		                    x: (ev.clientX - rect.left) / getScaleX(),
+		                    y: (ev.clientY - rect.top) / getScaleY()
+		                },
+		                button: ev.button
+		            });
+		        };
+		        var handlePointerUpEvent = function (ev) {
+		            if (ev.pointerId !== event.pointerId) {
+		                return;
+		            }
+		            var rect = element.getBoundingClientRect();
+		            pointEvents.push({
+		                type: 2 /* g.PlatformPointType.Up */,
+		                identifier: ev.pointerId,
+		                offset: {
+		                    x: (ev.clientX - rect.left) / getScaleX(),
+		                    y: (ev.clientY - rect.top) / getScaleY()
+		                },
+		                button: ev.button
+		            });
+		            if (!handlerPointerEventCache[ev.pointerId]) {
+		                return;
+		            }
+		            var _a = handlerPointerEventCache[ev.pointerId], move = _a.move, release = _a.release;
+		            window.removeEventListener("pointermove", move);
+		            window.removeEventListener("pointerup", release);
+		            window.removeEventListener("pointercancel", release);
+		            delete handlerPointerEventCache[ev.pointerId];
+		        };
+		        window.addEventListener("pointermove", handlePointerMoveEvent, { passive: false });
+		        window.addEventListener("pointerup", handlePointerUpEvent, { passive: false });
+		        window.addEventListener("pointercancel", handlePointerUpEvent, { passive: false });
+		        handlerPointerEventCache[event.pointerId] = {
+		            move: handlePointerMoveEvent,
+		            release: handlePointerUpEvent
+		        };
+		    };
+		    var handlePreventDefaultEvent = function (event) {
+		        event.preventDefault();
+		    };
+		    var handlePointEvent = function () {
+		        element.addEventListener("pointerdown", handlePointerDownEvent, { passive: false });
+		        element.addEventListener("contextmenu", handlePreventDefaultEvent, { passive: false });
+		    };
+		    var unhandlePointEvent = function () {
+		        element.removeEventListener("pointerdown", handlePointerDownEvent);
+		        element.removeEventListener("contextmenu", handlePreventDefaultEvent);
+		    };
+		    handlePointEvent();
+		    // ゲームループ
+		    var before = Date.now();
+		    var frame = 1000 / game.fps;
+		    var tick = function () {
+		        if (requestAnimationFrameId === null) {
+		            return;
+		        }
+		        var now = Date.now();
+		        if (before + frame * 2 < now) {
+		            // NOTE: 別タブなどで長時間 (ここでは実フレームの2倍以上の時間) tick() が呼ばれなかった場合は直前まで進める
+		            before = now - frame - 1;
+		        }
+		        if (before + frame < now) {
+		            if (pointEvents.length) {
+		                var events = [];
+		                for (var i = 0; i < pointEvents.length; i++) {
+		                    var event_1 = game.resolvePointEvent(pointEvents[i]);
+		                    if (event_1 == null)
+		                        continue;
+		                    events.push(event_1);
+		                }
+		                pointEvents.length = 0;
+		                game.tick(true, undefined, events);
+		            }
+		            else {
+		                game.tick(true);
+		            }
+		            game.render();
+		            before += frame;
+		        }
+		        requestAnimationFrameId = window.requestAnimationFrame(tick);
+		    };
+		    requestAnimationFrameId = window.requestAnimationFrame(tick);
+		    return function () {
+		        if (requestAnimationFrameId !== null) {
+		            window.cancelAnimationFrame(requestAnimationFrameId);
+		            requestAnimationFrameId = null;
+		        }
+		        game._destroy();
+		        unhandlePointEvent();
+		        primarySurface.renderer().clear();
+		    };
+		}
+		
+		return main$1;
 	}
 
-	exports.default = main;
-	exports.initialize = initialize_1;
+	var mainExports = requireMain();
+	var main = /*@__PURE__*/getDefaultExportFromCjs(mainExports);
 
-	Object.defineProperty(exports, '__esModule', { value: true });
+	return main;
 
 }));

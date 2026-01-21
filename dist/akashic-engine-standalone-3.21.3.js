@@ -1,4 +1,4 @@
-/*! akashic-engine-standalone@3.21.2 */
+/*! akashic-engine-standalone@3.21.3 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -9753,6 +9753,7 @@
 		    var PI = globalThis.Math.PI;
 		    var PI2 = PI * 2;
 		    var COS_EPSILON = 1e-7;
+		    var ANGLE_EPSILON = 1e-10;
 		    var TAN_MAX = 1e7;
 		    var arrayType = typeof Float32Array !== "undefined" ? Float32Array : Array;
 		    /**
@@ -9776,6 +9777,11 @@
 		            th %= PI2;
 		            if (th < 0)
 		                th += PI2;
+		            // 座標軸上の角度に十分近ければ固定値を返す
+		            var axisAngle = getAxisAngleSin(th);
+		            if (axisAngle != null) {
+		                return axisAngle;
+		            }
 		            if (wholePeriod) {
 		                return sinTable[(th * factor) | 0];
 		            }
@@ -9800,6 +9806,11 @@
 		            th %= PI;
 		            if (th < 0)
 		                th += PI;
+		            // 座標軸上の角度に十分近ければ固定値を返す
+		            var axisAngle = getAxisAngleTan(th);
+		            if (axisAngle != null) {
+		                return axisAngle;
+		            }
 		            if (wholePeriod) {
 		                return tanTable[(th * factor) | 0];
 		            }
@@ -9818,6 +9829,10 @@
 		        };
 		    }
 		    Math.initialize = initialize;
+		    /**
+		     * 指定したテーブルサイズおよび近似計算の反復回数に基づき、ルックアップテーブルを再設定する。
+		     */
+		    Math.reset = initialize;
 		    /**
 		     * ルックアップテーブルを使用した高速な正弦関数。
 		     *
@@ -9880,6 +9895,33 @@
 		        }
 		        s = x * s;
 		        return s;
+		    }
+		    function getAxisAngleSin(th) {
+		        // 0, 2π (x軸正方向, 0度)
+		        if (globalThis.Math.abs(th) < ANGLE_EPSILON || globalThis.Math.abs(th - PI2) < ANGLE_EPSILON) {
+		            return 0;
+		        }
+		        // π/2 (y軸正方向, 90度)
+		        if (globalThis.Math.abs(th - PI / 2) < ANGLE_EPSILON) {
+		            return 1;
+		        }
+		        // π (x軸負方向, 180度)
+		        if (globalThis.Math.abs(th - PI) < ANGLE_EPSILON) {
+		            return 0;
+		        }
+		        // 3π/2 (y軸負方向, 270度)
+		        if (globalThis.Math.abs(th - (3 * PI) / 2) < ANGLE_EPSILON) {
+		            return -1;
+		        }
+		        return null;
+		    }
+		    function getAxisAngleTan(th) {
+		        // 0, π (x軸, 0度)
+		        if (globalThis.Math.abs(th) < ANGLE_EPSILON || globalThis.Math.abs(th - PI) < ANGLE_EPSILON) {
+		            return 0;
+		        }
+		        // π/2 (y軸, 90度) は発散するためここでは値を返さない
+		        return null;
 		    }
 		})(Math || (_Math.Math = Math = {}));
 		
@@ -11009,6 +11051,7 @@
 		var ExceptionFactory_1 = requireExceptionFactory$2();
 		var InitialScene_1 = requireInitialScene();
 		var LoadingScene_1 = requireLoadingScene();
+		var Math_1 = require_Math();
 		var ModuleManager_1 = requireModuleManager();
 		var OperationPluginManager_1 = requireOperationPluginManager();
 		var PointEventResolver_1 = requirePointEventResolver();
@@ -11139,6 +11182,7 @@
 		        this._onSceneChange.add(this._handleSceneChanged, this);
 		        this._sceneChanged = this._onSceneChange;
 		        this.onUpdate = new trigger_1.Trigger();
+		        Math_1.Math.initialize();
 		        this._initialScene = new InitialScene_1.InitialScene({
 		            game: this,
 		            assetIds: this._assetManager.globalAssetIds(),

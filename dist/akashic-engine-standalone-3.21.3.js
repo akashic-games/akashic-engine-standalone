@@ -12647,6 +12647,8 @@
 
 	var BinaryAsset$1 = {};
 
+	var Asset$2 = {};
+
 	var XHRLoader = {};
 
 	var ExceptionFactory$1 = {};
@@ -12685,9 +12687,11 @@
 		var XHRLoader$1 = /** @class */ (function () {
 		    function XHRLoader(options) {
 		        if (options === void 0) { options = {}; }
+		        var _a;
 		        // デフォルトのタイムアウトは15秒
 		        // TODO: タイムアウト値はこれが妥当であるか後日詳細を検討する
 		        this.timeout = options.timeout || 15000;
+		        this.withCredentials = (_a = options.withCredentials) !== null && _a !== void 0 ? _a : false;
 		    }
 		    XHRLoader.prototype.get = function (url, callback) {
 		        this._getRequestObject({
@@ -12706,6 +12710,7 @@
 		        request.open("GET", requestObject.url, true);
 		        request.responseType = requestObject.responseType;
 		        request.timeout = this.timeout;
+		        request.withCredentials = this.withCredentials;
 		        request.addEventListener("timeout", function () {
 		            callback(ExceptionFactory_1.ExceptionFactory.createAssetLoadError("loading timeout"));
 		        }, false);
@@ -12730,8 +12735,6 @@
 		return XHRLoader;
 	}
 
-	var Asset$2 = {};
-
 	var hasRequiredAsset$2;
 
 	function requireAsset$2 () {
@@ -12740,9 +12743,11 @@
 		Object.defineProperty(Asset$2, "__esModule", { value: true });
 		Asset$2.Asset = void 0;
 		var trigger_1 = requireLib$3();
+		var XHRLoader_1 = requireXHRLoader();
 		var Asset = /** @class */ (function () {
 		    function Asset(id, path) {
 		        this.onDestroyed = new trigger_1.Trigger();
+		        this._withCredentials = false;
 		        this.id = id;
 		        this.originalPath = path;
 		        this.path = this._assetPathFilter(path);
@@ -12764,6 +12769,12 @@
 		    Asset.prototype._assetPathFilter = function (path) {
 		        // 拡張子の補完・読み替えが必要なassetはこれをオーバーライドすればよい。(対応形式が限定されるaudioなどの場合)
 		        return path;
+		    };
+		    Asset.prototype._createLoader = function () {
+		        var withCredentials = this._withCredentials instanceof RegExp
+		            ? this._withCredentials.test(this.path)
+		            : this._withCredentials;
+		        return new XHRLoader_1.XHRLoader({ withCredentials: withCredentials });
 		    };
 		    return Asset;
 		}());
@@ -12793,7 +12804,6 @@
 		})();
 		Object.defineProperty(BinaryAsset$1, "__esModule", { value: true });
 		BinaryAsset$1.BinaryAsset = void 0;
-		var XHRLoader_1 = requireXHRLoader();
 		var Asset_1 = requireAsset$2();
 		var BinaryAsset = /** @class */ (function (_super) {
 		    __extends(BinaryAsset, _super);
@@ -12809,7 +12819,7 @@
 		    };
 		    BinaryAsset.prototype._load = function (handler) {
 		        var _this = this;
-		        var loader = new XHRLoader_1.XHRLoader();
+		        var loader = this._createLoader();
 		        loader.getArrayBuffer(this.path, function (error, responseData) {
 		            if (error) {
 		                handler._onAssetError(_this, error);
@@ -13744,7 +13754,6 @@
 		})();
 		Object.defineProperty(XHRScriptAsset, "__esModule", { value: true });
 		XHRScriptAsset.XHRScriptAsset = void 0;
-		var XHRLoader_1 = requireXHRLoader();
 		var Asset_1 = requireAsset$2();
 		var XHRScriptAsset$1 = /** @class */ (function (_super) {
 		    __extends(XHRScriptAsset, _super);
@@ -13758,7 +13767,7 @@
 		    }
 		    XHRScriptAsset.prototype._load = function (handler) {
 		        var _this = this;
-		        var loader = new XHRLoader_1.XHRLoader();
+		        var loader = this._createLoader();
 		        loader.get(this.path, function (error, responseText) {
 		            if (error) {
 		                handler._onAssetError(_this, error);
@@ -15118,7 +15127,6 @@
 		})();
 		Object.defineProperty(XHRTextAsset, "__esModule", { value: true });
 		XHRTextAsset.XHRTextAsset = void 0;
-		var XHRLoader_1 = requireXHRLoader();
 		var Asset_1 = requireAsset$2();
 		var XHRTextAsset$1 = /** @class */ (function (_super) {
 		    __extends(XHRTextAsset, _super);
@@ -15130,7 +15138,7 @@
 		    }
 		    XHRTextAsset.prototype._load = function (handler) {
 		        var _this = this;
-		        var loader = new XHRLoader_1.XHRLoader();
+		        var loader = this._createLoader();
 		        loader.get(this.path, function (error, responseText) {
 		            if (error) {
 		                handler._onAssetError(_this, error);
@@ -17788,6 +17796,7 @@
 		            throw new Error("ResourceFactory#createAudioAsset(): could not initialize ActivePlugin");
 		        }
 		        var audioAsset = activePlugin.createAsset(id, assetPath, duration, system, loop, hint, offset);
+		        audioAsset._withCredentials = this._platform.usingWithCredentials;
 		        this._audioManager.registerAudioAsset(audioAsset);
 		        audioAsset.onDestroyed.addOnce(this._onAudioAssetDestroyed, this);
 		        return audioAsset;
@@ -17806,10 +17815,14 @@
 		        return new HTMLVideoAsset_1.HTMLVideoAsset(id, assetPath, width, height, system, loop, useRealSize);
 		    };
 		    ResourceFactory.prototype.createTextAsset = function (id, assetPath) {
-		        return new XHRTextAsset_1.XHRTextAsset(id, assetPath);
+		        var asset = new XHRTextAsset_1.XHRTextAsset(id, assetPath);
+		        asset._withCredentials = this._platform.usingWithCredentials;
+		        return asset;
 		    };
 		    ResourceFactory.prototype.createScriptAsset = function (id, assetPath, exports) {
-		        return new XHRScriptAsset_1.XHRScriptAsset(id, assetPath, exports);
+		        var asset = new XHRScriptAsset_1.XHRScriptAsset(id, assetPath, exports);
+		        asset._withCredentials = this._platform.usingWithCredentials;
+		        return asset;
 		    };
 		    ResourceFactory.prototype.createPrimarySurface = function (width, height) {
 		        return this._surfaceFactory.createPrimarySurface(width, height, this._rendererCandidates);
@@ -17827,7 +17840,9 @@
 		        return new GeneratedSVGImageAsset_1.GeneratedSVGImageAsset(id, assetPath, data);
 		    };
 		    ResourceFactory.prototype.createBinaryAsset = function (id, assetPath) {
-		        return new BinaryAsset_1.BinaryAsset(id, assetPath);
+		        var asset = new BinaryAsset_1.BinaryAsset(id, assetPath);
+		        asset._withCredentials = this._platform.usingWithCredentials;
+		        return asset;
 		    };
 		    ResourceFactory.prototype._onAudioAssetDestroyed = function (asset) {
 		        this._audioManager.removeAudioAsset(asset);
@@ -17860,6 +17875,11 @@
 		         * この値は MouseEvent および TouchEvent を利用していた旧バージョンとの識別のために存在し、もしこの値が undefined の場合は旧バージョンであるとみなす。
 		         */
 		        this.usingPointerEvents = true;
+		        /**
+		         * XHRLoader の利用時に withCredentials を有効にするかどうか。
+		         * 正規表現を指定した場合、対象の URL と一致した場合のみ有効にする。
+		         */
+		        this.usingWithCredentials = false;
 		        this.containerView = param.containerView;
 		        this.audioPluginManager = new AudioPluginManager_1.AudioPluginManager();
 		        if (param.audioPlugins) {
@@ -19197,10 +19217,10 @@
 		var XHRLoader_1 = requireXHRLoader();
 		var audioUtil_1 = requireAudioUtil();
 		var helper = requireWebAudioHelper();
-		function loadArrayBuffer(url) {
-		    return __awaiter(this, void 0, void 0, function () {
+		function loadArrayBuffer(url_1) {
+		    return __awaiter(this, arguments, void 0, function (url, withCredentials) {
 		        function _loadArrayBuffer(url) {
-		            var l = new XHRLoader_1.XHRLoader();
+		            var l = new XHRLoader_1.XHRLoader({ withCredentials: withCredentials });
 		            return new Promise(function (resolve, reject) {
 		                l.getArrayBuffer(url, function (err, result) {
 		                    if (err) {
@@ -19217,6 +19237,7 @@
 		            });
 		        }
 		        var e_1, delIndex, basePath, newUrl, query;
+		        if (withCredentials === void 0) { withCredentials = false; }
 		        return __generator(this, function (_a) {
 		            switch (_a.label) {
 		                case 0:
@@ -19251,7 +19272,10 @@
 		            setTimeout(function () { return loader._onAssetLoad(_this); }, 0);
 		            return;
 		        }
-		        var load = this._loadFun ? this._loadFun : loadArrayBuffer;
+		        var withCredentials = this._withCredentials instanceof RegExp
+		            ? this._withCredentials.test(this.path)
+		            : this._withCredentials;
+		        var load = this._loadFun ? this._loadFun : function (url) { return loadArrayBuffer(url, withCredentials); };
 		        load(this.path).then(function (data) {
 		            // aac読み込み失敗時に代わりにmp4が読み込まれるなど、パスの拡張子が変わるケースがある
 		            if (_this.path !== data.value.url) {

@@ -73,7 +73,7 @@
     "@octokit/rest": "^19.0.13",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.0",
-    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/node": "^24.0.0",
     "@types/url-join": "^5.0.0",

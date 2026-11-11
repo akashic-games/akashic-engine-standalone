@@ -20,7 +20,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup Node
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           package-manager-cache: false # トリガーがpush:tags:の場合、キャッシュポイズニング攻撃のリスクがあるため、npm等のパッケージマネージャーのキャッシュを明示的に無効化する
